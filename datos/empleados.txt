@@ -1,0 +1,4 @@
+20111000;Carla;López;11-4000-0001;carla@patitas.com;101;RECEPCIONISTA
+21222000;Diego;Pérez;11-4000-0002;diego@patitas.com;102;CUIDADOR
+22333000;Valeria;Sosa;11-4000-0003;valeria@patitas.com;103;VETERINARIO
+23444000;Jorge;Martínez;11-4000-0004;jorge@patitas.com;104;ADMINISTRADOR

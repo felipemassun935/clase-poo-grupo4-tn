@@ -1,0 +1,5 @@
+PERRO;1;Rocco;2021-03-10;28.5;30111222;Labrador;Grande;false;Antirrábica#2026-03-01#2027-03-01#Dra. Sosa|Séxtuple#2026-03-01#2027-03-01#Dra. Sosa
+GATO;2;Mishi;2022-07-22;4.2;30111222;Siamés;;true;Antirrábica#2026-01-15#2027-01-15#Dr. Ibarra|Triple felina#2026-01-15#2027-01-15#Dr. Ibarra
+PERRO;3;Toby;2019-11-05;9.0;28999333;Caniche;Chico;false;Antirrábica#2025-05-01#2026-05-01#Dr. Ibarra|Séxtuple#2026-02-10#2027-02-10#Dr. Ibarra
+CONEJO;4;Copito;2023-04-01;2.1;35444555;Belier;Heno y verduras;false;Mixomatosis#2026-04-01#2027-04-01#Dra. Sosa|Hemorrágica viral#2026-04-01#2027-04-01#Dra. Sosa
+AVE;5;Pancho;2020-09-09;0.4;35444555;Loro hablador;;true;

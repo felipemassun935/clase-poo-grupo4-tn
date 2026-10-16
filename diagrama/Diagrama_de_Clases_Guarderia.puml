@@ -1,0 +1,362 @@
+@startuml Sistema_Guarderia_Mascotas
+title Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases (v2, entrega 01/11)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+hide empty members
+
+package "controlador" {
+  class SistemaGuarderia <<Controlador>> <<Singleton>> {
+    {static} -instancia: SistemaGuarderia
+    -sucursal: Sucursal
+    -duenos: ArrayList<Dueno>
+    -empleados: ArrayList<Empleado>
+    -mascotas: ArrayList<Mascota>
+    -reservas: ArrayList<Reserva>
+    -estadias: ArrayList<Estadia>
+    -SistemaGuarderia()
+    {static} +getInstancia(): SistemaGuarderia
+    -cargarDatos(): void
+    +guardarTodo(): void
+    +agregarDueno(d: Dueno): void
+    +eliminarDueno(d: Dueno): void
+    +agregarEmpleado(e: Empleado): void
+    +eliminarEmpleado(e: Empleado): void
+    +agregarMascota(m: Mascota): void
+    +eliminarMascota(m: Mascota): void
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarAlojamientos(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +reservar(m: Mascota, a: Alojamiento, desde: LocalDate, hasta: LocalDate, esHospedaje: boolean, conExtra: boolean): Reserva
+    +cancelarReserva(r: Reserva): void
+    +realizarCheckIn(r: Reserva, e: Empleado): Estadia
+    +registrarEnBitacora(est: Estadia, entrada: EntradaBitacora): void
+    +realizarCheckOut(est: Estadia, medio: MedioPago): Pago
+    +getEstadiasActivas(): ArrayList<Estadia>
+  }
+}
+
+package "modelo" {
+  class Sucursal {
+    -idSucursal: int
+    -nombre: String
+    -direccion: String
+    -telefono: String
+    -alojamientos: ArrayList<Alojamiento>
+    +Sucursal(id: int, nombre: String, direccion: String, telefono: String)
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarDisponibles(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +calcularOcupacion(): double
+    +calcularOcupacion(esp: Especie): double
+  }
+  class Alojamiento {
+    -idAlojamiento: int
+    -codigo: String
+    -especie: Especie
+    -categoria: Categoria
+    -precioBaseDia: double
+    -reservas: ArrayList<Reserva>
+    +Alojamiento(id: int, codigo: String, especie: Especie, categoria: Categoria, precioBaseDia: double)
+    +estaDisponible(desde: LocalDate, hasta: LocalDate): boolean
+    +estaOcupado(): boolean
+    +calcularPrecioDia(): double
+    +getTipoLugar(): String
+    +agregarReserva(r: Reserva): void
+  }
+
+  abstract class Persona {
+    #dni: String
+    #nombre: String
+    #apellido: String
+    #telefono: String
+    #email: String
+    +Persona(dni: String, nombre: String, apellido: String, telefono: String, email: String)
+    +getNombreCompleto(): String
+  }
+  class Dueno {
+    -direccion: String
+    -mascotas: ArrayList<Mascota>
+    +Dueno(dni: String, nombre: String, apellido: String, telefono: String, email: String, direccion: String)
+    +agregarMascota(m: Mascota): void
+    +quitarMascota(m: Mascota): void
+  }
+  class Empleado {
+    -legajo: int
+    -rol: RolEmpleado
+    +Empleado(dni: String, nombre: String, apellido: String, telefono: String, email: String, legajo: int, rol: RolEmpleado)
+    +puedeAdministrarMedicacion(): boolean
+  }
+
+  abstract class Mascota {
+    #idMascota: int
+    #nombre: String
+    #fechaNacimiento: LocalDate
+    #peso: double
+    #dueno: Dueno
+    #vacunas: ArrayList<Vacuna>
+    +Mascota(id: int, nombre: String, fechaNacimiento: LocalDate, peso: double, dueno: Dueno)
+    {abstract} +getEspecie(): Especie
+    {abstract} +getVacunasObligatorias(): ArrayList<String>
+    +agregarVacuna(v: Vacuna): void
+    +quitarVacuna(v: Vacuna): void
+    +getVacunasFaltantes(fecha: LocalDate): ArrayList<String>
+    +tieneVacunasAlDia(fecha: LocalDate): boolean
+  }
+  class Perro {
+    -raza: String
+    -tamanio: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Gato {
+    -raza: String
+    -esCastrado: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Conejo {
+    -raza: String
+    -dieta: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Ave {
+    -tipoAve: String
+    -puedeVolar: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class MascotaFactory <<Creador>> {
+    {static} +crear(esp: Especie, id: int, nombre: String, fechaNac: LocalDate, peso: double, dueno: Dueno, dato1: String, dato2: String, marca: boolean): Mascota
+  }
+  class Vacuna {
+    -nombre: String
+    -fechaAplicacion: LocalDate
+    -fechaVencimiento: LocalDate
+    -veterinario: String
+    +Vacuna(nombre: String, fechaAplicacion: LocalDate, fechaVencimiento: LocalDate, veterinario: String)
+    +estaVigente(fecha: LocalDate): boolean
+  }
+
+  interface Cobrable {
+    +calcularCosto(): double
+  }
+  abstract class Reserva {
+    #idReserva: int
+    #fechaCreacion: LocalDate
+    #fechaDesde: LocalDate
+    #fechaHasta: LocalDate
+    #estado: EstadoReserva
+    #mascota: Mascota
+    #alojamiento: Alojamiento
+    +Reserva(id: int, mascota: Mascota, alojamiento: Alojamiento, desde: LocalDate, hasta: LocalDate)
+    {abstract} +calcularCosto(): double
+    {abstract} +getTipo(): String
+    +cancelar(): void
+    +iniciar(): void
+    +finalizar(): void
+    +estaActiva(): boolean
+    +seSuperpone(desde: LocalDate, hasta: LocalDate): boolean
+  }
+  class ReservaHospedaje {
+    -incluyeBanio: boolean
+    +getCantidadNoches(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class ReservaGuarderiaDiurna {
+    -incluyePaseo: boolean
+    +getCantidadDias(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class Tarifario {
+    {static} +PRECIO_BANIO: double = 8000
+    {static} +PRECIO_PASEO_DIA: double = 4000
+    {static} +PORCENTAJE_DIURNA: double = 0.6
+    {static} +calcularHospedaje(a: Alojamiento, noches: int, conBanio: boolean): double
+    {static} +calcularGuarderiaDiurna(a: Alojamiento, dias: int, conPaseo: boolean): double
+  }
+  class Estadia {
+    -idEstadia: int
+    -ingreso: LocalDate
+    -egreso: LocalDate
+    -reserva: Reserva
+    -recibidaPor: Empleado
+    -bitacora: ArrayList<EntradaBitacora>
+    -pago: Pago
+    +Estadia(id: int, reserva: Reserva, recibidaPor: Empleado, ingreso: LocalDate)
+    +registrar(entrada: EntradaBitacora): void
+    +estaActiva(): boolean
+    +cerrar(egreso: LocalDate, pago: Pago): void
+    +calcularTotal(): double
+  }
+  class Pago {
+    -idPago: int
+    -fecha: LocalDate
+    -monto: double
+    -medio: MedioPago
+    +Pago(id: int, fecha: LocalDate, monto: double, medio: MedioPago)
+    +generarComprobante(e: Estadia): String
+  }
+
+  abstract class EntradaBitacora {
+    #fecha: LocalDate
+    #registradaPor: Empleado
+    +EntradaBitacora(fecha: LocalDate, registradaPor: Empleado)
+    {abstract} +getResumen(): String
+  }
+  class RegistroComida {
+    -alimento: String
+    -cantidadGramos: double
+    -comioTodo: boolean
+    +getResumen(): String
+  }
+  class RegistroMedicacion {
+    -medicamento: String
+    -dosis: String
+    +getResumen(): String
+  }
+  class RegistroIncidente {
+    -descripcion: String
+    -gravedad: Gravedad
+    +getResumen(): String
+    +hayQueAvisarAlDueno(): boolean
+  }
+
+  enum Especie {
+    PERRO
+    GATO
+    CONEJO
+    AVE
+  }
+  enum Categoria {
+    ESTANDAR
+    PREMIUM
+    -recargo: double
+    +getRecargo(): double
+  }
+  enum RolEmpleado {
+    RECEPCIONISTA
+    CUIDADOR
+    VETERINARIO
+    ADMINISTRADOR
+  }
+  enum EstadoReserva {
+    CONFIRMADA
+    EN_CURSO
+    FINALIZADA
+    CANCELADA
+  }
+  enum MedioPago {
+    EFECTIVO
+    DEBITO
+    CREDITO
+    TRANSFERENCIA
+  }
+  enum Gravedad {
+    LEVE
+    MODERADA
+    GRAVE
+  }
+}
+
+package "persistencia" {
+  interface "Repositorio<T>" as Repositorio {
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+  }
+  abstract class "RepositorioArchivo<T>" as RepositorioArchivo {
+    #SEPARADOR: String = ";"
+    -rutaArchivo: String
+    +RepositorioArchivo(rutaArchivo: String)
+    {abstract} #aLinea(objeto: T): String
+    {abstract} #desdeLinea(campos: String[]): T
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+    {static} #limpiar(texto: String): String
+  }
+  class RepositorioDuenos
+  class RepositorioEmpleados
+  class RepositorioMascotas
+  class RepositorioAlojamientos
+  class RepositorioReservas
+  class RepositorioEstadias
+}
+
+package "excepciones" {
+  class VacunacionVencidaException {
+    -vacunasFaltantes: ArrayList<String>
+    +VacunacionVencidaException(m: Mascota, faltantes: ArrayList<String>)
+  }
+  class AlojamientoNoDisponibleException {
+    +AlojamientoNoDisponibleException(a: Alojamiento)
+  }
+  class DatoInvalidoException {
+    +DatoInvalidoException(mensaje: String)
+  }
+}
+
+class "java.lang.Exception" as Exception
+
+' ---- Relaciones ----
+SistemaGuarderia "1" *-- "1" Sucursal
+SistemaGuarderia "1" o-- "0..*" Dueno
+SistemaGuarderia "1" o-- "0..*" Empleado
+SistemaGuarderia "1" o-- "0..*" Mascota
+SistemaGuarderia "1" o-- "0..*" Reserva
+SistemaGuarderia "1" o-- "0..*" Estadia
+SistemaGuarderia "1" *-- "6" RepositorioArchivo : usa
+SistemaGuarderia ..> MascotaFactory : «use»
+
+Sucursal "1" *-- "0..*" Alojamiento
+Dueno "1" -- "0..*" Mascota : es dueño de
+Mascota "1" *-- "0..*" Vacuna
+Alojamiento "1" -- "0..*" Reserva : se reserva en
+Reserva "0..*" --> "1" Mascota
+Estadia "0..1" --> "1" Reserva : corresponde a
+Estadia "0..*" --> "1" Empleado : recibida por
+Estadia "1" *-- "0..*" EntradaBitacora
+Estadia "1" *-- "0..1" Pago
+EntradaBitacora "0..*" --> "1" Empleado : registrada por
+
+Dueno --|> Persona
+Empleado --|> Persona
+Perro --|> Mascota
+Gato --|> Mascota
+Conejo --|> Mascota
+Ave --|> Mascota
+ReservaHospedaje --|> Reserva
+ReservaGuarderiaDiurna --|> Reserva
+RegistroComida --|> EntradaBitacora
+RegistroMedicacion --|> EntradaBitacora
+RegistroIncidente --|> EntradaBitacora
+Reserva ..|> Cobrable
+ReservaHospedaje ..> Tarifario : «use»
+ReservaGuarderiaDiurna ..> Tarifario : «use»
+MascotaFactory ..> Mascota : «create»
+
+RepositorioArchivo ..|> Repositorio
+RepositorioDuenos --|> RepositorioArchivo
+RepositorioEmpleados --|> RepositorioArchivo
+RepositorioMascotas --|> RepositorioArchivo
+RepositorioAlojamientos --|> RepositorioArchivo
+RepositorioReservas --|> RepositorioArchivo
+RepositorioEstadias --|> RepositorioArchivo
+
+VacunacionVencidaException --|> Exception
+AlojamientoNoDisponibleException --|> Exception
+DatoInvalidoException --|> Exception
+
+note bottom of VacunacionVencidaException
+  Se lanza en realizarCheckIn() si la mascota
+  no tiene las vacunas obligatorias vigentes
+  hasta el último día de la estadía
+end note
+note bottom of AlojamientoNoDisponibleException
+  Se lanza en reservar() si el alojamiento
+  ya está reservado en esas fechas
+end note
+
+@enduml

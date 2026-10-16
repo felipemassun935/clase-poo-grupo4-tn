@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="2150px" preserveAspectRatio="none" style="width:7852px;height:2150px;background:#FFFFFF;" version="1.1" viewBox="0 0 7852 2150" width="7852px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.9395" id="_title" style="stroke:none;stroke-width:1.0;" width="625" x="3606.5" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="615" x="3611.5" y="23.5625">Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases (v2, entrega 01/11)</text><!--MD5=[d5c9dc05918f69842c02ad11d3ff0e9b]
+cluster controlador--><g id="cluster_controlador"><path d="M193.5,43.9395 L276.5,43.9395 A3.75,3.75 0 0 1 279,46.4395 L286,66.8789 L1062.5,66.8789 A2.5,2.5 0 0 1 1065,69.3789 L1065,604.4395 A2.5,2.5 0 0 1 1062.5,606.9395 L193.5,606.9395 A2.5,2.5 0 0 1 191,604.4395 L191,46.4395 A2.5,2.5 0 0 1 193.5,43.9395 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="191" x2="286" y1="66.8789" y2="66.8789"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="82" x="195" y="59.502">controlador</text></g><!--MD5=[c3807c7a05fd2fc811bbe18b18101dec]
+cluster modelo--><g id="cluster_modelo"><path d="M8.5,630.9395 L61.5,630.9395 A3.75,3.75 0 0 1 64,633.4395 L71,653.8789 L5347.5,653.8789 A2.5,2.5 0 0 1 5350,656.3789 L5350,2141.4395 A2.5,2.5 0 0 1 5347.5,2143.9395 L8.5,2143.9395 A2.5,2.5 0 0 1 6,2141.4395 L6,633.4395 A2.5,2.5 0 0 1 8.5,630.9395 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="6" x2="71" y1="653.8789" y2="653.8789"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="52" x="10" y="646.502">modelo</text></g><!--MD5=[28c69129388dff730ab9e9dd2f0fc346]
+cluster persistencia--><g id="cluster_persistencia"><path d="M5376.5,283.9395 L5462.5,283.9395 A3.75,3.75 0 0 1 5465,286.4395 L5472,306.8789 L6593.5,306.8789 A2.5,2.5 0 0 1 6596,309.3789 L6596,1135.9395 A2.5,2.5 0 0 1 6593.5,1138.4395 L5376.5,1138.4395 A2.5,2.5 0 0 1 5374,1135.9395 L5374,286.4395 A2.5,2.5 0 0 1 5376.5,283.9395 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="5374" x2="5472" y1="306.8789" y2="306.8789"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="85" x="5378" y="299.502">persistencia</text></g><!--MD5=[461e669dced413ee028778f1a13058d4]
+cluster excepciones--><g id="cluster_excepciones"><path d="M6622.5,258.9395 L6710.5,258.9395 A3.75,3.75 0 0 1 6713,261.4395 L6720,281.8789 L7842.5,281.8789 A2.5,2.5 0 0 1 7845,284.3789 L7845,389.4395 A2.5,2.5 0 0 1 7842.5,391.9395 L6622.5,391.9395 A2.5,2.5 0 0 1 6620,389.4395 L6620,261.4395 A2.5,2.5 0 0 1 6622.5,258.9395 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="6620" x2="6720" y1="281.8789" y2="281.8789"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="87" x="6624" y="274.502">excepciones</text></g><!--MD5=[e6bd05795aa5e35a57ad5abf55278025]
+class SistemaGuarderia--><g id="elem_SistemaGuarderia"><rect codeLine="8" fill="#F1F1F1" height="512.4043" id="SistemaGuarderia" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="843" x="206.5" y="78.9395"/><ellipse cx="565.75" cy="106.9287" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M568.7188,112.5693 Q568.1406,112.8662 567.5,113.0068 Q566.8594,113.1631 566.1563,113.1631 Q563.6563,113.1631 562.3281,111.5225 Q561.0156,109.8662 561.0156,106.7412 Q561.0156,103.6162 562.3281,101.96 Q563.6563,100.3037 566.1563,100.3037 Q566.8594,100.3037 567.5,100.46 Q568.1563,100.6162 568.7188,100.9131 L568.7188,103.6318 Q568.0938,103.0537 567.5,102.7881 Q566.9063,102.5068 566.2813,102.5068 Q564.9375,102.5068 564.25,103.585 Q563.5625,104.6475 563.5625,106.7412 Q563.5625,108.835 564.25,109.9131 Q564.9375,110.9756 566.2813,110.9756 Q566.9063,110.9756 567.5,110.71 Q568.0938,110.4287 568.7188,109.8506 L568.7188,112.5693 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82" x="603.25" y="95.5645">«Controlador»</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="67" x="610.75" y="110.084">«Singleton»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="586.25" y="126.541">SistemaGuarderia</text><line style="stroke:#181818;stroke-width:0.5;" x1="207.5" x2="1048.5" y1="134.918" y2="134.918"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="188" x="212.5" y="152.4805">-instancia: SistemaGuarderia</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="124" x="212.5" y="169.4199">-sucursal: Sucursal</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="181" x="212.5" y="186.3594">-duenos: ArrayList&lt;Dueno&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="228" x="212.5" y="203.2988">-empleados: ArrayList&lt;Empleado&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="211" x="212.5" y="220.2383">-mascotas: ArrayList&lt;Mascota&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="200" x="212.5" y="237.1777">-reservas: ArrayList&lt;Reserva&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="194" x="212.5" y="254.1172">-estadias: ArrayList&lt;Estadia&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="207.5" x2="1048.5" y1="261.4941" y2="261.4941"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132" x="212.5" y="279.0566">-SistemaGuarderia()</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="224" x="212.5" y="295.9961">+getInstancia(): SistemaGuarderia</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="133" x="212.5" y="312.9355">-cargarDatos(): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141" x="212.5" y="329.875">+guardarTodo(): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208" x="212.5" y="346.8145">+agregarDueno(d: Dueno): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="206" x="212.5" y="363.7539">+eliminarDueno(d: Dueno): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="253" x="212.5" y="380.6934">+agregarEmpleado(e: Empleado): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="251" x="212.5" y="397.6328">+eliminarEmpleado(e: Empleado): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="241" x="212.5" y="414.5723">+agregarMascota(m: Mascota): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="239" x="212.5" y="431.5117">+eliminarMascota(m: Mascota): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="275" x="212.5" y="448.4512">+agregarAlojamiento(a: Alojamiento): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="273" x="212.5" y="465.3906">+eliminarAlojamiento(a: Alojamiento): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="632" x="212.5" y="482.3301">+buscarAlojamientos(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList&lt;Alojamiento&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="831" x="212.5" y="499.2695">+reservar(m: Mascota, a: Alojamiento, desde: LocalDate, hasta: LocalDate, esHospedaje: boolean, conExtra: boolean): Reserva</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="230" x="212.5" y="516.209">+cancelarReserva(r: Reserva): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="332" x="212.5" y="533.1484">+realizarCheckIn(r: Reserva, e: Empleado): Estadia</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="428" x="212.5" y="550.0879">+registrarEnBitacora(est: Estadia, entrada: EntradaBitacora): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="382" x="212.5" y="567.0273">+realizarCheckOut(est: Estadia, medio: MedioPago): Pago</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="278" x="212.5" y="583.9668">+getEstadiasActivas(): ArrayList&lt;Estadia&gt;</text></g><!--MD5=[6eb21cbdc4d58042377df8925372ace8]
+class Sucursal--><g id="elem_Sucursal"><rect codeLine="39" fill="#F1F1F1" height="234.334" id="Sucursal" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="636" x="1956" y="665.9395"/><ellipse cx="2241.75" cy="681.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M2244.7188,687.5801 Q2244.1406,687.877 2243.5,688.0176 Q2242.8594,688.1738 2242.1563,688.1738 Q2239.6563,688.1738 2238.3281,686.5332 Q2237.0156,684.877 2237.0156,681.752 Q2237.0156,678.627 2238.3281,676.9707 Q2239.6563,675.3145 2242.1563,675.3145 Q2242.8594,675.3145 2243.5,675.4707 Q2244.1563,675.627 2244.7188,675.9238 L2244.7188,678.6426 Q2244.0938,678.0645 2243.5,677.7988 Q2242.9063,677.5176 2242.2813,677.5176 Q2240.9375,677.5176 2240.25,678.5957 Q2239.5625,679.6582 2239.5625,681.752 Q2239.5625,683.8457 2240.25,684.9238 Q2240.9375,685.9863 2242.2813,685.9863 Q2242.9063,685.9863 2243.5,685.7207 Q2244.0938,685.4395 2244.7188,684.8613 L2244.7188,687.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56" x="2262.25" y="687.0322">Sucursal</text><line style="stroke:#181818;stroke-width:0.5;" x1="1957" x2="2591" y1="697.9395" y2="697.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="1962" y="715.502">-idSucursal: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="1962" y="732.4414">-nombre: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="113" x="1962" y="749.3809">-direccion: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="1962" y="766.3203">-telefono: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="248" x="1962" y="783.2598">-alojamientos: ArrayList&lt;Alojamiento&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="1957" x2="2591" y1="790.6367" y2="790.6367"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="439" x="1962" y="808.1992">+Sucursal(id: int, nombre: String, direccion: String, telefono: String)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="275" x="1962" y="825.1387">+agregarAlojamiento(a: Alojamiento): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="273" x="1962" y="842.0781">+eliminarAlojamiento(a: Alojamiento): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="624" x="1962" y="859.0176">+buscarDisponibles(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList&lt;Alojamiento&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="194" x="1962" y="875.957">+calcularOcupacion(): double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="277" x="1962" y="892.8965">+calcularOcupacion(esp: Especie): double</text></g><!--MD5=[fd599c389ed0a2d094d39b60b5cfcf7b]
+class Alojamiento--><g id="elem_Alojamiento"><rect codeLine="52" fill="#F1F1F1" height="251.2734" id="Alojamiento" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="658" x="3094" y="959.9395"/><ellipse cx="3380.75" cy="975.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M3383.7188,981.5801 Q3383.1406,981.877 3382.5,982.0176 Q3381.8594,982.1738 3381.1563,982.1738 Q3378.6563,982.1738 3377.3281,980.5332 Q3376.0156,978.877 3376.0156,975.752 Q3376.0156,972.627 3377.3281,970.9707 Q3378.6563,969.3145 3381.1563,969.3145 Q3381.8594,969.3145 3382.5,969.4707 Q3383.1563,969.627 3383.7188,969.9238 L3383.7188,972.6426 Q3383.0938,972.0645 3382.5,971.7988 Q3381.9063,971.5176 3381.2813,971.5176 Q3379.9375,971.5176 3379.25,972.5957 Q3378.5625,973.6582 3378.5625,975.752 Q3378.5625,977.8457 3379.25,978.9238 Q3379.9375,979.9863 3381.2813,979.9863 Q3381.9063,979.9863 3382.5,979.7207 Q3383.0938,979.4395 3383.7188,978.8613 L3383.7188,981.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="3401.25" y="981.0322">Alojamiento</text><line style="stroke:#181818;stroke-width:0.5;" x1="3095" x2="3751" y1="991.9395" y2="991.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="3100" y="1009.502">-idAlojamiento: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="3100" y="1026.4414">-codigo: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="3100" y="1043.3809">-especie: Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="3100" y="1060.3203">-categoria: Categoria</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="153" x="3100" y="1077.2598">-precioBaseDia: double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="200" x="3100" y="1094.1992">-reservas: ArrayList&lt;Reserva&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="3095" x2="3751" y1="1101.5762" y2="1101.5762"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="646" x="3100" y="1119.1387">+Alojamiento(id: int, codigo: String, especie: Especie, categoria: Categoria, precioBaseDia: double)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="408" x="3100" y="1136.0781">+estaDisponible(desde: LocalDate, hasta: LocalDate): boolean</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="3100" y="1153.0176">+estaOcupado(): boolean</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="185" x="3100" y="1169.957">+calcularPrecioDia(): double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="155" x="3100" y="1186.8965">+getTipoLugar(): String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="226" x="3100" y="1203.8359">+agregarReserva(r: Reserva): void</text></g><!--MD5=[8f63dadf5c643e74a34e53c8f0a15d23]
+class Persona--><g id="elem_Persona"><rect codeLine="67" fill="#F1F1F1" height="166.5762" id="Persona" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="559" x="360.5" y="1960.9395"/><ellipse cx="608.75" cy="1976.9395" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M608.8594,1972.2832 L607.7031,1977.3613 L610.0313,1977.3613 L608.8594,1972.2832 Z M607.375,1970.0488 L610.3594,1970.0488 L613.7188,1982.4395 L611.2656,1982.4395 L610.5,1979.377 L607.2188,1979.377 L606.4688,1982.4395 L604.0313,1982.4395 L607.375,1970.0488 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="629.25" y="1982.0322">Persona</text><line style="stroke:#181818;stroke-width:0.5;" x1="361.5" x2="918.5" y1="1992.9395" y2="1992.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="366.5" y="2010.502">#dni: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="366.5" y="2027.4414">#nombre: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="366.5" y="2044.3809">#apellido: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="109" x="366.5" y="2061.3203">#telefono: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90" x="366.5" y="2078.2598">#email: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="361.5" x2="918.5" y1="2085.6367" y2="2085.6367"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="547" x="366.5" y="2103.1992">+Persona(dni: String, nombre: String, apellido: String, telefono: String, email: String)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="204" x="366.5" y="2120.1387">+getNombreCompleto(): String</text></g><!--MD5=[2a98d8f81d0e40c59eae6173f98b1bc5]
+class Dueno--><g id="elem_Dueno"><rect codeLine="76" fill="#F1F1F1" height="132.6973" id="Dueno" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="663" x="21.5" y="1355.4395"/><ellipse cx="327.75" cy="1371.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M330.7188,1377.0801 Q330.1406,1377.377 329.5,1377.5176 Q328.8594,1377.6738 328.1563,1377.6738 Q325.6563,1377.6738 324.3281,1376.0332 Q323.0156,1374.377 323.0156,1371.252 Q323.0156,1368.127 324.3281,1366.4707 Q325.6563,1364.8145 328.1563,1364.8145 Q328.8594,1364.8145 329.5,1364.9707 Q330.1563,1365.127 330.7188,1365.4238 L330.7188,1368.1426 Q330.0938,1367.5645 329.5,1367.2988 Q328.9063,1367.0176 328.2813,1367.0176 Q326.9375,1367.0176 326.25,1368.0957 Q325.5625,1369.1582 325.5625,1371.252 Q325.5625,1373.3457 326.25,1374.4238 Q326.9375,1375.4863 328.2813,1375.4863 Q328.9063,1375.4863 329.5,1375.2207 Q330.0938,1374.9395 330.7188,1374.3613 L330.7188,1377.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42" x="348.25" y="1376.5322">Dueno</text><line style="stroke:#181818;stroke-width:0.5;" x1="22.5" x2="683.5" y1="1387.4395" y2="1387.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="113" x="27.5" y="1405.002">-direccion: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="211" x="27.5" y="1421.9414">-mascotas: ArrayList&lt;Mascota&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="22.5" x2="683.5" y1="1429.3184" y2="1429.3184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="651" x="27.5" y="1446.8809">+Dueno(dni: String, nombre: String, apellido: String, telefono: String, email: String, direccion: String)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="241" x="27.5" y="1463.8203">+agregarMascota(m: Mascota): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="227" x="27.5" y="1480.7598">+quitarMascota(m: Mascota): void</text></g><!--MD5=[267282629f1778b9c75091f9d8fe6097]
+class Empleado--><g id="elem_Empleado"><rect codeLine="83" fill="#F1F1F1" height="115.7578" id="Empleado" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="759" x="508.5" y="1708.9395"/><ellipse cx="851.25" cy="1724.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M854.2188,1730.5801 Q853.6406,1730.877 853,1731.0176 Q852.3594,1731.1738 851.6563,1731.1738 Q849.1563,1731.1738 847.8281,1729.5332 Q846.5156,1727.877 846.5156,1724.752 Q846.5156,1721.627 847.8281,1719.9707 Q849.1563,1718.3145 851.6563,1718.3145 Q852.3594,1718.3145 853,1718.4707 Q853.6563,1718.627 854.2188,1718.9238 L854.2188,1721.6426 Q853.5938,1721.0645 853,1720.7988 Q852.4063,1720.5176 851.7813,1720.5176 Q850.4375,1720.5176 849.75,1721.5957 Q849.0625,1722.6582 849.0625,1724.752 Q849.0625,1726.8457 849.75,1727.9238 Q850.4375,1728.9863 851.7813,1728.9863 Q852.4063,1728.9863 853,1728.7207 Q853.5938,1728.4395 854.2188,1727.8613 L854.2188,1730.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="871.75" y="1730.0322">Empleado</text><line style="stroke:#181818;stroke-width:0.5;" x1="509.5" x2="1266.5" y1="1740.9395" y2="1740.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="69" x="514.5" y="1758.502">-legajo: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115" x="514.5" y="1775.4414">-rol: RolEmpleado</text><line style="stroke:#181818;stroke-width:0.5;" x1="509.5" x2="1266.5" y1="1782.8184" y2="1782.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="747" x="514.5" y="1800.3809">+Empleado(dni: String, nombre: String, apellido: String, telefono: String, email: String, legajo: int, rol: RolEmpleado)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="272" x="514.5" y="1817.3203">+puedeAdministrarMedicacion(): boolean</text></g><!--MD5=[3edb6152a011cbfbe7dd802d0966b8dc]
+class Mascota--><g id="elem_Mascota"><rect codeLine="90" fill="#F1F1F1" height="268.2129" id="Mascota" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="614" x="1580" y="1632.9395"/><ellipse cx="1853.25" cy="1648.9395" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1853.3594,1644.2832 L1852.2031,1649.3613 L1854.5313,1649.3613 L1853.3594,1644.2832 Z M1851.875,1642.0488 L1854.8594,1642.0488 L1858.2188,1654.4395 L1855.7656,1654.4395 L1855,1651.377 L1851.7188,1651.377 L1850.9688,1654.4395 L1848.5313,1654.4395 L1851.875,1642.0488 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="59" x="1873.75" y="1654.0322">Mascota</text><line style="stroke:#181818;stroke-width:0.5;" x1="1581" x2="2193" y1="1664.9395" y2="1664.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="1586" y="1682.502">#idMascota: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="1586" y="1699.4414">#nombre: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="194" x="1586" y="1716.3809">#fechaNacimiento: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94" x="1586" y="1733.3203">#peso: double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="100" x="1586" y="1750.2598">#dueno: Dueno</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="199" x="1586" y="1767.1992">#vacunas: ArrayList&lt;Vacuna&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="1581" x2="2193" y1="1774.5762" y2="1774.5762"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="602" x="1586" y="1792.1387">+Mascota(id: int, nombre: String, fechaNacimiento: LocalDate, peso: double, dueno: Dueno)</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="151" x="1586" y="1809.0781">+getEspecie(): Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="306" x="1586" y="1826.0176">+getVacunasObligatorias(): ArrayList&lt;String&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="223" x="1586" y="1842.957">+agregarVacuna(v: Vacuna): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="209" x="1586" y="1859.8965">+quitarVacuna(v: Vacuna): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="393" x="1586" y="1876.8359">+getVacunasFaltantes(fecha: LocalDate): ArrayList&lt;String&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="313" x="1586" y="1893.7754">+tieneVacunasAlDia(fecha: LocalDate): boolean</text></g><!--MD5=[838fb693084ebcda77f8479951cb9fdf]
+class Perro--><g id="elem_Perro"><rect codeLine="105" fill="#F1F1F1" height="115.7578" id="Perro" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="313" x="2252.5" y="1363.9395"/><ellipse cx="2387.25" cy="1379.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M2390.2188,1385.5801 Q2389.6406,1385.877 2389,1386.0176 Q2388.3594,1386.1738 2387.6563,1386.1738 Q2385.1563,1386.1738 2383.8281,1384.5332 Q2382.5156,1382.877 2382.5156,1379.752 Q2382.5156,1376.627 2383.8281,1374.9707 Q2385.1563,1373.3145 2387.6563,1373.3145 Q2388.3594,1373.3145 2389,1373.4707 Q2389.6563,1373.627 2390.2188,1373.9238 L2390.2188,1376.6426 Q2389.5938,1376.0645 2389,1375.7988 Q2388.4063,1375.5176 2387.7813,1375.5176 Q2386.4375,1375.5176 2385.75,1376.5957 Q2385.0625,1377.6582 2385.0625,1379.752 Q2385.0625,1381.8457 2385.75,1382.9238 Q2386.4375,1383.9863 2387.7813,1383.9863 Q2388.4063,1383.9863 2389,1383.7207 Q2389.5938,1383.4395 2390.2188,1382.8613 L2390.2188,1385.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="35" x="2407.75" y="1385.0322">Perro</text><line style="stroke:#181818;stroke-width:0.5;" x1="2253.5" x2="2564.5" y1="1395.9395" y2="1395.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="2258.5" y="1413.502">-raza: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="105" x="2258.5" y="1430.4414">-tamanio: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="2253.5" x2="2564.5" y1="1437.8184" y2="1437.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="151" x="2258.5" y="1455.3809">+getEspecie(): Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="301" x="2258.5" y="1472.3203">+getVacunasObligatorias(): ArrayList&lt;String&gt;</text></g><!--MD5=[911fe1357c24e8165700ac79875f9a94]
+class Gato--><g id="elem_Gato"><rect codeLine="111" fill="#F1F1F1" height="115.7578" id="Gato" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="313" x="1904.5" y="1363.9395"/><ellipse cx="2041.25" cy="1379.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M2044.2188,1385.5801 Q2043.6406,1385.877 2043,1386.0176 Q2042.3594,1386.1738 2041.6563,1386.1738 Q2039.1563,1386.1738 2037.8281,1384.5332 Q2036.5156,1382.877 2036.5156,1379.752 Q2036.5156,1376.627 2037.8281,1374.9707 Q2039.1563,1373.3145 2041.6563,1373.3145 Q2042.3594,1373.3145 2043,1373.4707 Q2043.6563,1373.627 2044.2188,1373.9238 L2044.2188,1376.6426 Q2043.5938,1376.0645 2043,1375.7988 Q2042.4063,1375.5176 2041.7813,1375.5176 Q2040.4375,1375.5176 2039.75,1376.5957 Q2039.0625,1377.6582 2039.0625,1379.752 Q2039.0625,1381.8457 2039.75,1382.9238 Q2040.4375,1383.9863 2041.7813,1383.9863 Q2042.4063,1383.9863 2043,1383.7207 Q2043.5938,1383.4395 2044.2188,1382.8613 L2044.2188,1385.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31" x="2061.75" y="1385.0322">Gato</text><line style="stroke:#181818;stroke-width:0.5;" x1="1905.5" x2="2216.5" y1="1395.9395" y2="1395.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="1910.5" y="1413.502">-raza: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141" x="1910.5" y="1430.4414">-esCastrado: boolean</text><line style="stroke:#181818;stroke-width:0.5;" x1="1905.5" x2="2216.5" y1="1437.8184" y2="1437.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="151" x="1910.5" y="1455.3809">+getEspecie(): Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="301" x="1910.5" y="1472.3203">+getVacunasObligatorias(): ArrayList&lt;String&gt;</text></g><!--MD5=[94a73b8f5b0de57242018776672b6e32]
+class Conejo--><g id="elem_Conejo"><rect codeLine="117" fill="#F1F1F1" height="115.7578" id="Conejo" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="313" x="1556.5" y="1363.9395"/><ellipse cx="1686.25" cy="1379.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1689.2188,1385.5801 Q1688.6406,1385.877 1688,1386.0176 Q1687.3594,1386.1738 1686.6563,1386.1738 Q1684.1563,1386.1738 1682.8281,1384.5332 Q1681.5156,1382.877 1681.5156,1379.752 Q1681.5156,1376.627 1682.8281,1374.9707 Q1684.1563,1373.3145 1686.6563,1373.3145 Q1687.3594,1373.3145 1688,1373.4707 Q1688.6563,1373.627 1689.2188,1373.9238 L1689.2188,1376.6426 Q1688.5938,1376.0645 1688,1375.7988 Q1687.4063,1375.5176 1686.7813,1375.5176 Q1685.4375,1375.5176 1684.75,1376.5957 Q1684.0625,1377.6582 1684.0625,1379.752 Q1684.0625,1381.8457 1684.75,1382.9238 Q1685.4375,1383.9863 1686.7813,1383.9863 Q1687.4063,1383.9863 1688,1383.7207 Q1688.5938,1383.4395 1689.2188,1382.8613 L1689.2188,1385.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45" x="1706.75" y="1385.0322">Conejo</text><line style="stroke:#181818;stroke-width:0.5;" x1="1557.5" x2="1868.5" y1="1395.9395" y2="1395.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="1562.5" y="1413.502">-raza: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86" x="1562.5" y="1430.4414">-dieta: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="1557.5" x2="1868.5" y1="1437.8184" y2="1437.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="151" x="1562.5" y="1455.3809">+getEspecie(): Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="301" x="1562.5" y="1472.3203">+getVacunasObligatorias(): ArrayList&lt;String&gt;</text></g><!--MD5=[caf37bd7f8fdb7c775d87cfaa2da5ca0]
+class Ave--><g id="elem_Ave"><rect codeLine="123" fill="#F1F1F1" height="115.7578" id="Ave" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="313" x="1208.5" y="1363.9395"/><ellipse cx="1347.75" cy="1379.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1350.7188,1385.5801 Q1350.1406,1385.877 1349.5,1386.0176 Q1348.8594,1386.1738 1348.1563,1386.1738 Q1345.6563,1386.1738 1344.3281,1384.5332 Q1343.0156,1382.877 1343.0156,1379.752 Q1343.0156,1376.627 1344.3281,1374.9707 Q1345.6563,1373.3145 1348.1563,1373.3145 Q1348.8594,1373.3145 1349.5,1373.4707 Q1350.1563,1373.627 1350.7188,1373.9238 L1350.7188,1376.6426 Q1350.0938,1376.0645 1349.5,1375.7988 Q1348.9063,1375.5176 1348.2813,1375.5176 Q1346.9375,1375.5176 1346.25,1376.5957 Q1345.5625,1377.6582 1345.5625,1379.752 Q1345.5625,1381.8457 1346.25,1382.9238 Q1346.9375,1383.9863 1348.2813,1383.9863 Q1348.9063,1383.9863 1349.5,1383.7207 Q1350.0938,1383.4395 1350.7188,1382.8613 L1350.7188,1385.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="26" x="1368.25" y="1385.0322">Ave</text><line style="stroke:#181818;stroke-width:0.5;" x1="1209.5" x2="1520.5" y1="1395.9395" y2="1395.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="104" x="1214.5" y="1413.502">-tipoAve: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="1214.5" y="1430.4414">-puedeVolar: boolean</text><line style="stroke:#181818;stroke-width:0.5;" x1="1209.5" x2="1520.5" y1="1437.8184" y2="1437.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="151" x="1214.5" y="1455.3809">+getEspecie(): Especie</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="301" x="1214.5" y="1472.3203">+getVacunasObligatorias(): ArrayList&lt;String&gt;</text></g><!--MD5=[5ab93558b8ccd9a291f806a2cba97f1a]
+class MascotaFactory--><g id="elem_MascotaFactory"><rect codeLine="129" fill="#F1F1F1" height="66.3984" id="MascotaFactory" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="994" x="2601" y="1388.9395"/><ellipse cx="3040.25" cy="1409.6689" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M3043.2188,1415.3096 Q3042.6406,1415.6064 3042,1415.7471 Q3041.3594,1415.9033 3040.6563,1415.9033 Q3038.1563,1415.9033 3036.8281,1414.2627 Q3035.5156,1412.6064 3035.5156,1409.4814 Q3035.5156,1406.3564 3036.8281,1404.7002 Q3038.1563,1403.0439 3040.6563,1403.0439 Q3041.3594,1403.0439 3042,1403.2002 Q3042.6563,1403.3564 3043.2188,1403.6533 L3043.2188,1406.3721 Q3042.5938,1405.7939 3042,1405.5283 Q3041.4063,1405.2471 3040.7813,1405.2471 Q3039.4375,1405.2471 3038.75,1406.3252 Q3038.0625,1407.3877 3038.0625,1409.4814 Q3038.0625,1411.5752 3038.75,1412.6533 Q3039.4375,1413.7158 3040.7813,1413.7158 Q3041.4063,1413.7158 3042,1413.4502 Q3042.5938,1413.1689 3043.2188,1412.5908 L3043.2188,1415.3096 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="61" x="3083.75" y="1405.5645">«Creador»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="3060.75" y="1422.0215">MascotaFactory</text><line style="stroke:#181818;stroke-width:0.5;" x1="2602" x2="3594" y1="1430.3984" y2="1430.3984"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="982" x="2607" y="1447.9609">+crear(esp: Especie, id: int, nombre: String, fechaNac: LocalDate, peso: double, dueno: Dueno, dato1: String, dato2: String, marca: boolean): Mascota</text></g><!--MD5=[d9b1df08671bbcabedaca64c297beab8]
+class Vacuna--><g id="elem_Vacuna"><rect codeLine="132" fill="#F1F1F1" height="149.6367" id="Vacuna" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="689" x="1542.5" y="1969.4395"/><ellipse cx="1857.75" cy="1985.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1860.7188,1991.0801 Q1860.1406,1991.377 1859.5,1991.5176 Q1858.8594,1991.6738 1858.1563,1991.6738 Q1855.6563,1991.6738 1854.3281,1990.0332 Q1853.0156,1988.377 1853.0156,1985.252 Q1853.0156,1982.127 1854.3281,1980.4707 Q1855.6563,1978.8145 1858.1563,1978.8145 Q1858.8594,1978.8145 1859.5,1978.9707 Q1860.1563,1979.127 1860.7188,1979.4238 L1860.7188,1982.1426 Q1860.0938,1981.5645 1859.5,1981.2988 Q1858.9063,1981.0176 1858.2813,1981.0176 Q1856.9375,1981.0176 1856.25,1982.0957 Q1855.5625,1983.1582 1855.5625,1985.252 Q1855.5625,1987.3457 1856.25,1988.4238 Q1856.9375,1989.4863 1858.2813,1989.4863 Q1858.9063,1989.4863 1859.5,1989.2207 Q1860.0938,1988.9395 1860.7188,1988.3613 L1860.7188,1991.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50" x="1878.25" y="1990.5322">Vacuna</text><line style="stroke:#181818;stroke-width:0.5;" x1="1543.5" x2="2230.5" y1="2001.4395" y2="2001.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="1548.5" y="2019.002">-nombre: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="185" x="1548.5" y="2035.9414">-fechaAplicacion: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="198" x="1548.5" y="2052.8809">-fechaVencimiento: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="122" x="1548.5" y="2069.8203">-veterinario: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="1543.5" x2="2230.5" y1="2077.1973" y2="2077.1973"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="677" x="1548.5" y="2094.7598">+Vacuna(nombre: String, fechaAplicacion: LocalDate, fechaVencimiento: LocalDate, veterinario: String)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="269" x="1548.5" y="2111.6992">+estaVigente(fecha: LocalDate): boolean</text></g><!--MD5=[489859b1a29f43382ef3b3036c93e119]
+class Cobrable--><g id="elem_Cobrable"><rect codeLine="141" fill="#F1F1F1" height="56.9395" id="Cobrable" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="173" x="4360.5" y="1738.4395"/><ellipse cx="4412.25" cy="1754.4395" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4408.1719,1750.2051 L4408.1719,1748.0488 L4415.5625,1748.0488 L4415.5625,1750.2051 L4413.0938,1750.2051 L4413.0938,1758.2832 L4415.5625,1758.2832 L4415.5625,1760.4395 L4408.1719,1760.4395 L4408.1719,1758.2832 L4410.6406,1758.2832 L4410.6406,1750.2051 L4408.1719,1750.2051 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="61" x="4432.75" y="1759.5322">Cobrable</text><line style="stroke:#181818;stroke-width:0.5;" x1="4361.5" x2="4532.5" y1="1770.4395" y2="1770.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="161" x="4366.5" y="1788.002">+calcularCosto(): double</text></g><!--MD5=[6ea9d6598d9760662639554c9857ab6b]
+class Reserva--><g id="elem_Reserva"><rect codeLine="144" fill="#F1F1F1" height="302.0918" id="Reserva" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="656" x="4119" y="1270.9395"/><ellipse cx="4415.75" cy="1286.9395" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4415.8594,1282.2832 L4414.7031,1287.3613 L4417.0313,1287.3613 L4415.8594,1282.2832 Z M4414.375,1280.0488 L4417.3594,1280.0488 L4420.7188,1292.4395 L4418.2656,1292.4395 L4417.5,1289.377 L4414.2188,1289.377 L4413.4688,1292.4395 L4411.0313,1292.4395 L4414.375,1280.0488 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="54" x="4436.25" y="1292.0322">Reserva</text><line style="stroke:#181818;stroke-width:0.5;" x1="4120" x2="4774" y1="1302.9395" y2="1302.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="4125" y="1320.502">#idReserva: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="178" x="4125" y="1337.4414">#fechaCreacion: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="162" x="4125" y="1354.3809">#fechaDesde: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="158" x="4125" y="1371.3203">#fechaHasta: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="4125" y="1388.2598">#estado: EstadoReserva</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="4125" y="1405.1992">#mascota: Mascota</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="167" x="4125" y="1422.1387">#alojamiento: Alojamiento</text><line style="stroke:#181818;stroke-width:0.5;" x1="4120" x2="4774" y1="1429.5156" y2="1429.5156"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="644" x="4125" y="1447.0781">+Reserva(id: int, mascota: Mascota, alojamiento: Alojamiento, desde: LocalDate, hasta: LocalDate)</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="163" x="4125" y="1464.0176">+calcularCosto(): double</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="117" x="4125" y="1480.957">+getTipo(): String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="111" x="4125" y="1497.8965">+cancelar(): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="4125" y="1514.8359">+iniciar(): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="4125" y="1531.7754">+finalizar(): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="4125" y="1548.7148">+estaActiva(): boolean</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="399" x="4125" y="1565.6543">+seSuperpone(desde: LocalDate, hasta: LocalDate): boolean</text></g><!--MD5=[d1d8423f8b3703b73b79c3eee5c9571b]
+class ReservaHospedaje--><g id="elem_ReservaHospedaje"><rect codeLine="161" fill="#F1F1F1" height="115.7578" id="ReservaHospedaje" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="187" x="4361.5" y="1027.4395"/><ellipse cx="4390.9" cy="1043.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4393.8688,1049.0801 Q4393.2906,1049.377 4392.65,1049.5176 Q4392.0094,1049.6738 4391.3063,1049.6738 Q4388.8063,1049.6738 4387.4781,1048.0332 Q4386.1656,1046.377 4386.1656,1043.252 Q4386.1656,1040.127 4387.4781,1038.4707 Q4388.8063,1036.8145 4391.3063,1036.8145 Q4392.0094,1036.8145 4392.65,1036.9707 Q4393.3063,1037.127 4393.8688,1037.4238 L4393.8688,1040.1426 Q4393.2438,1039.5645 4392.65,1039.2988 Q4392.0563,1039.0176 4391.4313,1039.0176 Q4390.0875,1039.0176 4389.4,1040.0957 Q4388.7125,1041.1582 4388.7125,1043.252 Q4388.7125,1045.3457 4389.4,1046.4238 Q4390.0875,1047.4863 4391.4313,1047.4863 Q4392.0563,1047.4863 4392.65,1047.2207 Q4393.2438,1046.9395 4393.8688,1046.3613 L4393.8688,1049.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123" x="4408.1" y="1048.5322">ReservaHospedaje</text><line style="stroke:#181818;stroke-width:0.5;" x1="4362.5" x2="4547.5" y1="1059.4395" y2="1059.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="4367.5" y="1077.002">-incluyeBanio: boolean</text><line style="stroke:#181818;stroke-width:0.5;" x1="4362.5" x2="4547.5" y1="1084.3789" y2="1084.3789"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="175" x="4367.5" y="1101.9414">+getCantidadNoches(): int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="161" x="4367.5" y="1118.8809">+calcularCosto(): double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="4367.5" y="1135.8203">+getTipo(): String</text></g><!--MD5=[a5af4d5fb3352618d8cb39ccfe67e69c]
+class ReservaGuarderiaDiurna--><g id="elem_ReservaGuarderiaDiurna"><rect codeLine="167" fill="#F1F1F1" height="115.7578" id="ReservaGuarderiaDiurna" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="191" x="4614.5" y="1027.4395"/><ellipse cx="4629.5" cy="1043.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4632.4688,1049.0801 Q4631.8906,1049.377 4631.25,1049.5176 Q4630.6094,1049.6738 4629.9063,1049.6738 Q4627.4063,1049.6738 4626.0781,1048.0332 Q4624.7656,1046.377 4624.7656,1043.252 Q4624.7656,1040.127 4626.0781,1038.4707 Q4627.4063,1036.8145 4629.9063,1036.8145 Q4630.6094,1036.8145 4631.25,1036.9707 Q4631.9063,1037.127 4632.4688,1037.4238 L4632.4688,1040.1426 Q4631.8438,1039.5645 4631.25,1039.2988 Q4630.6563,1039.0176 4630.0313,1039.0176 Q4628.6875,1039.0176 4628,1040.0957 Q4627.3125,1041.1582 4627.3125,1043.252 Q4627.3125,1045.3457 4628,1046.4238 Q4628.6875,1047.4863 4630.0313,1047.4863 Q4630.6563,1047.4863 4631.25,1047.2207 Q4631.8438,1046.9395 4632.4688,1046.3613 L4632.4688,1049.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="159" x="4643.5" y="1048.5322">ReservaGuarderiaDiurna</text><line style="stroke:#181818;stroke-width:0.5;" x1="4615.5" x2="4804.5" y1="1059.4395" y2="1059.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="152" x="4620.5" y="1077.002">-incluyePaseo: boolean</text><line style="stroke:#181818;stroke-width:0.5;" x1="4615.5" x2="4804.5" y1="1084.3789" y2="1084.3789"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="153" x="4620.5" y="1101.9414">+getCantidadDias(): int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="161" x="4620.5" y="1118.8809">+calcularCosto(): double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="4620.5" y="1135.8203">+getTipo(): String</text></g><!--MD5=[7237cb57d79c28df31363353a0e44b9a]
+class Tarifario--><g id="elem_Tarifario"><rect codeLine="173" fill="#F1F1F1" height="132.6973" id="Tarifario" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="524" x="4810" y="1355.4395"/><ellipse cx="5040.75" cy="1371.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5043.7188,1377.0801 Q5043.1406,1377.377 5042.5,1377.5176 Q5041.8594,1377.6738 5041.1563,1377.6738 Q5038.6563,1377.6738 5037.3281,1376.0332 Q5036.0156,1374.377 5036.0156,1371.252 Q5036.0156,1368.127 5037.3281,1366.4707 Q5038.6563,1364.8145 5041.1563,1364.8145 Q5041.8594,1364.8145 5042.5,1364.9707 Q5043.1563,1365.127 5043.7188,1365.4238 L5043.7188,1368.1426 Q5043.0938,1367.5645 5042.5,1367.2988 Q5041.9063,1367.0176 5041.2813,1367.0176 Q5039.9375,1367.0176 5039.25,1368.0957 Q5038.5625,1369.1582 5038.5625,1371.252 Q5038.5625,1373.3457 5039.25,1374.4238 Q5039.9375,1375.4863 5041.2813,1375.4863 Q5041.9063,1375.4863 5042.5,1375.2207 Q5043.0938,1374.9395 5043.7188,1374.3613 L5043.7188,1377.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="54" x="5061.25" y="1376.5322">Tarifario</text><line style="stroke:#181818;stroke-width:0.5;" x1="4811" x2="5333" y1="1387.4395" y2="1387.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="217" x="4816" y="1405.002">+PRECIO_BANIO: double = 8000</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="249" x="4816" y="1421.9414">+PRECIO_PASEO_DIA: double = 4000</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="254" x="4816" y="1438.8809">+PORCENTAJE_DIURNA: double = 0.6</text><line style="stroke:#181818;stroke-width:0.5;" x1="4811" x2="5333" y1="1446.2578" y2="1446.2578"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="492" x="4816" y="1463.8203">+calcularHospedaje(a: Alojamiento, noches: int, conBanio: boolean): double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="512" x="4816" y="1480.7598">+calcularGuarderiaDiurna(a: Alojamiento, dias: int, conPaseo: boolean): double</text></g><!--MD5=[727b570de01a279635dc810a9cae3fba]
+class Estadia--><g id="elem_Estadia"><rect codeLine="180" fill="#F1F1F1" height="251.2734" id="Estadia" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="519" x="1401.5" y="959.9395"/><ellipse cx="1632.75" cy="975.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1635.7188,981.5801 Q1635.1406,981.877 1634.5,982.0176 Q1633.8594,982.1738 1633.1563,982.1738 Q1630.6563,982.1738 1629.3281,980.5332 Q1628.0156,978.877 1628.0156,975.752 Q1628.0156,972.627 1629.3281,970.9707 Q1630.6563,969.3145 1633.1563,969.3145 Q1633.8594,969.3145 1634.5,969.4707 Q1635.1563,969.627 1635.7188,969.9238 L1635.7188,972.6426 Q1635.0938,972.0645 1634.5,971.7988 Q1633.9063,971.5176 1633.2813,971.5176 Q1631.9375,971.5176 1631.25,972.5957 Q1630.5625,973.6582 1630.5625,975.752 Q1630.5625,977.8457 1631.25,978.9238 Q1631.9375,979.9863 1633.2813,979.9863 Q1633.9063,979.9863 1634.5,979.7207 Q1635.0938,979.4395 1635.7188,978.8613 L1635.7188,981.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="48" x="1653.25" y="981.0322">Estadia</text><line style="stroke:#181818;stroke-width:0.5;" x1="1402.5" x2="1919.5" y1="991.9395" y2="991.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90" x="1407.5" y="1009.502">-idEstadia: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="1407.5" y="1026.4414">-ingreso: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125" x="1407.5" y="1043.3809">-egreso: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="1407.5" y="1060.3203">-reserva: Reserva</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="154" x="1407.5" y="1077.2598">-recibidaPor: Empleado</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="250" x="1407.5" y="1094.1992">-bitacora: ArrayList&lt;EntradaBitacora&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="1407.5" y="1111.1387">-pago: Pago</text><line style="stroke:#181818;stroke-width:0.5;" x1="1402.5" x2="1919.5" y1="1118.5156" y2="1118.5156"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="507" x="1407.5" y="1136.0781">+Estadia(id: int, reserva: Reserva, recibidaPor: Empleado, ingreso: LocalDate)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="274" x="1407.5" y="1153.0176">+registrar(entrada: EntradaBitacora): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="1407.5" y="1169.957">+estaActiva(): boolean</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="297" x="1407.5" y="1186.8965">+cerrar(egreso: LocalDate, pago: Pago): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="156" x="1407.5" y="1203.8359">+calcularTotal(): double</text></g><!--MD5=[08a7bdd530bd48323abc2624db633d95]
+class Pago--><g id="elem_Pago"><rect codeLine="194" fill="#F1F1F1" height="149.6367" id="Pago" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="453" x="3630.5" y="1346.9395"/><ellipse cx="3835.75" cy="1362.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M3838.7188,1368.5801 Q3838.1406,1368.877 3837.5,1369.0176 Q3836.8594,1369.1738 3836.1563,1369.1738 Q3833.6563,1369.1738 3832.3281,1367.5332 Q3831.0156,1365.877 3831.0156,1362.752 Q3831.0156,1359.627 3832.3281,1357.9707 Q3833.6563,1356.3145 3836.1563,1356.3145 Q3836.8594,1356.3145 3837.5,1356.4707 Q3838.1563,1356.627 3838.7188,1356.9238 L3838.7188,1359.6426 Q3838.0938,1359.0645 3837.5,1358.7988 Q3836.9063,1358.5176 3836.2813,1358.5176 Q3834.9375,1358.5176 3834.25,1359.5957 Q3833.5625,1360.6582 3833.5625,1362.752 Q3833.5625,1364.8457 3834.25,1365.9238 Q3834.9375,1366.9863 3836.2813,1366.9863 Q3836.9063,1366.9863 3837.5,1366.7207 Q3838.0938,1366.4395 3838.7188,1365.8613 L3838.7188,1368.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34" x="3856.25" y="1368.0322">Pago</text><line style="stroke:#181818;stroke-width:0.5;" x1="3631.5" x2="4082.5" y1="1378.9395" y2="1378.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="3636.5" y="1396.502">-idPago: int</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="3636.5" y="1413.4414">-fecha: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="100" x="3636.5" y="1430.3809">-monto: double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="3636.5" y="1447.3203">-medio: MedioPago</text><line style="stroke:#181818;stroke-width:0.5;" x1="3631.5" x2="4082.5" y1="1454.6973" y2="1454.6973"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="441" x="3636.5" y="1472.2598">+Pago(id: int, fecha: LocalDate, monto: double, medio: MedioPago)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="271" x="3636.5" y="1489.1992">+generarComprobante(e: Estadia): String</text></g><!--MD5=[c71fb867a877cb722c51571fa3080c93]
+class EntradaBitacora--><g id="elem_EntradaBitacora"><rect codeLine="203" fill="#F1F1F1" height="115.7578" id="EntradaBitacora" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="417" x="719.5" y="1363.9395"/><ellipse cx="869.25" cy="1379.9395" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M869.3594,1375.2832 L868.2031,1380.3613 L870.5313,1380.3613 L869.3594,1375.2832 Z M867.875,1373.0488 L870.8594,1373.0488 L874.2188,1385.4395 L871.7656,1385.4395 L871,1382.377 L867.7188,1382.377 L866.9688,1385.4395 L864.5313,1385.4395 L867.875,1373.0488 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="109" x="889.75" y="1385.0322">EntradaBitacora</text><line style="stroke:#181818;stroke-width:0.5;" x1="720.5" x2="1135.5" y1="1395.9395" y2="1395.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="725.5" y="1413.502">#fecha: LocalDate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171" x="725.5" y="1430.4414">#registradaPor: Empleado</text><line style="stroke:#181818;stroke-width:0.5;" x1="720.5" x2="1135.5" y1="1437.8184" y2="1437.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="405" x="725.5" y="1455.3809">+EntradaBitacora(fecha: LocalDate, registradaPor: Empleado)</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="148" x="725.5" y="1472.3203">+getResumen(): String</text></g><!--MD5=[c1735ff3c0e268b74390a9dc40cbc184]
+class RegistroComida--><g id="elem_RegistroComida"><rect codeLine="209" fill="#F1F1F1" height="115.7578" id="RegistroComida" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="179" x="716.5" y="1027.4395"/><ellipse cx="750.85" cy="1043.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M753.8188,1049.0801 Q753.2406,1049.377 752.6,1049.5176 Q751.9594,1049.6738 751.2563,1049.6738 Q748.7563,1049.6738 747.4281,1048.0332 Q746.1156,1046.377 746.1156,1043.252 Q746.1156,1040.127 747.4281,1038.4707 Q748.7563,1036.8145 751.2563,1036.8145 Q751.9594,1036.8145 752.6,1036.9707 Q753.2563,1037.127 753.8188,1037.4238 L753.8188,1040.1426 Q753.1938,1039.5645 752.6,1039.2988 Q752.0063,1039.0176 751.3813,1039.0176 Q750.0375,1039.0176 749.35,1040.0957 Q748.6625,1041.1582 748.6625,1043.252 Q748.6625,1045.3457 749.35,1046.4238 Q750.0375,1047.4863 751.3813,1047.4863 Q752.0063,1047.4863 752.6,1047.2207 Q753.1938,1046.9395 753.8188,1046.3613 L753.8188,1049.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="104" x="769.15" y="1048.5322">RegistroComida</text><line style="stroke:#181818;stroke-width:0.5;" x1="717.5" x2="894.5" y1="1059.4395" y2="1059.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="722.5" y="1077.002">-alimento: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="167" x="722.5" y="1093.9414">-cantidadGramos: double</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="139" x="722.5" y="1110.8809">-comioTodo: boolean</text><line style="stroke:#181818;stroke-width:0.5;" x1="717.5" x2="894.5" y1="1118.2578" y2="1118.2578"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="722.5" y="1135.8203">+getResumen(): String</text></g><!--MD5=[37acfcc8134fa07a50dff0c00998077c]
+class RegistroMedicacion--><g id="elem_RegistroMedicacion"><rect codeLine="215" fill="#F1F1F1" height="98.8184" id="RegistroMedicacion" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="162" x="1204" y="1035.9395"/><ellipse cx="1219" cy="1051.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M1221.9688,1057.5801 Q1221.3906,1057.877 1220.75,1058.0176 Q1220.1094,1058.1738 1219.4063,1058.1738 Q1216.9063,1058.1738 1215.5781,1056.5332 Q1214.2656,1054.877 1214.2656,1051.752 Q1214.2656,1048.627 1215.5781,1046.9707 Q1216.9063,1045.3145 1219.4063,1045.3145 Q1220.1094,1045.3145 1220.75,1045.4707 Q1221.4063,1045.627 1221.9688,1045.9238 L1221.9688,1048.6426 Q1221.3438,1048.0645 1220.75,1047.7988 Q1220.1563,1047.5176 1219.5313,1047.5176 Q1218.1875,1047.5176 1217.5,1048.5957 Q1216.8125,1049.6582 1216.8125,1051.752 Q1216.8125,1053.8457 1217.5,1054.9238 Q1218.1875,1055.9863 1219.5313,1055.9863 Q1220.1563,1055.9863 1220.75,1055.7207 Q1221.3438,1055.4395 1221.9688,1054.8613 L1221.9688,1057.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="1233" y="1057.0322">RegistroMedicacion</text><line style="stroke:#181818;stroke-width:0.5;" x1="1205" x2="1365" y1="1067.9395" y2="1067.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="1210" y="1085.502">-medicamento: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="87" x="1210" y="1102.4414">-dosis: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="1205" x2="1365" y1="1109.8184" y2="1109.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="1210" y="1127.3809">+getResumen(): String</text></g><!--MD5=[408543d7a8bc0bb1da047dd4aaeab671]
+class RegistroIncidente--><g id="elem_RegistroIncidente"><rect codeLine="220" fill="#F1F1F1" height="115.7578" id="RegistroIncidente" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="238" x="931" y="1027.4395"/><ellipse cx="988.25" cy="1043.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M991.2188,1049.0801 Q990.6406,1049.377 990,1049.5176 Q989.3594,1049.6738 988.6563,1049.6738 Q986.1563,1049.6738 984.8281,1048.0332 Q983.5156,1046.377 983.5156,1043.252 Q983.5156,1040.127 984.8281,1038.4707 Q986.1563,1036.8145 988.6563,1036.8145 Q989.3594,1036.8145 990,1036.9707 Q990.6563,1037.127 991.2188,1037.4238 L991.2188,1040.1426 Q990.5938,1039.5645 990,1039.2988 Q989.4063,1039.0176 988.7813,1039.0176 Q987.4375,1039.0176 986.75,1040.0957 Q986.0625,1041.1582 986.0625,1043.252 Q986.0625,1045.3457 986.75,1046.4238 Q987.4375,1047.4863 988.7813,1047.4863 Q989.4063,1047.4863 990,1047.2207 Q990.5938,1046.9395 991.2188,1046.3613 L991.2188,1049.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115" x="1008.75" y="1048.5322">RegistroIncidente</text><line style="stroke:#181818;stroke-width:0.5;" x1="932" x2="1168" y1="1059.4395" y2="1059.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="937" y="1077.002">-descripcion: String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="143" x="937" y="1093.9414">-gravedad: Gravedad</text><line style="stroke:#181818;stroke-width:0.5;" x1="932" x2="1168" y1="1101.3184" y2="1101.3184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148" x="937" y="1118.8809">+getResumen(): String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="226" x="937" y="1135.8203">+hayQueAvisarAlDueno(): boolean</text></g><!--MD5=[f2d8b4071c2cf1f9b606d37e96808ac6]
+class Especie--><g id="elem_Especie"><rect codeLine="227" fill="#F1F1F1" height="107.7578" id="Especie" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="83" x="4880.5" y="728.9395"/><ellipse cx="4895.5" cy="744.9395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4899.6094,750.9395 L4891.8906,750.9395 L4891.8906,738.5488 L4899.6094,738.5488 L4899.6094,740.7051 L4894.3438,740.7051 L4894.3438,743.377 L4899.1094,743.377 L4899.1094,745.5332 L4894.3438,745.5332 L4894.3438,748.7832 L4899.6094,748.7832 L4899.6094,750.9395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="4909.5" y="750.0322">Especie</text><line style="stroke:#181818;stroke-width:0.5;" x1="4881.5" x2="4962.5" y1="760.9395" y2="760.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="46" x="4886.5" y="778.502">PERRO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="40" x="4886.5" y="795.4414">GATO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="59" x="4886.5" y="812.3809">CONEJO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28" x="4886.5" y="829.3203">AVE</text></g><!--MD5=[7e1ce8ab2bf669717f28e918f4971b9a]
+class Categoria--><g id="elem_Categoria"><rect codeLine="233" fill="#F1F1F1" height="115.7578" id="Categoria" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="161" x="4998.5" y="724.9395"/><ellipse cx="5042.75" cy="740.9395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5046.8594,746.9395 L5039.1406,746.9395 L5039.1406,734.5488 L5046.8594,734.5488 L5046.8594,736.7051 L5041.5938,736.7051 L5041.5938,739.377 L5046.3594,739.377 L5046.3594,741.5332 L5041.5938,741.5332 L5041.5938,744.7832 L5046.8594,744.7832 L5046.8594,746.9395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="5063.25" y="746.0322">Categoria</text><line style="stroke:#181818;stroke-width:0.5;" x1="4999.5" x2="5158.5" y1="756.9395" y2="756.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="5004.5" y="774.502">ESTANDAR</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="5004.5" y="791.4414">PREMIUM</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="5004.5" y="808.3809">-recargo: double</text><line style="stroke:#181818;stroke-width:0.5;" x1="4999.5" x2="5158.5" y1="815.7578" y2="815.7578"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="5004.5" y="833.3203">+getRecargo(): double</text></g><!--MD5=[bf91e499513ee526907ade0914d2139a]
+class RolEmpleado--><g id="elem_RolEmpleado"><rect codeLine="239" fill="#F1F1F1" height="107.7578" id="RolEmpleado" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="131" x="5194.5" y="728.9395"/><ellipse cx="5215.8" cy="744.9395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5219.9094,750.9395 L5212.1906,750.9395 L5212.1906,738.5488 L5219.9094,738.5488 L5219.9094,740.7051 L5214.6438,740.7051 L5214.6438,743.377 L5219.4094,743.377 L5219.4094,745.5332 L5214.6438,745.5332 L5214.6438,748.7832 L5219.9094,748.7832 L5219.9094,750.9395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="85" x="5231.2" y="750.0322">RolEmpleado</text><line style="stroke:#181818;stroke-width:0.5;" x1="5195.5" x2="5324.5" y1="760.9395" y2="760.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="5200.5" y="778.502">RECEPCIONISTA</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74" x="5200.5" y="795.4414">CUIDADOR</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="5200.5" y="812.3809">VETERINARIO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="5200.5" y="829.3203">ADMINISTRADOR</text></g><!--MD5=[010697da3300b17633569d17f5ec27a8]
+class EstadoReserva--><g id="elem_EstadoReserva"><rect codeLine="245" fill="#F1F1F1" height="107.7578" id="EstadoReserva" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="130" x="4857" y="1031.4395"/><ellipse cx="4872" cy="1047.4395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M4876.1094,1053.4395 L4868.3906,1053.4395 L4868.3906,1041.0488 L4876.1094,1041.0488 L4876.1094,1043.2051 L4870.8438,1043.2051 L4870.8438,1045.877 L4875.6094,1045.877 L4875.6094,1048.0332 L4870.8438,1048.0332 L4870.8438,1051.2832 L4876.1094,1051.2832 L4876.1094,1053.4395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="4886" y="1052.5322">EstadoReserva</text><line style="stroke:#181818;stroke-width:0.5;" x1="4858" x2="4986" y1="1063.4395" y2="1063.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="4863" y="1081.002">CONFIRMADA</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74" x="4863" y="1097.9414">EN_CURSO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84" x="4863" y="1114.8809">FINALIZADA</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="87" x="4863" y="1131.8203">CANCELADA</text></g><!--MD5=[2e788f70fb90006aae5fd5661508b200]
+class MedioPago--><g id="elem_MedioPago"><rect codeLine="251" fill="#F1F1F1" height="107.7578" id="MedioPago" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="128" x="5022" y="1031.4395"/><ellipse cx="5046.45" cy="1047.4395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5050.5594,1053.4395 L5042.8406,1053.4395 L5042.8406,1041.0488 L5050.5594,1041.0488 L5050.5594,1043.2051 L5045.2938,1043.2051 L5045.2938,1045.877 L5050.0594,1045.877 L5050.0594,1048.0332 L5045.2938,1048.0332 L5045.2938,1051.2832 L5050.5594,1051.2832 L5050.5594,1053.4395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="75" x="5062.55" y="1052.5322">MedioPago</text><line style="stroke:#181818;stroke-width:0.5;" x1="5023" x2="5149" y1="1063.4395" y2="1063.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68" x="5028" y="1081.002">EFECTIVO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="5028" y="1097.9414">DEBITO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="61" x="5028" y="1114.8809">CREDITO</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="5028" y="1131.8203">TRANSFERENCIA</text></g><!--MD5=[8b86e045af6c584d09e7c4b8c9ccfd60]
+class Gravedad--><g id="elem_Gravedad"><rect codeLine="257" fill="#F1F1F1" height="90.8184" id="Gravedad" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="97" x="5185.5" y="1039.9395"/><ellipse cx="5200.5" cy="1055.9395" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5204.6094,1061.9395 L5196.8906,1061.9395 L5196.8906,1049.5488 L5204.6094,1049.5488 L5204.6094,1051.7051 L5199.3438,1051.7051 L5199.3438,1054.377 L5204.1094,1054.377 L5204.1094,1056.5332 L5199.3438,1056.5332 L5199.3438,1059.7832 L5204.6094,1059.7832 L5204.6094,1061.9395 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="5214.5" y="1061.0322">Gravedad</text><line style="stroke:#181818;stroke-width:0.5;" x1="5186.5" x2="5281.5" y1="1071.9395" y2="1071.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34" x="5191.5" y="1089.502">LEVE</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="81" x="5191.5" y="1106.4414">MODERADA</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="47" x="5191.5" y="1123.3809">GRAVE</text></g><!--MD5=[108123fe28af27e3ad7e7cab1970ff91]
+class Repositorio--><g id="elem_Repositorio"><rect codeLine="265" fill="#F1F1F1" height="73.8789" id="Repositorio" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="280" x="5766" y="1048.4395"/><ellipse cx="5859.25" cy="1064.4395" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5855.1719,1060.2051 L5855.1719,1058.0488 L5862.5625,1058.0488 L5862.5625,1060.2051 L5860.0938,1060.2051 L5860.0938,1068.2832 L5862.5625,1068.2832 L5862.5625,1070.4395 L5855.1719,1070.4395 L5855.1719,1068.2832 L5857.6406,1068.2832 L5857.6406,1060.2051 L5855.1719,1060.2051 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="73" x="5879.75" y="1069.5322">Repositorio</text><rect fill="#FFFFFF" height="16.5195" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="10" x="6039" y="1045.4395"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="8" x="6040" y="1058.0645">T</text><line style="stroke:#181818;stroke-width:0.5;" x1="5767" x2="6045" y1="1080.4395" y2="1080.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="268" x="5772" y="1098.002">+guardarTodos(lista: ArrayList&lt;T&gt;): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="197" x="5772" y="1114.9414">+cargarTodos(): ArrayList&lt;T&gt;</text></g><!--MD5=[a80bad0b6605db77b4703d9612fc636d]
+class RepositorioArchivo--><g id="elem_RepositorioArchivo"><rect codeLine="269" fill="#F1F1F1" height="183.5156" id="RepositorioArchivo" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="280" x="5766" y="690.9395"/><ellipse cx="5834.25" cy="706.9395" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5834.3594,702.2832 L5833.2031,707.3613 L5835.5313,707.3613 L5834.3594,702.2832 Z M5832.875,700.0488 L5835.8594,700.0488 L5839.2188,712.4395 L5836.7656,712.4395 L5836,709.377 L5832.7188,709.377 L5831.9688,712.4395 L5829.5313,712.4395 L5832.875,700.0488 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="123" x="5854.75" y="712.0322">RepositorioArchivo</text><rect fill="#FFFFFF" height="16.5195" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="10" x="6039" y="687.9395"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="8" x="6040" y="700.5645">T</text><line style="stroke:#181818;stroke-width:0.5;" x1="5767" x2="6045" y1="722.9395" y2="722.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="176" x="5772" y="740.502">#SEPARADOR: String = ";"</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129" x="5772" y="757.4414">-rutaArchivo: String</text><line style="stroke:#181818;stroke-width:0.5;" x1="5767" x2="6045" y1="764.8184" y2="764.8184"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="265" x="5772" y="782.3809">+RepositorioArchivo(rutaArchivo: String)</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="169" x="5772" y="799.3203">#aLinea(objeto: T): String</text><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="223" x="5772" y="816.2598">#desdeLinea(campos: String[]): T</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="268" x="5772" y="833.1992">+guardarTodos(lista: ArrayList&lt;T&gt;): void</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="197" x="5772" y="850.1387">+cargarTodos(): ArrayList&lt;T&gt;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" text-decoration="underline" textLength="190" x="5772" y="867.0781">#limpiar(texto: String): String</text></g><!--MD5=[50747af3d1fd5b27b63285c38d51b51d]
+class RepositorioDuenos--><g id="elem_RepositorioDuenos"><rect codeLine="279" fill="#F1F1F1" height="32" id="RepositorioDuenos" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="154" x="6030" y="318.9395"/><ellipse cx="6045" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M6047.9688,340.5801 Q6047.3906,340.877 6046.75,341.0176 Q6046.1094,341.1738 6045.4063,341.1738 Q6042.9063,341.1738 6041.5781,339.5332 Q6040.2656,337.877 6040.2656,334.752 Q6040.2656,331.627 6041.5781,329.9707 Q6042.9063,328.3145 6045.4063,328.3145 Q6046.1094,328.3145 6046.75,328.4707 Q6047.4063,328.627 6047.9688,328.9238 L6047.9688,331.6426 Q6047.3438,331.0645 6046.75,330.7988 Q6046.1563,330.5176 6045.5313,330.5176 Q6044.1875,330.5176 6043.5,331.5957 Q6042.8125,332.6582 6042.8125,334.752 Q6042.8125,336.8457 6043.5,337.9238 Q6044.1875,338.9863 6045.5313,338.9863 Q6046.1563,338.9863 6046.75,338.7207 Q6047.3438,338.4395 6047.9688,337.8613 L6047.9688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="122" x="6059" y="340.0322">RepositorioDuenos</text></g><!--MD5=[dff610114248ea81093b42a6997dd684]
+class RepositorioEmpleados--><g id="elem_RepositorioEmpleados"><rect codeLine="280" fill="#F1F1F1" height="32" id="RepositorioEmpleados" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="177" x="5817.5" y="318.9395"/><ellipse cx="5832.5" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5835.4688,340.5801 Q5834.8906,340.877 5834.25,341.0176 Q5833.6094,341.1738 5832.9063,341.1738 Q5830.4063,341.1738 5829.0781,339.5332 Q5827.7656,337.877 5827.7656,334.752 Q5827.7656,331.627 5829.0781,329.9707 Q5830.4063,328.3145 5832.9063,328.3145 Q5833.6094,328.3145 5834.25,328.4707 Q5834.9063,328.627 5835.4688,328.9238 L5835.4688,331.6426 Q5834.8438,331.0645 5834.25,330.7988 Q5833.6563,330.5176 5833.0313,330.5176 Q5831.6875,330.5176 5831,331.5957 Q5830.3125,332.6582 5830.3125,334.752 Q5830.3125,336.8457 5831,337.9238 Q5831.6875,338.9863 5833.0313,338.9863 Q5833.6563,338.9863 5834.25,338.7207 Q5834.8438,338.4395 5835.4688,337.8613 L5835.4688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="5846.5" y="340.0322">RepositorioEmpleados</text></g><!--MD5=[0199db68770bd775b80649346e154a3f]
+class RepositorioMascotas--><g id="elem_RepositorioMascotas"><rect codeLine="281" fill="#F1F1F1" height="32" id="RepositorioMascotas" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="169" x="5613.5" y="318.9395"/><ellipse cx="5628.5" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5631.4688,340.5801 Q5630.8906,340.877 5630.25,341.0176 Q5629.6094,341.1738 5628.9063,341.1738 Q5626.4063,341.1738 5625.0781,339.5332 Q5623.7656,337.877 5623.7656,334.752 Q5623.7656,331.627 5625.0781,329.9707 Q5626.4063,328.3145 5628.9063,328.3145 Q5629.6094,328.3145 5630.25,328.4707 Q5630.9063,328.627 5631.4688,328.9238 L5631.4688,331.6426 Q5630.8438,331.0645 5630.25,330.7988 Q5629.6563,330.5176 5629.0313,330.5176 Q5627.6875,330.5176 5627,331.5957 Q5626.3125,332.6582 5626.3125,334.752 Q5626.3125,336.8457 5627,337.9238 Q5627.6875,338.9863 5629.0313,338.9863 Q5629.6563,338.9863 5630.25,338.7207 Q5630.8438,338.4395 5631.4688,337.8613 L5631.4688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="137" x="5642.5" y="340.0322">RepositorioMascotas</text></g><!--MD5=[e7fe5d99197619db35b9f69c47c71383]
+class RepositorioAlojamientos--><g id="elem_RepositorioAlojamientos"><rect codeLine="282" fill="#F1F1F1" height="32" id="RepositorioAlojamientos" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="188" x="5390" y="318.9395"/><ellipse cx="5405" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M5407.9688,340.5801 Q5407.3906,340.877 5406.75,341.0176 Q5406.1094,341.1738 5405.4063,341.1738 Q5402.9063,341.1738 5401.5781,339.5332 Q5400.2656,337.877 5400.2656,334.752 Q5400.2656,331.627 5401.5781,329.9707 Q5402.9063,328.3145 5405.4063,328.3145 Q5406.1094,328.3145 5406.75,328.4707 Q5407.4063,328.627 5407.9688,328.9238 L5407.9688,331.6426 Q5407.3438,331.0645 5406.75,330.7988 Q5406.1563,330.5176 5405.5313,330.5176 Q5404.1875,330.5176 5403.5,331.5957 Q5402.8125,332.6582 5402.8125,334.752 Q5402.8125,336.8457 5403.5,337.9238 Q5404.1875,338.9863 5405.5313,338.9863 Q5406.1563,338.9863 5406.75,338.7207 Q5407.3438,338.4395 5407.9688,337.8613 L5407.9688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="156" x="5419" y="340.0322">RepositorioAlojamientos</text></g><!--MD5=[0ef8d64b335f233d02b567e77760da35]
+class RepositorioReservas--><g id="elem_RepositorioReservas"><rect codeLine="283" fill="#F1F1F1" height="32" id="RepositorioReservas" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="165" x="6414.5" y="318.9395"/><ellipse cx="6429.5" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M6432.4688,340.5801 Q6431.8906,340.877 6431.25,341.0176 Q6430.6094,341.1738 6429.9063,341.1738 Q6427.4063,341.1738 6426.0781,339.5332 Q6424.7656,337.877 6424.7656,334.752 Q6424.7656,331.627 6426.0781,329.9707 Q6427.4063,328.3145 6429.9063,328.3145 Q6430.6094,328.3145 6431.25,328.4707 Q6431.9063,328.627 6432.4688,328.9238 L6432.4688,331.6426 Q6431.8438,331.0645 6431.25,330.7988 Q6430.6563,330.5176 6430.0313,330.5176 Q6428.6875,330.5176 6428,331.5957 Q6427.3125,332.6582 6427.3125,334.752 Q6427.3125,336.8457 6428,337.9238 Q6428.6875,338.9863 6430.0313,338.9863 Q6430.6563,338.9863 6431.25,338.7207 Q6431.8438,338.4395 6432.4688,337.8613 L6432.4688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="133" x="6443.5" y="340.0322">RepositorioReservas</text></g><!--MD5=[ce76865a68fcc247b36024e66509c197]
+class RepositorioEstadias--><g id="elem_RepositorioEstadias"><rect codeLine="284" fill="#F1F1F1" height="32" id="RepositorioEstadias" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="160" x="6219" y="318.9395"/><ellipse cx="6234" cy="334.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M6236.9688,340.5801 Q6236.3906,340.877 6235.75,341.0176 Q6235.1094,341.1738 6234.4063,341.1738 Q6231.9063,341.1738 6230.5781,339.5332 Q6229.2656,337.877 6229.2656,334.752 Q6229.2656,331.627 6230.5781,329.9707 Q6231.9063,328.3145 6234.4063,328.3145 Q6235.1094,328.3145 6235.75,328.4707 Q6236.4063,328.627 6236.9688,328.9238 L6236.9688,331.6426 Q6236.3438,331.0645 6235.75,330.7988 Q6235.1563,330.5176 6234.5313,330.5176 Q6233.1875,330.5176 6232.5,331.5957 Q6231.8125,332.6582 6231.8125,334.752 Q6231.8125,336.8457 6232.5,337.9238 Q6233.1875,338.9863 6234.5313,338.9863 Q6235.1563,338.9863 6235.75,338.7207 Q6236.3438,338.4395 6236.9688,337.8613 L6236.9688,340.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="6248" y="340.0322">RepositorioEstadias</text></g><!--MD5=[407bdcf647185c64b71584bed3b9c9ff]
+class VacunacionVencidaException--><g id="elem_VacunacionVencidaException"><rect codeLine="288" fill="#F1F1F1" height="81.8789" id="VacunacionVencidaException" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="493" x="6635.5" y="293.9395"/><ellipse cx="6779.75" cy="309.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M6782.7188,315.5801 Q6782.1406,315.877 6781.5,316.0176 Q6780.8594,316.1738 6780.1563,316.1738 Q6777.6563,316.1738 6776.3281,314.5332 Q6775.0156,312.877 6775.0156,309.752 Q6775.0156,306.627 6776.3281,304.9707 Q6777.6563,303.3145 6780.1563,303.3145 Q6780.8594,303.3145 6781.5,303.4707 Q6782.1563,303.627 6782.7188,303.9238 L6782.7188,306.6426 Q6782.0938,306.0645 6781.5,305.7988 Q6780.9063,305.5176 6780.2813,305.5176 Q6778.9375,305.5176 6778.25,306.5957 Q6777.5625,307.6582 6777.5625,309.752 Q6777.5625,311.8457 6778.25,312.9238 Q6778.9375,313.9863 6780.2813,313.9863 Q6780.9063,313.9863 6781.5,313.7207 Q6782.0938,313.4395 6782.7188,312.8613 L6782.7188,315.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="196" x="6800.25" y="315.0322">VacunacionVencidaException</text><line style="stroke:#181818;stroke-width:0.5;" x1="6636.5" x2="7127.5" y1="325.9395" y2="325.9395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="245" x="6641.5" y="343.502">-vacunasFaltantes: ArrayList&lt;String&gt;</text><line style="stroke:#181818;stroke-width:0.5;" x1="6636.5" x2="7127.5" y1="350.8789" y2="350.8789"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="481" x="6641.5" y="368.4414">+VacunacionVencidaException(m: Mascota, faltantes: ArrayList&lt;String&gt;)</text></g><!--MD5=[e708831f22021928e604e99ae2cd2b1d]
+class AlojamientoNoDisponibleException--><g id="elem_AlojamientoNoDisponibleException"><rect codeLine="292" fill="#F1F1F1" height="56.9395" id="AlojamientoNoDisponibleException" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="351" x="7477.5" y="306.4395"/><ellipse cx="7534.75" cy="322.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M7537.7188,328.0801 Q7537.1406,328.377 7536.5,328.5176 Q7535.8594,328.6738 7535.1563,328.6738 Q7532.6563,328.6738 7531.3281,327.0332 Q7530.0156,325.377 7530.0156,322.252 Q7530.0156,319.127 7531.3281,317.4707 Q7532.6563,315.8145 7535.1563,315.8145 Q7535.8594,315.8145 7536.5,315.9707 Q7537.1563,316.127 7537.7188,316.4238 L7537.7188,319.1426 Q7537.0938,318.5645 7536.5,318.2988 Q7535.9063,318.0176 7535.2813,318.0176 Q7533.9375,318.0176 7533.25,319.0957 Q7532.5625,320.1582 7532.5625,322.252 Q7532.5625,324.3457 7533.25,325.4238 Q7533.9375,326.4863 7535.2813,326.4863 Q7535.9063,326.4863 7536.5,326.2207 Q7537.0938,325.9395 7537.7188,325.3613 L7537.7188,328.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="228" x="7555.25" y="327.5322">AlojamientoNoDisponibleException</text><line style="stroke:#181818;stroke-width:0.5;" x1="7478.5" x2="7827.5" y1="338.4395" y2="338.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="339" x="7483.5" y="356.002">+AlojamientoNoDisponibleException(a: Alojamiento)</text></g><!--MD5=[42f36506af9822a1ed4cb074cb869457]
+class DatoInvalidoException--><g id="elem_DatoInvalidoException"><rect codeLine="295" fill="#F1F1F1" height="56.9395" id="DatoInvalidoException" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="279" x="7163.5" y="306.4395"/><ellipse cx="7225.25" cy="322.4395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M7228.2188,328.0801 Q7227.6406,328.377 7227,328.5176 Q7226.3594,328.6738 7225.6563,328.6738 Q7223.1563,328.6738 7221.8281,327.0332 Q7220.5156,325.377 7220.5156,322.252 Q7220.5156,319.127 7221.8281,317.4707 Q7223.1563,315.8145 7225.6563,315.8145 Q7226.3594,315.8145 7227,315.9707 Q7227.6563,316.127 7228.2188,316.4238 L7228.2188,319.1426 Q7227.5938,318.5645 7227,318.2988 Q7226.4063,318.0176 7225.7813,318.0176 Q7224.4375,318.0176 7223.75,319.0957 Q7223.0625,320.1582 7223.0625,322.252 Q7223.0625,324.3457 7223.75,325.4238 Q7224.4375,326.4863 7225.7813,326.4863 Q7226.4063,326.4863 7227,326.2207 Q7227.5938,325.9395 7228.2188,325.3613 L7228.2188,328.0801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="147" x="7245.75" y="327.5322">DatoInvalidoException</text><line style="stroke:#181818;stroke-width:0.5;" x1="7164.5" x2="7441.5" y1="338.4395" y2="338.4395"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="267" x="7169.5" y="356.002">+DatoInvalidoException(mensaje: String)</text></g><!--MD5=[8db60afef7a3447bbe27c5ed187fdac2]
+class Exception--><g id="elem_Exception"><rect codeLine="300" fill="#F1F1F1" height="32" id="Exception" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="160" x="7223" y="766.9395"/><ellipse cx="7238" cy="782.9395" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M7240.9688,788.5801 Q7240.3906,788.877 7239.75,789.0176 Q7239.1094,789.1738 7238.4063,789.1738 Q7235.9063,789.1738 7234.5781,787.5332 Q7233.2656,785.877 7233.2656,782.752 Q7233.2656,779.627 7234.5781,777.9707 Q7235.9063,776.3145 7238.4063,776.3145 Q7239.1094,776.3145 7239.75,776.4707 Q7240.4063,776.627 7240.9688,776.9238 L7240.9688,779.6426 Q7240.3438,779.0645 7239.75,778.7988 Q7239.1563,778.5176 7238.5313,778.5176 Q7237.1875,778.5176 7236.5,779.5957 Q7235.8125,780.6582 7235.8125,782.752 Q7235.8125,784.8457 7236.5,785.9238 Q7237.1875,786.9863 7238.5313,786.9863 Q7239.1563,786.9863 7239.75,786.7207 Q7240.3438,786.4395 7240.9688,785.8613 L7240.9688,788.5801 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128" x="7252" y="788.0322">java.lang.Exception</text></g><g id="elem_GMN91"><path d="M6739,754.4395 L6739,811.6279 A0,0 0 0 0 6739,811.6279 L7025,811.6279 A0,0 0 0 0 7025,811.6279 L7025,764.4395 L7015,754.4395 L6886,754.4395 L6882,376.2795 L6878,754.4395 L6739,754.4395 A0,0 0 0 0 6739,754.4395 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M7015,754.4395 L7015,764.4395 L7025,764.4395 L7015,754.4395 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="265" x="6745" y="772.0332">Se lanza en realizarCheckIn() si la mascota</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="259" x="6745" y="787.7627">no tiene las vacunas obligatorias vigentes</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="193" x="6745" y="803.4922">hasta el último día de la estadía</text></g><g id="elem_GMN94"><path d="M7522,762.4395 L7522,803.8984 A0,0 0 0 0 7522,803.8984 L7784,803.8984 A0,0 0 0 0 7784,803.8984 L7784,772.4395 L7774,762.4395 L7657,762.4395 L7653,363.6495 L7649,762.4395 L7522,762.4395 A0,0 0 0 0 7522,762.4395 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M7774,762.4395 L7774,772.4395 L7784,772.4395 L7774,762.4395 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="241" x="7528" y="780.0332">Se lanza en reservar() si el alojamiento</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="210" x="7528" y="795.7627">ya está reservado en esas fechas</text></g><!--MD5=[2a14924015dab9d9706ec99ce02d27ed]
+reverse link SistemaGuarderia to Sucursal--><g id="link_SistemaGuarderia_Sucursal"><path codeLine="303" d="M1010,603.9995 C1010,603.9995 1010,782.9395 1010,782.9395 C1010,782.9395 1581.42,782.9395 1955.86,782.9395 " fill="none" id="SistemaGuarderia-backto-Sucursal" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1010,590.9995,1006,596.9995,1010,602.9995,1014,596.9995,1010,590.9995" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1017.4523" y="612.2466">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1943.345" y="780.3621">1</text></g><!--MD5=[989a9565105f404c590fcfe3d8cf8ec6]
+reverse link SistemaGuarderia to Dueno--><g id="link_SistemaGuarderia_Dueno"><path codeLine="304" d="M445.5,604.1695 C445.5,604.1695 445.5,1355.2795 445.5,1355.2795 " fill="none" id="SistemaGuarderia-backto-Dueno" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="445.5,591.1695,441.5,597.1695,445.5,603.1695,449.5,597.1695,445.5,591.1695" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="435.0078" y="611.5975">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="431.8656" y="1344.3581">0..*</text></g><!--MD5=[dfcbb51a61d7a2ca4135e6b5a8ea086b]
+reverse link SistemaGuarderia to Empleado--><g id="link_SistemaGuarderia_Empleado"><path codeLine="305" d="M695.17,603.9495 C695.17,603.9495 695.17,1708.8695 695.17,1708.8695 " fill="none" id="SistemaGuarderia-backto-Empleado" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="695.17,590.9495,691.17,596.9495,695.17,602.9495,699.17,596.9495,695.17,590.9495" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="692.292" y="612.195">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="644.7132" y="1697.7175">0..*</text></g><!--MD5=[8087f43433a304df287bd206b51be6d3]
+reverse link SistemaGuarderia to Mascota--><g id="link_SistemaGuarderia_Mascota"><path codeLine="306" d="M705.83,603.9495 C705.83,603.9495 705.83,1670.9395 705.83,1670.9395 C705.83,1670.9395 1229.77,1670.9395 1579.75,1670.9395 " fill="none" id="SistemaGuarderia-backto-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="705.83,590.9495,701.83,596.9495,705.83,602.9495,709.83,596.9495,705.83,590.9495" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="703.3018" y="612.195">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1549.2793" y="1666.1135">0..*</text></g><!--MD5=[e3a5cf9ab6e4b4812b9a6048036efa0e]
+reverse link SistemaGuarderia to Reserva--><g id="link_SistemaGuarderia_Reserva"><path codeLine="307" d="M913.25,603.9795 C913.25,603.9795 913.25,1327.9395 913.25,1327.9395 C913.25,1327.9395 3242.57,1327.9395 4118.91,1327.9395 " fill="none" id="SistemaGuarderia-backto-Reserva" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="913.25,590.9795,909.25,596.9795,913.25,602.9795,917.25,596.9795,913.25,590.9795" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="917.5277" y="612.2259">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="4087.9509" y="1323.1618">0..*</text></g><!--MD5=[9cc446bea522bdc9fb61118361de41c6]
+reverse link SistemaGuarderia to Estadia--><g id="link_SistemaGuarderia_Estadia"><path codeLine="308" d="M970.5,604.1395 C970.5,604.1395 970.5,993.9395 970.5,993.9395 C970.5,993.9395 1205.59,993.9395 1401.43,993.9395 " fill="none" id="SistemaGuarderia-backto-Estadia" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="970.5,591.1395,966.5,597.1395,970.5,603.1395,974.5,597.1395,970.5,591.1395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="975.5938" y="611.5666">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1370.3826" y="988.6009">0..*</text></g><!--MD5=[6c11b1d1f44ffcf2d0a86d4043dc90fd]
+reverse link SistemaGuarderia to RepositorioArchivo--><g id="link_SistemaGuarderia_RepositorioArchivo"><path codeLine="309" d="M1062.73,447.9395 C1062.73,447.9395 5771.5,447.9395 5771.5,447.9395 C5771.5,447.9395 5771.5,591.3495 5771.5,690.5095 " fill="none" id="SistemaGuarderia-backto-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1049.73,447.9395,1055.73,451.9395,1061.73,447.9395,1055.73,443.9395,1049.73,447.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22" x="3515.4" y="444.5332">usa</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1057.0215" y="447.3493">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="5752.0305" y="679.878">6</text></g><!--MD5=[2307d69bcaa7727780b14423397d5a4e]
+link SistemaGuarderia to MascotaFactory--><g id="link_SistemaGuarderia_MascotaFactory"><path codeLine="310" d="M1049.71,519.9395 C1693.49,519.9395 2847.5,519.9395 2847.5,519.9395 C2847.5,519.9395 2847.5,1383.7695 2847.5,1383.7695 " fill="none" id="SistemaGuarderia-to-MascotaFactory" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="2847.5,1388.7695,2851.5,1379.7695,2847.5,1383.7695,2843.5,1379.7695,2847.5,1388.7695" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="2356.52" y="516.5332">use</text></g><!--MD5=[7705ecebb5a18945083e8fb89f45fdda]
+reverse link Sucursal to Alojamiento--><g id="link_Sucursal_Alojamiento"><path codeLine="312" d="M2578.75,913.0895 C2578.75,913.0895 2578.75,1085.9395 2578.75,1085.9395 C2578.75,1085.9395 2856.89,1085.9395 3093.87,1085.9395 " fill="none" id="Sucursal-backto-Alojamiento" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="2578.75,900.0895,2574.75,906.0895,2578.75,912.0895,2582.75,906.0895,2578.75,900.0895" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="2593.1129" y="920.6813">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="3062.8865" y="1083.3745">0..*</text></g><!--MD5=[d6b58e91f4419885591d6b1f7bc98f90]
+link Dueno to Mascota--><g id="link_Dueno_Mascota"><path codeLine="313" d="M596.5,1488.5295 C596.5,1567.8995 596.5,1689.9395 596.5,1689.9395 C596.5,1689.9395 1198.26,1689.9395 1579.94,1689.9395 " fill="none" id="Dueno-Mascota" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="79" x="907.52" y="1686.5332">es dueño de</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="616.3531" y="1508.817">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1549.4738" y="1685.5588">0..*</text></g><!--MD5=[b52e87a73dabfd6b60235a358a882004]
+reverse link Mascota to Vacuna--><g id="link_Mascota_Vacuna"><path codeLine="314" d="M1887,1914.2195 C1887,1914.2195 1887,1969.2095 1887,1969.2095 " fill="none" id="Mascota-backto-Vacuna" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1887,1901.2195,1883,1907.2195,1887,1913.2195,1891,1907.2195,1887,1901.2195" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1881.8633" y="1921.5809">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1862.8141" y="1958.328">0..*</text></g><!--MD5=[f344e94bb639c05797b84b0253c80149]
+link Alojamiento to Reserva--><g id="link_Alojamiento_Reserva"><path codeLine="315" d="M3691.25,1211.1695 C3691.25,1253.3695 3691.25,1289.9395 3691.25,1289.9395 C3691.25,1289.9395 3914.86,1289.9395 4118.81,1289.9395 " fill="none" id="Alojamiento-Reserva" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="86" x="3778.65" y="1286.5332">se reserva en</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="3702.4441" y="1231.8958">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="4087.8485" y="1284.2711">0..*</text></g><!--MD5=[eccb632b8f8226cc80a3881d5ae00fcb]
+link Reserva to Mascota--><g id="link_Reserva_Mascota"><path codeLine="316" d="M4239.75,1572.9795 C4239.75,1643.8395 4239.75,1712.9395 4239.75,1712.9395 C4239.75,1712.9395 2199.28,1712.9395 2199.28,1712.9395 " fill="none" id="Reserva-to-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="2194.28,1712.9395,2203.28,1716.9395,2199.28,1712.9395,2203.28,1708.9395,2194.28,1712.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="4205.4707" y="1593.7644">0..*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="2201.5405" y="1709.0979">1</text></g><!--MD5=[9ead2c9f11f92eda85ff46c2df6a0b74]
+link Estadia to Reserva--><g id="link_Estadia_Reserva"><path codeLine="317" d="M1915.17,1211.2295 C1915.17,1262.0595 1915.17,1308.9395 1915.17,1308.9395 C1915.17,1308.9395 4113.93,1308.9395 4113.93,1308.9395 " fill="none" id="Estadia-to-Reserva" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="4118.93,1308.9395,4109.93,1304.9395,4113.93,1308.9395,4109.93,1312.9395,4118.93,1308.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="2873.69" y="1305.5332">corresponde a</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21" x="1928.817" y="1230.7077">0..1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="4106.1823" y="1303.7165">1</text></g><!--MD5=[df6289bb199f009d389e465027c72bc5]
+link Estadia to Empleado--><g id="link_Estadia_Empleado"><path codeLine="318" d="M1401.31,1188.9395 C1293.18,1188.9395 1192.33,1188.9395 1192.33,1188.9395 C1192.33,1188.9395 1192.33,1703.8695 1192.33,1703.8695 " fill="none" id="Estadia-to-Empleado" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1192.33,1708.8695,1196.33,1699.8695,1192.33,1703.8695,1188.33,1699.8695,1192.33,1708.8695" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="74" x="1117.33" y="1338.5132">recibida por</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1370.259" y="1189.39">0..*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1227.8884" y="1697.7175">1</text></g><!--MD5=[ac8864d7767fa424dd66181add228d61]
+reverse link Estadia to EntradaBitacora--><g id="link_Estadia_EntradaBitacora"><path codeLine="319" d="M1388.33,1165.9395 C1388.33,1165.9395 1068,1165.9395 1068,1165.9395 C1068,1165.9395 1068,1288.3195 1068,1363.8495 " fill="none" id="Estadia-backto-EntradaBitacora" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1401.33,1165.9395,1395.33,1161.9395,1389.33,1165.9395,1395.33,1169.9395,1401.33,1165.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1388.5468" y="1165.7072">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="1062.2672" y="1352.6948">0..*</text></g><!--MD5=[e497b500190d55f2e64f685687d26f19]
+reverse link Estadia to Pago--><g id="link_Estadia_Pago"><path codeLine="320" d="M1909.83,1224.2795 C1909.83,1224.2795 1909.83,1351.9395 1909.83,1351.9395 C1909.83,1351.9395 3116.93,1351.9395 3630.3,1351.9395 " fill="none" id="Estadia-backto-Pago" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="1909.83,1211.2795,1905.83,1217.2795,1909.83,1223.2795,1913.83,1217.2795,1909.83,1211.2795" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="1919.8407" y="1232.0125">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21" x="3601.5169" y="1347.0082">0..1</text></g><!--MD5=[4d910018c9f55cf5ca246764a04b271d]
+link EntradaBitacora to Empleado--><g id="link_EntradaBitacora_Empleado"><path codeLine="321" d="M928,1480.0695 C928,1480.0695 928,1703.8595 928,1703.8595 " fill="none" id="EntradaBitacora-to-Empleado" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="928,1708.8595,932,1699.8595,928,1703.8595,924,1699.8595,928,1708.8595" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="840" y="1588.5532">registrada por</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="903.6703" y="1500.3078">0..*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="5" x="928.0391" y="1697.7062">1</text></g><!--MD5=[df015444ef7326e1a2a9c6d30b7b77a4]
+link Dueno to Persona--><g id="link_Dueno_Persona"><path codeLine="323" d="M434.5,1488.5595 C434.5,1488.5595 434.5,1940.8295 434.5,1940.8295 " fill="none" id="Dueno-to-Persona" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="441.5,1940.8295,434.5,1960.8295,427.5,1940.8295,441.5,1940.8295" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4ea40b37a1ce1764d8cb38142670e8d0]
+link Empleado to Persona--><g id="link_Empleado_Persona"><path codeLine="324" d="M714,1825.1095 C714,1825.1095 714,1940.8095 714,1940.8095 " fill="none" id="Empleado-to-Persona" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="721,1940.8095,714,1960.8095,707,1940.8095,721,1940.8095" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[f64db2dde2ac7e1d31402906bbd104a2]
+link Perro to Mascota--><g id="link_Perro_Mascota"><path codeLine="325" d="M2409,1480.1595 C2409,1550.6195 2409,1659.9395 2409,1659.9395 C2409,1659.9395 2214.05,1659.9395 2214.05,1659.9395 " fill="none" id="Perro-to-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="2214.05,1666.9395,2194.05,1659.9395,2214.05,1652.9395,2214.05,1666.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[79ad736a94bffd8c80ffaea109baa2ba]
+link Gato to Mascota--><g id="link_Gato_Mascota"><path codeLine="326" d="M2049.25,1480.0695 C2049.25,1480.0695 2049.25,1612.8495 2049.25,1612.8495 " fill="none" id="Gato-to-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="2056.25,1612.8495,2049.25,1632.8495,2042.25,1612.8495,2056.25,1612.8495" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[e0eece012851e8cf047d9b11bb33093f]
+link Conejo to Mascota--><g id="link_Conejo_Mascota"><path codeLine="327" d="M1724.75,1480.0695 C1724.75,1480.0695 1724.75,1612.8495 1724.75,1612.8495 " fill="none" id="Conejo-to-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="1731.75,1612.8495,1724.75,1632.8495,1717.75,1612.8495,1731.75,1612.8495" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[794a9620ea4097923e2c640bb889d5c6]
+link Ave to Mascota--><g id="link_Ave_Mascota"><path codeLine="328" d="M1394.5,1479.9795 C1394.5,1548.1095 1394.5,1651.9395 1394.5,1651.9395 C1394.5,1651.9395 1559.99,1651.9395 1559.99,1651.9395 " fill="none" id="Ave-to-Mascota" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="1559.99,1644.9395,1579.99,1651.9395,1559.99,1658.9395,1559.99,1644.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[8d71a06b27bb0bbca3fb87a869eab672]
+link ReservaHospedaje to Reserva--><g id="link_ReservaHospedaje_Reserva"><path codeLine="329" d="M4423.83,1143.6695 C4423.83,1143.6695 4423.83,1250.7995 4423.83,1250.7995 " fill="none" id="ReservaHospedaje-to-Reserva" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="4430.83,1250.7995,4423.83,1270.7995,4416.83,1250.7995,4430.83,1250.7995" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[d2cc93b91c7258a1f41d1b24d53e99b9]
+link ReservaGuarderiaDiurna to Reserva--><g id="link_ReservaGuarderiaDiurna_Reserva"><path codeLine="330" d="M4694.75,1143.6695 C4694.75,1143.6695 4694.75,1250.7995 4694.75,1250.7995 " fill="none" id="ReservaGuarderiaDiurna-to-Reserva" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="4701.75,1250.7995,4694.75,1270.7995,4687.75,1250.7995,4701.75,1250.7995" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[0d0d76c4df70fcbd457ad45ae0075a86]
+link RegistroComida to EntradaBitacora--><g id="link_RegistroComida_EntradaBitacora"><path codeLine="331" d="M807.5,1143.6695 C807.5,1143.6695 807.5,1343.8595 807.5,1343.8595 " fill="none" id="RegistroComida-to-EntradaBitacora" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="814.5,1343.8595,807.5,1363.8595,800.5,1343.8595,814.5,1343.8595" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[3f1d5b109157d5570d1e135cfd08245b]
+link RegistroMedicacion to EntradaBitacora--><g id="link_RegistroMedicacion_EntradaBitacora"><path codeLine="332" d="M1203.82,1085.9395 C1190.35,1085.9395 1180.67,1085.9395 1180.67,1085.9395 C1180.67,1085.9395 1180.67,1421.9395 1180.67,1421.9395 C1180.67,1421.9395 1156.66,1421.9395 1156.66,1421.9395 " fill="none" id="RegistroMedicacion-to-EntradaBitacora" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="1156.66,1428.9395,1136.66,1421.9395,1156.66,1414.9395,1156.66,1428.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[77ce415071f2abe2076397d2eadd6eb7]
+link RegistroIncidente to EntradaBitacora--><g id="link_RegistroIncidente_EntradaBitacora"><path codeLine="333" d="M999.5,1143.6695 C999.5,1143.6695 999.5,1343.8595 999.5,1343.8595 " fill="none" id="RegistroIncidente-to-EntradaBitacora" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="1006.5,1343.8595,999.5,1363.8595,992.5,1343.8595,1006.5,1343.8595" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[3e8528b72ff4aedf3aa1342ca37f6b54]
+link Reserva to Cobrable--><g id="link_Reserva_Cobrable"><path codeLine="334" d="M4447,1573.0095 C4447,1573.0095 4447,1718.1395 4447,1718.1395 " fill="none" id="Reserva-to-Cobrable" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="none" points="4454,1718.1395,4447,1738.1395,4440,1718.1395,4454,1718.1395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[e27e7d8af79c2a73642eaf3a7ed2669a]
+link ReservaHospedaje to Tarifario--><g id="link_ReservaHospedaje_Tarifario"><path codeLine="335" d="M4486.17,1143.7795 C4486.17,1187.9095 4486.17,1240.9395 4486.17,1240.9395 C4486.17,1240.9395 4833.5,1240.9395 4833.5,1240.9395 C4833.5,1240.9395 4833.5,1350.3095 4833.5,1350.3095 " fill="none" id="ReservaHospedaje-to-Tarifario" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="4833.5,1355.3095,4837.5,1346.3095,4833.5,1350.3095,4829.5,1346.3095,4833.5,1355.3095" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="4641.94" y="1237.5332">use</text></g><!--MD5=[7ad3bf8d39d7a2b6c534f1d3cfd76c6e]
+link ReservaGuarderiaDiurna to Tarifario--><g id="link_ReservaGuarderiaDiurna_Tarifario"><path codeLine="336" d="M4790.25,1143.6695 C4790.25,1239.9795 4790.25,1421.9395 4790.25,1421.9395 C4790.25,1421.9395 4804.62,1421.9395 4804.62,1421.9395 " fill="none" id="ReservaGuarderiaDiurna-to-Tarifario" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="4809.62,1421.9395,4800.62,1417.9395,4804.62,1421.9395,4800.62,1425.9395,4809.62,1421.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="23" x="4791.25" y="1286.5832">use</text></g><!--MD5=[ca62741c69056c5028bc0a85d571e03d]
+link MascotaFactory to Mascota--><g id="link_MascotaFactory_Mascota"><path codeLine="337" d="M3098,1455.1095 C3098,1526.0095 3098,1685.9395 3098,1685.9395 C3098,1685.9395 2199.15,1685.9395 2199.15,1685.9395 " fill="none" id="MascotaFactory-to-Mascota" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="2194.15,1685.9395,2203.15,1689.9395,2199.15,1685.9395,2203.15,1681.9395,2194.15,1685.9395" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="39" x="2723.99" y="1682.5332">create</text></g><!--MD5=[b74a4290b6296cd5bca1d30de5a6742e]
+link RepositorioArchivo to Repositorio--><g id="link_RepositorioArchivo_Repositorio"><path codeLine="339" d="M5906,875.3395 C5906,875.3395 5906,1028.3395 5906,1028.3395 " fill="none" id="RepositorioArchivo-to-Repositorio" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="none" points="5913,1028.3395,5906,1048.3395,5899,1028.3395,5913,1028.3395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[022cf76b10af64dd2fb610361f971dde]
+link RepositorioDuenos to RepositorioArchivo--><g id="link_RepositorioDuenos_RepositorioArchivo"><path codeLine="340" d="M6038,351.1495 C6038,351.1495 6038,670.9295 6038,670.9295 " fill="none" id="RepositorioDuenos-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="6045,670.9295,6038,690.9295,6031,670.9295,6045,670.9295" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[b4abd25dcda8fa180803a4500e2ebce3]
+link RepositorioEmpleados to RepositorioArchivo--><g id="link_RepositorioEmpleados_RepositorioArchivo"><path codeLine="341" d="M5906,351.1495 C5906,351.1495 5906,670.9295 5906,670.9295 " fill="none" id="RepositorioEmpleados-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="5913,670.9295,5906,690.9295,5899,670.9295,5913,670.9295" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[3afed8ad9aced07843c5811c81b7351f]
+link RepositorioMascotas to RepositorioArchivo--><g id="link_RepositorioMascotas_RepositorioArchivo"><path codeLine="342" d="M5777,351.1495 C5777,351.1495 5777,670.9295 5777,670.9295 " fill="none" id="RepositorioMascotas-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="5784,670.9295,5777,690.9295,5770,670.9295,5784,670.9295" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[888e422dfd384c5a6d468b7fd2996371]
+link RepositorioAlojamientos to RepositorioArchivo--><g id="link_RepositorioAlojamientos_RepositorioArchivo"><path codeLine="343" d="M5484,350.9695 C5484,422.3595 5484,707.9395 5484,707.9395 C5484,707.9395 5745.77,707.9395 5745.77,707.9395 " fill="none" id="RepositorioAlojamientos-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="5745.77,700.9395,5765.77,707.9395,5745.77,714.9395,5745.77,700.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[c8f6df5eb6b4d34b72b9fe7121669973]
+link RepositorioReservas to RepositorioArchivo--><g id="link_RepositorioReservas_RepositorioArchivo"><path codeLine="344" d="M6497,351.0795 C6497,425.7195 6497,733.9395 6497,733.9395 C6497,733.9395 6066.06,733.9395 6066.06,733.9395 " fill="none" id="RepositorioReservas-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="6066.06,740.9395,6046.06,733.9395,6066.06,726.9395,6066.06,740.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[cfa3208ffdb3cb7169d3e6869a037589]
+link RepositorioEstadias to RepositorioArchivo--><g id="link_RepositorioEstadias_RepositorioArchivo"><path codeLine="345" d="M6299,351.1795 C6299,423.5295 6299,712.9395 6299,712.9395 C6299,712.9395 6066.22,712.9395 6066.22,712.9395 " fill="none" id="RepositorioEstadias-to-RepositorioArchivo" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="6066.22,719.9395,6046.22,712.9395,6066.22,705.9395,6066.22,719.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[abf5be2a093cbc0ab140986a476b3f08]
+link VacunacionVencidaException to Exception--><g id="link_VacunacionVencidaException_Exception"><path codeLine="347" d="M7076.75,376.2795 C7076.75,487.1895 7076.75,782.9395 7076.75,782.9395 C7076.75,782.9395 7202.91,782.9395 7202.91,782.9395 " fill="none" id="VacunacionVencidaException-to-Exception" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="7202.91,775.9395,7222.91,782.9395,7202.91,789.9395,7202.91,775.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[e2b35570a0b11c5d29fb0ba9441f39f0]
+link AlojamientoNoDisponibleException to Exception--><g id="link_AlojamientoNoDisponibleException_Exception"><path codeLine="348" d="M7499.75,363.6495 C7499.75,462.5195 7499.75,782.9395 7499.75,782.9395 C7499.75,782.9395 7403.03,782.9395 7403.03,782.9395 " fill="none" id="AlojamientoNoDisponibleException-to-Exception" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="7403.03,789.9395,7383.03,782.9395,7403.03,775.9395,7403.03,789.9395" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[014b9e49831cd147e44a5eac832bf7b3]
+link DatoInvalidoException to Exception--><g id="link_DatoInvalidoException_Exception"><path codeLine="349" d="M7303,363.6495 C7303,363.6495 7303,746.8095 7303,746.8095 " fill="none" id="DatoInvalidoException-to-Exception" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="none" points="7310,746.8095,7303,766.8095,7296,746.8095,7310,746.8095" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[1a2c5410e1c538e83473a47c08990b95]
+@startuml Sistema_Guarderia_Mascotas
+title Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases (v2, entrega 01/11)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+hide empty members
+
+package "controlador" {
+  class SistemaGuarderia <<Controlador>> <<Singleton>> {
+    {static} -instancia: SistemaGuarderia
+    -sucursal: Sucursal
+    -duenos: ArrayList<Dueno>
+    -empleados: ArrayList<Empleado>
+    -mascotas: ArrayList<Mascota>
+    -reservas: ArrayList<Reserva>
+    -estadias: ArrayList<Estadia>
+    -SistemaGuarderia()
+    {static} +getInstancia(): SistemaGuarderia
+    -cargarDatos(): void
+    +guardarTodo(): void
+    +agregarDueno(d: Dueno): void
+    +eliminarDueno(d: Dueno): void
+    +agregarEmpleado(e: Empleado): void
+    +eliminarEmpleado(e: Empleado): void
+    +agregarMascota(m: Mascota): void
+    +eliminarMascota(m: Mascota): void
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarAlojamientos(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +reservar(m: Mascota, a: Alojamiento, desde: LocalDate, hasta: LocalDate, esHospedaje: boolean, conExtra: boolean): Reserva
+    +cancelarReserva(r: Reserva): void
+    +realizarCheckIn(r: Reserva, e: Empleado): Estadia
+    +registrarEnBitacora(est: Estadia, entrada: EntradaBitacora): void
+    +realizarCheckOut(est: Estadia, medio: MedioPago): Pago
+    +getEstadiasActivas(): ArrayList<Estadia>
+  }
+}
+
+package "modelo" {
+  class Sucursal {
+    -idSucursal: int
+    -nombre: String
+    -direccion: String
+    -telefono: String
+    -alojamientos: ArrayList<Alojamiento>
+    +Sucursal(id: int, nombre: String, direccion: String, telefono: String)
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarDisponibles(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +calcularOcupacion(): double
+    +calcularOcupacion(esp: Especie): double
+  }
+  class Alojamiento {
+    -idAlojamiento: int
+    -codigo: String
+    -especie: Especie
+    -categoria: Categoria
+    -precioBaseDia: double
+    -reservas: ArrayList<Reserva>
+    +Alojamiento(id: int, codigo: String, especie: Especie, categoria: Categoria, precioBaseDia: double)
+    +estaDisponible(desde: LocalDate, hasta: LocalDate): boolean
+    +estaOcupado(): boolean
+    +calcularPrecioDia(): double
+    +getTipoLugar(): String
+    +agregarReserva(r: Reserva): void
+  }
+
+  abstract class Persona {
+    #dni: String
+    #nombre: String
+    #apellido: String
+    #telefono: String
+    #email: String
+    +Persona(dni: String, nombre: String, apellido: String, telefono: String, email: String)
+    +getNombreCompleto(): String
+  }
+  class Dueno {
+    -direccion: String
+    -mascotas: ArrayList<Mascota>
+    +Dueno(dni: String, nombre: String, apellido: String, telefono: String, email: String, direccion: String)
+    +agregarMascota(m: Mascota): void
+    +quitarMascota(m: Mascota): void
+  }
+  class Empleado {
+    -legajo: int
+    -rol: RolEmpleado
+    +Empleado(dni: String, nombre: String, apellido: String, telefono: String, email: String, legajo: int, rol: RolEmpleado)
+    +puedeAdministrarMedicacion(): boolean
+  }
+
+  abstract class Mascota {
+    #idMascota: int
+    #nombre: String
+    #fechaNacimiento: LocalDate
+    #peso: double
+    #dueno: Dueno
+    #vacunas: ArrayList<Vacuna>
+    +Mascota(id: int, nombre: String, fechaNacimiento: LocalDate, peso: double, dueno: Dueno)
+    {abstract} +getEspecie(): Especie
+    {abstract} +getVacunasObligatorias(): ArrayList<String>
+    +agregarVacuna(v: Vacuna): void
+    +quitarVacuna(v: Vacuna): void
+    +getVacunasFaltantes(fecha: LocalDate): ArrayList<String>
+    +tieneVacunasAlDia(fecha: LocalDate): boolean
+  }
+  class Perro {
+    -raza: String
+    -tamanio: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Gato {
+    -raza: String
+    -esCastrado: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Conejo {
+    -raza: String
+    -dieta: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Ave {
+    -tipoAve: String
+    -puedeVolar: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class MascotaFactory <<Creador>> {
+    {static} +crear(esp: Especie, id: int, nombre: String, fechaNac: LocalDate, peso: double, dueno: Dueno, dato1: String, dato2: String, marca: boolean): Mascota
+  }
+  class Vacuna {
+    -nombre: String
+    -fechaAplicacion: LocalDate
+    -fechaVencimiento: LocalDate
+    -veterinario: String
+    +Vacuna(nombre: String, fechaAplicacion: LocalDate, fechaVencimiento: LocalDate, veterinario: String)
+    +estaVigente(fecha: LocalDate): boolean
+  }
+
+  interface Cobrable {
+    +calcularCosto(): double
+  }
+  abstract class Reserva {
+    #idReserva: int
+    #fechaCreacion: LocalDate
+    #fechaDesde: LocalDate
+    #fechaHasta: LocalDate
+    #estado: EstadoReserva
+    #mascota: Mascota
+    #alojamiento: Alojamiento
+    +Reserva(id: int, mascota: Mascota, alojamiento: Alojamiento, desde: LocalDate, hasta: LocalDate)
+    {abstract} +calcularCosto(): double
+    {abstract} +getTipo(): String
+    +cancelar(): void
+    +iniciar(): void
+    +finalizar(): void
+    +estaActiva(): boolean
+    +seSuperpone(desde: LocalDate, hasta: LocalDate): boolean
+  }
+  class ReservaHospedaje {
+    -incluyeBanio: boolean
+    +getCantidadNoches(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class ReservaGuarderiaDiurna {
+    -incluyePaseo: boolean
+    +getCantidadDias(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class Tarifario {
+    {static} +PRECIO_BANIO: double = 8000
+    {static} +PRECIO_PASEO_DIA: double = 4000
+    {static} +PORCENTAJE_DIURNA: double = 0.6
+    {static} +calcularHospedaje(a: Alojamiento, noches: int, conBanio: boolean): double
+    {static} +calcularGuarderiaDiurna(a: Alojamiento, dias: int, conPaseo: boolean): double
+  }
+  class Estadia {
+    -idEstadia: int
+    -ingreso: LocalDate
+    -egreso: LocalDate
+    -reserva: Reserva
+    -recibidaPor: Empleado
+    -bitacora: ArrayList<EntradaBitacora>
+    -pago: Pago
+    +Estadia(id: int, reserva: Reserva, recibidaPor: Empleado, ingreso: LocalDate)
+    +registrar(entrada: EntradaBitacora): void
+    +estaActiva(): boolean
+    +cerrar(egreso: LocalDate, pago: Pago): void
+    +calcularTotal(): double
+  }
+  class Pago {
+    -idPago: int
+    -fecha: LocalDate
+    -monto: double
+    -medio: MedioPago
+    +Pago(id: int, fecha: LocalDate, monto: double, medio: MedioPago)
+    +generarComprobante(e: Estadia): String
+  }
+
+  abstract class EntradaBitacora {
+    #fecha: LocalDate
+    #registradaPor: Empleado
+    +EntradaBitacora(fecha: LocalDate, registradaPor: Empleado)
+    {abstract} +getResumen(): String
+  }
+  class RegistroComida {
+    -alimento: String
+    -cantidadGramos: double
+    -comioTodo: boolean
+    +getResumen(): String
+  }
+  class RegistroMedicacion {
+    -medicamento: String
+    -dosis: String
+    +getResumen(): String
+  }
+  class RegistroIncidente {
+    -descripcion: String
+    -gravedad: Gravedad
+    +getResumen(): String
+    +hayQueAvisarAlDueno(): boolean
+  }
+
+  enum Especie {
+    PERRO
+    GATO
+    CONEJO
+    AVE
+  }
+  enum Categoria {
+    ESTANDAR
+    PREMIUM
+    -recargo: double
+    +getRecargo(): double
+  }
+  enum RolEmpleado {
+    RECEPCIONISTA
+    CUIDADOR
+    VETERINARIO
+    ADMINISTRADOR
+  }
+  enum EstadoReserva {
+    CONFIRMADA
+    EN_CURSO
+    FINALIZADA
+    CANCELADA
+  }
+  enum MedioPago {
+    EFECTIVO
+    DEBITO
+    CREDITO
+    TRANSFERENCIA
+  }
+  enum Gravedad {
+    LEVE
+    MODERADA
+    GRAVE
+  }
+}
+
+package "persistencia" {
+  interface "Repositorio<T>" as Repositorio {
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+  }
+  abstract class "RepositorioArchivo<T>" as RepositorioArchivo {
+    #SEPARADOR: String = ";"
+    -rutaArchivo: String
+    +RepositorioArchivo(rutaArchivo: String)
+    {abstract} #aLinea(objeto: T): String
+    {abstract} #desdeLinea(campos: String[]): T
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+    {static} #limpiar(texto: String): String
+  }
+  class RepositorioDuenos
+  class RepositorioEmpleados
+  class RepositorioMascotas
+  class RepositorioAlojamientos
+  class RepositorioReservas
+  class RepositorioEstadias
+}
+
+package "excepciones" {
+  class VacunacionVencidaException {
+    -vacunasFaltantes: ArrayList<String>
+    +VacunacionVencidaException(m: Mascota, faltantes: ArrayList<String>)
+  }
+  class AlojamientoNoDisponibleException {
+    +AlojamientoNoDisponibleException(a: Alojamiento)
+  }
+  class DatoInvalidoException {
+    +DatoInvalidoException(mensaje: String)
+  }
+}
+
+class "java.lang.Exception" as Exception
+
+' - - - - Relaciones - - - -
+SistemaGuarderia "1" *- - "1" Sucursal
+SistemaGuarderia "1" o- - "0..*" Dueno
+SistemaGuarderia "1" o- - "0..*" Empleado
+SistemaGuarderia "1" o- - "0..*" Mascota
+SistemaGuarderia "1" o- - "0..*" Reserva
+SistemaGuarderia "1" o- - "0..*" Estadia
+SistemaGuarderia "1" *- - "6" RepositorioArchivo : usa
+SistemaGuarderia ..> MascotaFactory : «use»
+
+Sucursal "1" *- - "0..*" Alojamiento
+Dueno "1" - - "0..*" Mascota : es dueño de
+Mascota "1" *- - "0..*" Vacuna
+Alojamiento "1" - - "0..*" Reserva : se reserva en
+Reserva "0..*" - -> "1" Mascota
+Estadia "0..1" - -> "1" Reserva : corresponde a
+Estadia "0..*" - -> "1" Empleado : recibida por
+Estadia "1" *- - "0..*" EntradaBitacora
+Estadia "1" *- - "0..1" Pago
+EntradaBitacora "0..*" - -> "1" Empleado : registrada por
+
+Dueno - -|> Persona
+Empleado - -|> Persona
+Perro - -|> Mascota
+Gato - -|> Mascota
+Conejo - -|> Mascota
+Ave - -|> Mascota
+ReservaHospedaje - -|> Reserva
+ReservaGuarderiaDiurna - -|> Reserva
+RegistroComida - -|> EntradaBitacora
+RegistroMedicacion - -|> EntradaBitacora
+RegistroIncidente - -|> EntradaBitacora
+Reserva ..|> Cobrable
+ReservaHospedaje ..> Tarifario : «use»
+ReservaGuarderiaDiurna ..> Tarifario : «use»
+MascotaFactory ..> Mascota : «create»
+
+RepositorioArchivo ..|> Repositorio
+RepositorioDuenos - -|> RepositorioArchivo
+RepositorioEmpleados - -|> RepositorioArchivo
+RepositorioMascotas - -|> RepositorioArchivo
+RepositorioAlojamientos - -|> RepositorioArchivo
+RepositorioReservas - -|> RepositorioArchivo
+RepositorioEstadias - -|> RepositorioArchivo
+
+VacunacionVencidaException - -|> Exception
+AlojamientoNoDisponibleException - -|> Exception
+DatoInvalidoException - -|> Exception
+
+note bottom of VacunacionVencidaException
+  Se lanza en realizarCheckIn() si la mascota
+  no tiene las vacunas obligatorias vigentes
+  hasta el último día de la estadía
+end note
+note bottom of AlojamientoNoDisponibleException
+  Se lanza en reservar() si el alojamiento
+  ya está reservado en esas fechas
+end note
+
+@enduml
+
+@startuml Sistema_Guarderia_Mascotas
+title Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases (v2, entrega 01/11)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+hide empty members
+
+package "controlador" {
+  class SistemaGuarderia <<Controlador>> <<Singleton>> {
+    {static} -instancia: SistemaGuarderia
+    -sucursal: Sucursal
+    -duenos: ArrayList<Dueno>
+    -empleados: ArrayList<Empleado>
+    -mascotas: ArrayList<Mascota>
+    -reservas: ArrayList<Reserva>
+    -estadias: ArrayList<Estadia>
+    -SistemaGuarderia()
+    {static} +getInstancia(): SistemaGuarderia
+    -cargarDatos(): void
+    +guardarTodo(): void
+    +agregarDueno(d: Dueno): void
+    +eliminarDueno(d: Dueno): void
+    +agregarEmpleado(e: Empleado): void
+    +eliminarEmpleado(e: Empleado): void
+    +agregarMascota(m: Mascota): void
+    +eliminarMascota(m: Mascota): void
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarAlojamientos(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +reservar(m: Mascota, a: Alojamiento, desde: LocalDate, hasta: LocalDate, esHospedaje: boolean, conExtra: boolean): Reserva
+    +cancelarReserva(r: Reserva): void
+    +realizarCheckIn(r: Reserva, e: Empleado): Estadia
+    +registrarEnBitacora(est: Estadia, entrada: EntradaBitacora): void
+    +realizarCheckOut(est: Estadia, medio: MedioPago): Pago
+    +getEstadiasActivas(): ArrayList<Estadia>
+  }
+}
+
+package "modelo" {
+  class Sucursal {
+    -idSucursal: int
+    -nombre: String
+    -direccion: String
+    -telefono: String
+    -alojamientos: ArrayList<Alojamiento>
+    +Sucursal(id: int, nombre: String, direccion: String, telefono: String)
+    +agregarAlojamiento(a: Alojamiento): void
+    +eliminarAlojamiento(a: Alojamiento): void
+    +buscarDisponibles(esp: Especie, desde: LocalDate, hasta: LocalDate): ArrayList<Alojamiento>
+    +calcularOcupacion(): double
+    +calcularOcupacion(esp: Especie): double
+  }
+  class Alojamiento {
+    -idAlojamiento: int
+    -codigo: String
+    -especie: Especie
+    -categoria: Categoria
+    -precioBaseDia: double
+    -reservas: ArrayList<Reserva>
+    +Alojamiento(id: int, codigo: String, especie: Especie, categoria: Categoria, precioBaseDia: double)
+    +estaDisponible(desde: LocalDate, hasta: LocalDate): boolean
+    +estaOcupado(): boolean
+    +calcularPrecioDia(): double
+    +getTipoLugar(): String
+    +agregarReserva(r: Reserva): void
+  }
+
+  abstract class Persona {
+    #dni: String
+    #nombre: String
+    #apellido: String
+    #telefono: String
+    #email: String
+    +Persona(dni: String, nombre: String, apellido: String, telefono: String, email: String)
+    +getNombreCompleto(): String
+  }
+  class Dueno {
+    -direccion: String
+    -mascotas: ArrayList<Mascota>
+    +Dueno(dni: String, nombre: String, apellido: String, telefono: String, email: String, direccion: String)
+    +agregarMascota(m: Mascota): void
+    +quitarMascota(m: Mascota): void
+  }
+  class Empleado {
+    -legajo: int
+    -rol: RolEmpleado
+    +Empleado(dni: String, nombre: String, apellido: String, telefono: String, email: String, legajo: int, rol: RolEmpleado)
+    +puedeAdministrarMedicacion(): boolean
+  }
+
+  abstract class Mascota {
+    #idMascota: int
+    #nombre: String
+    #fechaNacimiento: LocalDate
+    #peso: double
+    #dueno: Dueno
+    #vacunas: ArrayList<Vacuna>
+    +Mascota(id: int, nombre: String, fechaNacimiento: LocalDate, peso: double, dueno: Dueno)
+    {abstract} +getEspecie(): Especie
+    {abstract} +getVacunasObligatorias(): ArrayList<String>
+    +agregarVacuna(v: Vacuna): void
+    +quitarVacuna(v: Vacuna): void
+    +getVacunasFaltantes(fecha: LocalDate): ArrayList<String>
+    +tieneVacunasAlDia(fecha: LocalDate): boolean
+  }
+  class Perro {
+    -raza: String
+    -tamanio: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Gato {
+    -raza: String
+    -esCastrado: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Conejo {
+    -raza: String
+    -dieta: String
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class Ave {
+    -tipoAve: String
+    -puedeVolar: boolean
+    +getEspecie(): Especie
+    +getVacunasObligatorias(): ArrayList<String>
+  }
+  class MascotaFactory <<Creador>> {
+    {static} +crear(esp: Especie, id: int, nombre: String, fechaNac: LocalDate, peso: double, dueno: Dueno, dato1: String, dato2: String, marca: boolean): Mascota
+  }
+  class Vacuna {
+    -nombre: String
+    -fechaAplicacion: LocalDate
+    -fechaVencimiento: LocalDate
+    -veterinario: String
+    +Vacuna(nombre: String, fechaAplicacion: LocalDate, fechaVencimiento: LocalDate, veterinario: String)
+    +estaVigente(fecha: LocalDate): boolean
+  }
+
+  interface Cobrable {
+    +calcularCosto(): double
+  }
+  abstract class Reserva {
+    #idReserva: int
+    #fechaCreacion: LocalDate
+    #fechaDesde: LocalDate
+    #fechaHasta: LocalDate
+    #estado: EstadoReserva
+    #mascota: Mascota
+    #alojamiento: Alojamiento
+    +Reserva(id: int, mascota: Mascota, alojamiento: Alojamiento, desde: LocalDate, hasta: LocalDate)
+    {abstract} +calcularCosto(): double
+    {abstract} +getTipo(): String
+    +cancelar(): void
+    +iniciar(): void
+    +finalizar(): void
+    +estaActiva(): boolean
+    +seSuperpone(desde: LocalDate, hasta: LocalDate): boolean
+  }
+  class ReservaHospedaje {
+    -incluyeBanio: boolean
+    +getCantidadNoches(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class ReservaGuarderiaDiurna {
+    -incluyePaseo: boolean
+    +getCantidadDias(): int
+    +calcularCosto(): double
+    +getTipo(): String
+  }
+  class Tarifario {
+    {static} +PRECIO_BANIO: double = 8000
+    {static} +PRECIO_PASEO_DIA: double = 4000
+    {static} +PORCENTAJE_DIURNA: double = 0.6
+    {static} +calcularHospedaje(a: Alojamiento, noches: int, conBanio: boolean): double
+    {static} +calcularGuarderiaDiurna(a: Alojamiento, dias: int, conPaseo: boolean): double
+  }
+  class Estadia {
+    -idEstadia: int
+    -ingreso: LocalDate
+    -egreso: LocalDate
+    -reserva: Reserva
+    -recibidaPor: Empleado
+    -bitacora: ArrayList<EntradaBitacora>
+    -pago: Pago
+    +Estadia(id: int, reserva: Reserva, recibidaPor: Empleado, ingreso: LocalDate)
+    +registrar(entrada: EntradaBitacora): void
+    +estaActiva(): boolean
+    +cerrar(egreso: LocalDate, pago: Pago): void
+    +calcularTotal(): double
+  }
+  class Pago {
+    -idPago: int
+    -fecha: LocalDate
+    -monto: double
+    -medio: MedioPago
+    +Pago(id: int, fecha: LocalDate, monto: double, medio: MedioPago)
+    +generarComprobante(e: Estadia): String
+  }
+
+  abstract class EntradaBitacora {
+    #fecha: LocalDate
+    #registradaPor: Empleado
+    +EntradaBitacora(fecha: LocalDate, registradaPor: Empleado)
+    {abstract} +getResumen(): String
+  }
+  class RegistroComida {
+    -alimento: String
+    -cantidadGramos: double
+    -comioTodo: boolean
+    +getResumen(): String
+  }
+  class RegistroMedicacion {
+    -medicamento: String
+    -dosis: String
+    +getResumen(): String
+  }
+  class RegistroIncidente {
+    -descripcion: String
+    -gravedad: Gravedad
+    +getResumen(): String
+    +hayQueAvisarAlDueno(): boolean
+  }
+
+  enum Especie {
+    PERRO
+    GATO
+    CONEJO
+    AVE
+  }
+  enum Categoria {
+    ESTANDAR
+    PREMIUM
+    -recargo: double
+    +getRecargo(): double
+  }
+  enum RolEmpleado {
+    RECEPCIONISTA
+    CUIDADOR
+    VETERINARIO
+    ADMINISTRADOR
+  }
+  enum EstadoReserva {
+    CONFIRMADA
+    EN_CURSO
+    FINALIZADA
+    CANCELADA
+  }
+  enum MedioPago {
+    EFECTIVO
+    DEBITO
+    CREDITO
+    TRANSFERENCIA
+  }
+  enum Gravedad {
+    LEVE
+    MODERADA
+    GRAVE
+  }
+}
+
+package "persistencia" {
+  interface "Repositorio<T>" as Repositorio {
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+  }
+  abstract class "RepositorioArchivo<T>" as RepositorioArchivo {
+    #SEPARADOR: String = ";"
+    -rutaArchivo: String
+    +RepositorioArchivo(rutaArchivo: String)
+    {abstract} #aLinea(objeto: T): String
+    {abstract} #desdeLinea(campos: String[]): T
+    +guardarTodos(lista: ArrayList<T>): void
+    +cargarTodos(): ArrayList<T>
+    {static} #limpiar(texto: String): String
+  }
+  class RepositorioDuenos
+  class RepositorioEmpleados
+  class RepositorioMascotas
+  class RepositorioAlojamientos
+  class RepositorioReservas
+  class RepositorioEstadias
+}
+
+package "excepciones" {
+  class VacunacionVencidaException {
+    -vacunasFaltantes: ArrayList<String>
+    +VacunacionVencidaException(m: Mascota, faltantes: ArrayList<String>)
+  }
+  class AlojamientoNoDisponibleException {
+    +AlojamientoNoDisponibleException(a: Alojamiento)
+  }
+  class DatoInvalidoException {
+    +DatoInvalidoException(mensaje: String)
+  }
+}
+
+class "java.lang.Exception" as Exception
+
+SistemaGuarderia "1" *- - "1" Sucursal
+SistemaGuarderia "1" o- - "0..*" Dueno
+SistemaGuarderia "1" o- - "0..*" Empleado
+SistemaGuarderia "1" o- - "0..*" Mascota
+SistemaGuarderia "1" o- - "0..*" Reserva
+SistemaGuarderia "1" o- - "0..*" Estadia
+SistemaGuarderia "1" *- - "6" RepositorioArchivo : usa
+SistemaGuarderia ..> MascotaFactory : «use»
+
+Sucursal "1" *- - "0..*" Alojamiento
+Dueno "1" - - "0..*" Mascota : es dueño de
+Mascota "1" *- - "0..*" Vacuna
+Alojamiento "1" - - "0..*" Reserva : se reserva en
+Reserva "0..*" - -> "1" Mascota
+Estadia "0..1" - -> "1" Reserva : corresponde a
+Estadia "0..*" - -> "1" Empleado : recibida por
+Estadia "1" *- - "0..*" EntradaBitacora
+Estadia "1" *- - "0..1" Pago
+EntradaBitacora "0..*" - -> "1" Empleado : registrada por
+
+Dueno - -|> Persona
+Empleado - -|> Persona
+Perro - -|> Mascota
+Gato - -|> Mascota
+Conejo - -|> Mascota
+Ave - -|> Mascota
+ReservaHospedaje - -|> Reserva
+ReservaGuarderiaDiurna - -|> Reserva
+RegistroComida - -|> EntradaBitacora
+RegistroMedicacion - -|> EntradaBitacora
+RegistroIncidente - -|> EntradaBitacora
+Reserva ..|> Cobrable
+ReservaHospedaje ..> Tarifario : «use»
+ReservaGuarderiaDiurna ..> Tarifario : «use»
+MascotaFactory ..> Mascota : «create»
+
+RepositorioArchivo ..|> Repositorio
+RepositorioDuenos - -|> RepositorioArchivo
+RepositorioEmpleados - -|> RepositorioArchivo
+RepositorioMascotas - -|> RepositorioArchivo
+RepositorioAlojamientos - -|> RepositorioArchivo
+RepositorioReservas - -|> RepositorioArchivo
+RepositorioEstadias - -|> RepositorioArchivo
+
+VacunacionVencidaException - -|> Exception
+AlojamientoNoDisponibleException - -|> Exception
+DatoInvalidoException - -|> Exception
+
+note bottom of VacunacionVencidaException
+  Se lanza en realizarCheckIn() si la mascota
+  no tiene las vacunas obligatorias vigentes
+  hasta el último día de la estadía
+end note
+note bottom of AlojamientoNoDisponibleException
+  Se lanza en reservar() si el alojamiento
+  ya está reservado en esas fechas
+end note
+
+@enduml
+
+PlantUML version 1.2022.12(Sun Oct 23 15:12:26 ART 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

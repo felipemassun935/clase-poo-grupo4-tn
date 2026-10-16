@@ -1,0 +1,3 @@
+30111222;Lucía;Fernández;11-5555-1001;lucia.fernandez@mail.com;Juramento 2100, CABA
+28999333;Martín;Gómez;11-5555-1002;martin.gomez@mail.com;Av. Cabildo 3300, CABA
+35444555;Sofía;Ruiz;11-5555-1003;sofi.ruiz@mail.com;Monroe 1500, CABA

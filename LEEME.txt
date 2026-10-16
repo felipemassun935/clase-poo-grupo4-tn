@@ -1,0 +1,49 @@
+TPO POO - Sistema de Gestión para Guarderías y Hoteles de Mascotas
+Entrega parcial 2 (01/11/2026): avance de código + interfaces gráficas
+
+CÓMO ABRIRLO EN ECLIPSE
+  File > Import > General > Existing Projects into Workspace > elegir la carpeta GuarderiaMascotas.
+  Ejecutar: src/app/Main.java (Run As > Java Application). Requiere Java 17 o superior.
+  Los datos se leen y guardan en la carpeta "datos" (archivos .txt, campos separados por ";").
+
+ESTRUCTURA DE PAQUETES
+  app           Main: arranca el programa.
+  controlador   SistemaGuarderia: controlador GRASP + Singleton. Las pantallas le piden todo a esta clase.
+  modelo        Clases del negocio (Persona, Dueno, Empleado, Mascota y sus 4 especies, Vacuna, Sucursal,
+                Alojamiento, Reserva y sus 2 tipos, Estadia, Pago, bitácora y sus 3 tipos, enums, Tarifario).
+  persistencia  Repositorio<T> (interfaz), RepositorioArchivo<T> (lee/escribe .txt) y un repositorio por archivo.
+  excepciones   VacunacionVencidaException, AlojamientoNoDisponibleException, DatoInvalidoException.
+  util          Fechas: convierte fechas dd/mm/aaaa.
+  vista         Las ventanas Swing.
+
+CÓMO SE CUMPLE LA CONSIGNA
+  b) Diagrama: diagrama/Diagrama_de_Clases_Guarderia.puml (+ .png/.svg). 30+ clases.
+  d) Patrones / buenas prácticas:
+       1. Controlador (GRASP): SistemaGuarderia.
+       2. Experto en información (GRASP): Alojamiento.estaDisponible(), Mascota.tieneVacunasAlDia(),
+          Sucursal.calcularOcupacion().
+       3. Polimorfismo (GRASP): getVacunasObligatorias(), calcularCosto(), getResumen().
+       4. Creador / Factory: MascotaFactory.crear().
+       5. Singleton: SistemaGuarderia.getInstancia().
+       6. Template Method: RepositorioArchivo (guardarTodos/cargarTodos) + aLinea/desdeLinea en cada subclase.
+  e) Excepciones personalizadas: 3 (paquete excepciones). try/catch en: lectura y escritura de archivos
+     (RepositorioArchivo), fechas (Fechas.parsear), números (Validaciones), check-in (VentanaEstadias),
+     reserva (VentanaReservas), estilo visual (Main) y en todas las pantallas al guardar.
+  f) 6 pantallas Swing:
+       ABM: VentanaDuenos, VentanaMascotas, VentanaEmpleados, VentanaAlojamientos.
+       Negocio: VentanaReservas (búsqueda + reserva + cancelación),
+                VentanaEstadias (check-in con control de vacunas, bitácora, check-out y cobro).
+  g) Archivos .txt en la carpeta datos.
+  h) Dialogs: DialogoVacunas (JDialog modal propio), confirmación de bajas (showConfirmDialog),
+     carga de bitácora (showInputDialog), elección de gravedad y medio de pago (showInputDialog con lista),
+     comprobante de pago y errores (showMessageDialog).
+
+PARA PROBAR EN LA DEFENSA (con los datos de ejemplo)
+  - Check-in de la reserva #3 (Toby): falla porque tiene la Antirrábica vencida -> VacunacionVencidaException.
+    Se le carga la vacuna desde ABM Mascotas > "Vacunas de la mascota..." y ahí entra.
+  - Registrar medicación con Carla (recepcionista): no la deja. Con Valeria (veterinaria) sí.
+  - Reservar C-01 entre el 15/10 y el 18/10: no aparece en la búsqueda porque Rocco la ocupa.
+  - Check-out de Rocco: muestra el total (5 noches x $20000 + baño $8000 = $108000) y el comprobante.
+
+NOTA: las imágenes de la carpeta capturas son de referencia; para el documento final conviene sacar
+las capturas reales desde la PC de cada uno.
