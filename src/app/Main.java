@@ -4,9 +4,10 @@ import javax.swing.UIManager;
 
 import vista.MenuPrincipal;
 
+// Punto de entrada del programa: aplica el estilo visual y abre el menú principal
 public class Main {
     public static void main(String[] args) {
-        // Estilo visual "Nimbus" de Swing. Si no está disponible, queda el de por defecto.
+        // try/catch: si el estilo "Nimbus" no está disponible, se sigue con el de por defecto
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {

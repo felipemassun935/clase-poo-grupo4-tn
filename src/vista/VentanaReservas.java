@@ -1,40 +1,45 @@
 package vista;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.SistemaGuarderia;
-import excepciones.AlojamientoNoDisponibleException;
 import excepciones.DatoInvalidoException;
-import modelo.Alojamiento;
-import modelo.Mascota;
-import modelo.Reserva;
-import util.Fechas;
+import modelo.enums.EstadoReserva;
+import modelo.mascota.Mascota;
+import modelo.reserva.Reserva;
+import modelo.sucursal.Alojamiento;
+import modelo.sucursal.Sucursal;
 
-// Pantalla de negocio 1: búsqueda de alojamientos libres y reservas
+// Pantalla de negocio 1: buscar alojamientos libres, reservar, confirmar, registrar señas y cancelar
 public class VentanaReservas extends JFrame {
-    private static final long serialVersionUID = 1L; // lo pide Swing/Exception, Eclipse avisa si falta
-    private SistemaGuarderia sistema;
-    private ArrayList<Alojamiento> disponibles = new ArrayList<>(); // resultado de la última búsqueda
+    private static final long serialVersionUID = 1L; // Eclipse avisa si falta en una ventana
+    // Medios de pago que se ofrecen en la lista del showInputDialog
+    private static final String[] MEDIOS_DE_PAGO = { "Efectivo", "Débito", "Crédito", "Transferencia" };
 
+    private SistemaGuarderia sistema;
+    private List<Alojamiento> disponibles; // lo que muestra la tabla de disponibles, en el mismo orden
+
+    private JComboBox<Sucursal> cmbSucursal;
     private JComboBox<Mascota> cmbMascota;
-    private JComboBox<String> cmbTipo;
     private JTextField txtDesde;
     private JTextField txtHasta;
-    private JCheckBox chkExtra;
     private JTable tablaDisponibles;
     private DefaultTableModel modeloDisponibles;
     private JTable tablaReservas;
@@ -42,127 +47,183 @@ public class VentanaReservas extends JFrame {
 
     public VentanaReservas() {
         sistema = SistemaGuarderia.getInstancia();
+        disponibles = new ArrayList<Alojamiento>();
 
         setTitle("Reservas");
-        setSize(1000, 680);
+        setSize(1100, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        // ----- Panel de nueva reserva -----
-        JPanel panelNueva = new JPanel();
-        panelNueva.setLayout(null);
-        panelNueva.setBorder(BorderFactory.createTitledBorder("Nueva reserva"));
-        panelNueva.setBounds(10, 10, 965, 290);
-        getContentPane().add(panelNueva);
+        // ----- Parte de arriba: nueva reserva -----
+        JLabel lblNueva = new JLabel("Nueva reserva");
+        lblNueva.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblNueva.setBounds(20, 10, 300, 25);
+        getContentPane().add(lblNueva);
 
-        JLabel lblMascota = new JLabel("Mascota:");
-        lblMascota.setBounds(15, 30, 80, 25);
-        panelNueva.add(lblMascota);
-        cmbMascota = new JComboBox<>();
-        for (Mascota m : sistema.getMascotas()) {
-            cmbMascota.addItem(m);
-        }
-        cmbMascota.setBounds(95, 30, 260, 25);
-        panelNueva.add(cmbMascota);
+        agregarEtiqueta("Sucursal:", 20, 45);
+        cmbSucursal = new JComboBox<Sucursal>();
+        cmbSucursal.setBounds(100, 45, 240, 25);
+        getContentPane().add(cmbSucursal);
 
-        JLabel lblTipo = new JLabel("Tipo:");
-        lblTipo.setBounds(15, 65, 80, 25);
-        panelNueva.add(lblTipo);
-        cmbTipo = new JComboBox<>(new String[] { "Hospedaje", "Guardería diurna" });
-        cmbTipo.setBounds(95, 65, 260, 25);
-        panelNueva.add(cmbTipo);
+        agregarEtiqueta("Mascota:", 20, 80);
+        cmbMascota = new JComboBox<Mascota>();
+        cmbMascota.setBounds(100, 80, 240, 25);
+        getContentPane().add(cmbMascota);
 
-        JLabel lblDesde = new JLabel("Desde:");
-        lblDesde.setBounds(15, 100, 80, 25);
-        panelNueva.add(lblDesde);
-        txtDesde = new JTextField(Fechas.formatear(LocalDate.now()));
-        txtDesde.setBounds(95, 100, 260, 25);
-        panelNueva.add(txtDesde);
+        agregarEtiqueta("Desde:", 20, 115);
+        txtDesde = new JTextField(Validaciones.formatearFecha(LocalDate.now()));
+        txtDesde.setBounds(100, 115, 240, 25);
+        getContentPane().add(txtDesde);
 
-        JLabel lblHasta = new JLabel("Hasta:");
-        lblHasta.setBounds(15, 135, 80, 25);
-        panelNueva.add(lblHasta);
-        txtHasta = new JTextField(Fechas.formatear(LocalDate.now().plusDays(3)));
-        txtHasta.setBounds(95, 135, 260, 25);
-        panelNueva.add(txtHasta);
+        agregarEtiqueta("Hasta:", 20, 150);
+        txtHasta = new JTextField(Validaciones.formatearFecha(LocalDate.now().plusDays(3)));
+        txtHasta.setBounds(100, 150, 240, 25);
+        getContentPane().add(txtHasta);
 
-        chkExtra = new JCheckBox("Incluye baño (+$8000)");
-        chkExtra.setBounds(95, 170, 260, 25);
-        panelNueva.add(chkExtra);
+        JButton btnBuscar = new JButton("Buscar disponibles");
+        btnBuscar.setBounds(20, 190, 155, 30);
+        getContentPane().add(btnBuscar);
 
-        JButton btnBuscar = new JButton("Buscar alojamientos libres");
-        btnBuscar.setBounds(15, 210, 340, 30);
-        panelNueva.add(btnBuscar);
+        JButton btnReservar = new JButton("Reservar");
+        btnReservar.setBounds(185, 190, 155, 30);
+        getContentPane().add(btnReservar);
 
-        JButton btnReservar = new JButton("Reservar el alojamiento elegido");
-        btnReservar.setBounds(15, 245, 340, 30);
-        panelNueva.add(btnReservar);
+        JLabel lblAyuda = new JLabel("Fechas dd/mm/aaaa. Elegí un alojamiento de la tabla para reservar.");
+        lblAyuda.setBounds(20, 225, 700, 20);
+        getContentPane().add(lblAyuda);
 
-        modeloDisponibles = new DefaultTableModel(new String[] { "Código", "Tipo", "Categoría", "Precio/día" }, 0);
+        modeloDisponibles = new DefaultTableModel(new String[] { "Código", "Especie", "Categoría", "Precio por noche",
+                "Noches", "Total estimado" }, 0);
         tablaDisponibles = new JTable(modeloDisponibles);
         tablaDisponibles.setDefaultEditor(Object.class, null);
-        JScrollPane scrollDisp = new JScrollPane(tablaDisponibles);
-        scrollDisp.setBounds(375, 30, 575, 245);
-        panelNueva.add(scrollDisp);
+        tablaDisponibles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollDisponibles = new JScrollPane(tablaDisponibles);
+        scrollDisponibles.setBounds(360, 45, 710, 175);
+        getContentPane().add(scrollDisponibles);
 
-        // ----- Listado de reservas -----
-        JLabel lblListado = new JLabel("Todas las reservas");
-        lblListado.setBounds(15, 310, 300, 25);
-        getContentPane().add(lblListado);
+        // ----- Parte de abajo: reservas existentes -----
+        JLabel lblReservas = new JLabel("Reservas");
+        lblReservas.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblReservas.setBounds(20, 260, 300, 25);
+        getContentPane().add(lblReservas);
 
-        modeloReservas = new DefaultTableModel(new String[] { "N°", "Mascota", "Tipo", "Alojamiento", "Desde",
-                "Hasta", "Estado", "Costo" }, 0);
-        tablaReservas = new JTable(modeloReservas);
-        tablaReservas.setDefaultEditor(Object.class, null);
-        JScrollPane scrollRes = new JScrollPane(tablaReservas);
-        scrollRes.setBounds(10, 340, 965, 240);
-        getContentPane().add(scrollRes);
+        JButton btnConfirmar = new JButton("Confirmar");
+        btnConfirmar.setBounds(20, 290, 140, 30);
+        getContentPane().add(btnConfirmar);
 
-        JButton btnCancelar = new JButton("Cancelar reserva seleccionada");
-        btnCancelar.setBounds(10, 590, 260, 30);
+        JButton btnSena = new JButton("Registrar seña");
+        btnSena.setBounds(170, 290, 140, 30);
+        getContentPane().add(btnSena);
+
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBounds(320, 290, 140, 30);
         getContentPane().add(btnCancelar);
 
-        cmbTipo.addActionListener(e -> actualizarExtra());
-        btnBuscar.addActionListener(e -> buscar());
-        btnReservar.addActionListener(e -> reservar());
-        btnCancelar.addActionListener(e -> cancelar());
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(930, 290, 140, 30);
+        getContentPane().add(btnActualizar);
 
+        modeloReservas = new DefaultTableModel(new String[] { "Id", "Mascota", "Cliente", "Sucursal", "Alojamiento",
+                "Desde", "Hasta", "Total", "Pagado", "Saldo", "Estado" }, 0);
+        tablaReservas = new JTable(modeloReservas);
+        tablaReservas.setDefaultEditor(Object.class, null);
+        tablaReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollReservas = new JScrollPane(tablaReservas);
+        scrollReservas.setBounds(20, 330, 1050, 330);
+        getContentPane().add(scrollReservas);
+
+        // Eventos (listeners con clases anónimas)
+        btnBuscar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                buscarDisponibles();
+            }
+        });
+        btnReservar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                reservar();
+            }
+        });
+        btnConfirmar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                confirmar();
+            }
+        });
+        btnSena.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                registrarSena();
+            }
+        });
+        btnCancelar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cancelar();
+            }
+        });
+        btnActualizar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cargarCombos();
+                cargarReservas();
+            }
+        });
+
+        cargarCombos();
         cargarReservas();
     }
 
-    private boolean esHospedaje() {
-        return cmbTipo.getSelectedIndex() == 0;
+    private void agregarEtiqueta(String texto, int x, int y) {
+        JLabel lbl = new JLabel(texto);
+        lbl.setBounds(x, y, 80, 25);
+        getContentPane().add(lbl);
     }
 
-    private void actualizarExtra() {
-        if (esHospedaje()) {
-            chkExtra.setText("Incluye baño (+$8000)");
-        } else {
-            chkExtra.setText("Incluye paseo (+$4000 por día)");
+    // Vuelve a llenar los combos (por si se cargaron mascotas en otra ventana)
+    private void cargarCombos() {
+        cmbSucursal.removeAllItems();
+        for (Sucursal s : sistema.getSucursales()) {
+            cmbSucursal.addItem(s);
+        }
+        cmbMascota.removeAllItems();
+        for (Mascota m : sistema.getMascotas()) {
+            cmbMascota.addItem(m);
         }
     }
 
-    private void buscar() {
+    // Las filas de la tabla están en el mismo orden que la lista de reservas del sistema
+    private void cargarReservas() {
+        modeloReservas.setRowCount(0);
+        for (Reserva r : sistema.getReservas()) {
+            modeloReservas.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
+                    r.getMascota().getCliente().getNombreCompleto(), r.getAlojamiento().getSucursal().getNombre(),
+                    r.getAlojamiento().getCodigo(), Validaciones.formatearFecha(r.getFechaDesde()),
+                    Validaciones.formatearFecha(r.getFechaHasta()), Validaciones.plata(r.calcularTotal()),
+                    Validaciones.plata(r.getTotalPagado()), Validaciones.plata(r.getSaldoPendiente()),
+                    r.getEstado() });
+        }
+    }
+
+    private void buscarDisponibles() {
         try {
-            Mascota m = (Mascota) cmbMascota.getSelectedItem();
-            if (m == null) {
-                throw new DatoInvalidoException("No hay mascotas cargadas.");
+            Sucursal sucursal = (Sucursal) cmbSucursal.getSelectedItem();
+            Mascota mascota = (Mascota) cmbMascota.getSelectedItem();
+            if (sucursal == null || mascota == null) {
+                throw new DatoInvalidoException("Elegí la sucursal y la mascota.");
             }
-            LocalDate desde = Fechas.parsear(txtDesde.getText());
-            LocalDate hasta = Fechas.parsear(txtHasta.getText());
-            if (hasta.isBefore(desde)) {
-                throw new DatoInvalidoException("La fecha hasta no puede ser anterior a la fecha desde.");
+            LocalDate desde = Validaciones.parsearFecha(txtDesde.getText(), "Desde");
+            LocalDate hasta = Validaciones.parsearFecha(txtHasta.getText(), "Hasta");
+            if (!hasta.isAfter(desde)) {
+                throw new DatoInvalidoException("La fecha \"Hasta\" tiene que ser posterior a \"Desde\".");
             }
 
-            disponibles = sistema.buscarAlojamientos(m.getEspecie(), desde, hasta);
+            long noches = ChronoUnit.DAYS.between(desde, hasta);
+            disponibles = sistema.buscarDisponibles(sucursal, mascota, desde, hasta);
             modeloDisponibles.setRowCount(0);
             for (Alojamiento a : disponibles) {
-                modeloDisponibles.addRow(new Object[] { a.getCodigo(), a.getTipoLugar(), a.getCategoria(),
-                        "$" + a.calcularPrecioDia() });
+                modeloDisponibles.addRow(new Object[] { a.getCodigo(), a.getEspecie().getNombreVisible(),
+                        a.getCategoria(), Validaciones.plata(a.getPrecioNoche()), noches,
+                        Validaciones.plata(noches * a.getPrecioNoche()) });
             }
             if (disponibles.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No hay lugares libres para " + m.getEspecie()
+                JOptionPane.showMessageDialog(this, "No hay alojamientos libres para " + mascota.getNombre()
                         + " en esas fechas.", "Sin disponibilidad", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DatoInvalidoException ex) {
@@ -173,59 +234,99 @@ public class VentanaReservas extends JFrame {
     private void reservar() {
         int fila = tablaDisponibles.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Primero buscá y elegí un alojamiento de la tabla.", "Atención",
+            JOptionPane.showMessageDialog(this, "Primero buscá y elegí un alojamiento disponible.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
-            Mascota m = (Mascota) cmbMascota.getSelectedItem();
-            Alojamiento a = disponibles.get(fila);
-            LocalDate desde = Fechas.parsear(txtDesde.getText());
-            LocalDate hasta = Fechas.parsear(txtHasta.getText());
-
-            Reserva r = sistema.reservar(m, a, desde, hasta, esHospedaje(), chkExtra.isSelected());
-            JOptionPane.showMessageDialog(this, "Reserva N° " + r.getIdReserva() + " confirmada.\n"
-                    + r.getTipo() + " de " + m.getNombre() + " en " + a.getCodigo() + "\n"
-                    + "Costo estimado: $" + String.format("%.2f", r.calcularCosto()),
-                    "Reserva confirmada", JOptionPane.INFORMATION_MESSAGE);
+            Mascota mascota = (Mascota) cmbMascota.getSelectedItem();
+            LocalDate desde = Validaciones.parsearFecha(txtDesde.getText(), "Desde");
+            LocalDate hasta = Validaciones.parsearFecha(txtHasta.getText(), "Hasta");
+            Reserva r = sistema.reservar(mascota, disponibles.get(fila), desde, hasta);
+            JOptionPane.showMessageDialog(this, "Reserva " + r.getId() + " creada en estado " + r.getEstado()
+                    + ".\nTotal: " + Validaciones.plata(r.calcularTotal()));
             modeloDisponibles.setRowCount(0);
-            disponibles.clear();
+            disponibles = new ArrayList<Alojamiento>();
             cargarReservas();
-        } catch (AlojamientoNoDisponibleException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage() + "\nVolvé a buscar con las fechas actuales.",
-                    "No disponible", JOptionPane.ERROR_MESSAGE);
+        } catch (DatoInvalidoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo reservar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Devuelve la reserva elegida en la tabla de abajo, o null si no hay ninguna (y avisa)
+    private Reserva getReservaElegida() {
+        int fila = tablaReservas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Primero elegí una reserva de la tabla.", "Atención",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        return sistema.getReservas().get(fila);
+    }
+
+    private void confirmar() {
+        Reserva r = getReservaElegida();
+        if (r == null) {
+            return;
+        }
+        // try/catch: si el estado actual no permite confirmar, la Reserva tira IllegalStateException
+        try {
+            sistema.confirmar(r);
+            cargarReservas();
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se puede confirmar", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Pide el monto y el medio de pago con dos showInputDialog
+    private void registrarSena() {
+        Reserva r = getReservaElegida();
+        if (r == null) {
+            return;
+        }
+        if (r.getEstado() != EstadoReserva.PENDIENTE && r.getEstado() != EstadoReserva.CONFIRMADA) {
+            JOptionPane.showMessageDialog(this, "Solo se registran señas en reservas PENDIENTES o CONFIRMADAS.",
+                    "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String textoMonto = JOptionPane.showInputDialog(this, "Total: " + Validaciones.plata(r.calcularTotal())
+                + "\nSaldo: " + Validaciones.plata(r.getSaldoPendiente()) + "\n\nMonto de la seña:");
+        if (textoMonto == null) {
+            return; // el usuario apretó "Cancelar"
+        }
+        try {
+            double monto = Validaciones.numero(textoMonto, "Monto");
+            if (monto > r.getSaldoPendiente()) {
+                throw new DatoInvalidoException("La seña no puede superar el saldo pendiente.");
+            }
+            Object medio = JOptionPane.showInputDialog(this, "Medio de pago:", "Registrar seña",
+                    JOptionPane.QUESTION_MESSAGE, null, MEDIOS_DE_PAGO, MEDIOS_DE_PAGO[0]);
+            if (medio == null) {
+                return;
+            }
+            sistema.registrarPago(r, monto, medio.toString());
+            JOptionPane.showMessageDialog(this, "Seña registrada. Saldo: " + Validaciones.plata(r.getSaldoPendiente()));
+            cargarReservas();
         } catch (DatoInvalidoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void cargarReservas() {
-        modeloReservas.setRowCount(0);
-        for (Reserva r : sistema.getReservas()) {
-            modeloReservas.addRow(new Object[] { r.getIdReserva(), r.getMascota().getNombre(), r.getTipo(),
-                    r.getAlojamiento().getCodigo(), Fechas.formatear(r.getFechaDesde()),
-                    Fechas.formatear(r.getFechaHasta()), r.getEstado(),
-                    "$" + String.format("%.2f", r.calcularCosto()) });
-        }
-    }
-
     private void cancelar() {
-        int fila = tablaReservas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Elegí una reserva de la tabla de abajo.", "Atención",
-                    JOptionPane.WARNING_MESSAGE);
+        Reserva r = getReservaElegida();
+        if (r == null) {
             return;
         }
-        Reserva r = sistema.getReservas().get(fila);
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Cancelar la reserva N° " + r.getIdReserva()
-                + " de " + r.getMascota().getNombre() + "?", "Cancelar reserva", JOptionPane.YES_NO_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Cancelar la reserva " + r.getId() + " de "
+                + r.getMascota().getNombre() + "?", "Confirmar cancelación", JOptionPane.YES_NO_OPTION);
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
+        // try/catch: si el estado actual no permite cancelar, la Reserva tira IllegalStateException
         try {
-            sistema.cancelarReserva(r);
+            sistema.cancelar(r);
             cargarReservas();
-        } catch (DatoInvalidoException ex) {
+        } catch (IllegalStateException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "No se puede cancelar", JOptionPane.ERROR_MESSAGE);
         }
     }

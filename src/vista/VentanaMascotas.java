@@ -1,6 +1,9 @@
 package vista;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -11,36 +14,40 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.SistemaGuarderia;
 import excepciones.DatoInvalidoException;
-import modelo.Ave;
-import modelo.Conejo;
-import modelo.Dueno;
-import modelo.Especie;
-import modelo.Gato;
-import modelo.Mascota;
-import modelo.MascotaFactory;
-import modelo.Perro;
-import util.Fechas;
+import modelo.enums.Especie;
+import modelo.interfaces.Vacunable;
+import modelo.mascota.Ave;
+import modelo.mascota.Conejo;
+import modelo.mascota.Gato;
+import modelo.mascota.Mascota;
+import modelo.mascota.Perro;
+import modelo.persona.Cliente;
 
-// ABM de mascotas. Desde acá también se abre el diálogo para cargar las vacunas.
+// ABM 2: alta, baja y modificación de mascotas
 public class VentanaMascotas extends JFrame {
-    private static final long serialVersionUID = 1L; // lo pide Swing/Exception, Eclipse avisa si falta
+    private static final long serialVersionUID = 1L; // Eclipse avisa si falta en una ventana
     private SistemaGuarderia sistema;
-    private Mascota seleccionada;
+    private Mascota seleccionada; // null = se está dando de alta una nueva
 
-    private JComboBox<Especie> cmbEspecie;
+    private JTextField txtId;
+    // El combo muestra los nombres visibles en el mismo orden que Especie.values()
+    private JComboBox<String> cmbEspecie;
     private JTextField txtNombre;
-    private JTextField txtFechaNac;
+    private JTextField txtNacimiento;
     private JTextField txtPeso;
-    private JComboBox<Dueno> cmbDueno;
-    private JLabel lblDato1;
-    private JTextField txtDato1;
-    private JLabel lblDato2;
-    private JTextField txtDato2;
-    private JCheckBox chkMarca;
+    private JComboBox<Cliente> cmbCliente;
+    private JTextField txtObservaciones;
+    private JTextField txtUltimoControl;
+    private JTextField txtRaza;
+    private JCheckBox chkCastrado;
+    private JTextField txtTipoAve;
     private JTable tabla;
     private DefaultTableModel modeloTabla;
 
@@ -48,142 +55,183 @@ public class VentanaMascotas extends JFrame {
         sistema = SistemaGuarderia.getInstancia();
 
         setTitle("ABM de Mascotas");
-        setSize(1000, 500);
+        setSize(1150, 540);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        JLabel lblEspecie = new JLabel("Especie:");
-        lblEspecie.setBounds(20, 20, 90, 25);
-        getContentPane().add(lblEspecie);
-        cmbEspecie = new JComboBox<>(Especie.values());
-        cmbEspecie.setBounds(110, 20, 200, 25);
+        txtId = agregarCampo("Id:", 20);
+        txtId.setEditable(false); // el id lo asigna el sistema
+
+        agregarEtiqueta("Especie:", 55);
+        cmbEspecie = new JComboBox<String>();
+        for (Especie e : Especie.values()) {
+            cmbEspecie.addItem(e.getNombreVisible());
+        }
+        cmbEspecie.setBounds(140, 55, 200, 25);
         getContentPane().add(cmbEspecie);
 
-        txtNombre = agregarCampo("Nombre:", 60);
-        txtFechaNac = agregarCampo("Nacimiento:", 100);
-        txtFechaNac.setToolTipText("dd/mm/aaaa");
-        txtPeso = agregarCampo("Peso (kg):", 140);
+        txtNombre = agregarCampo("Nombre:", 90);
+        txtNacimiento = agregarCampo("Nacimiento:", 125);
+        txtPeso = agregarCampo("Peso (kg):", 160);
 
-        JLabel lblDueno = new JLabel("Dueño:");
-        lblDueno.setBounds(20, 180, 90, 25);
-        getContentPane().add(lblDueno);
-        cmbDueno = new JComboBox<>();
-        for (Dueno d : sistema.getDuenos()) {
-            cmbDueno.addItem(d);
+        agregarEtiqueta("Cliente:", 195);
+        cmbCliente = new JComboBox<Cliente>();
+        for (Cliente c : sistema.getClientes()) {
+            cmbCliente.addItem(c);
         }
-        cmbDueno.setBounds(110, 180, 200, 25);
-        getContentPane().add(cmbDueno);
+        cmbCliente.setBounds(140, 195, 200, 25);
+        getContentPane().add(cmbCliente);
 
-        // Estos campos cambian de nombre según la especie
-        lblDato1 = new JLabel("Raza:");
-        lblDato1.setBounds(20, 220, 90, 25);
-        getContentPane().add(lblDato1);
-        txtDato1 = new JTextField();
-        txtDato1.setBounds(110, 220, 200, 25);
-        getContentPane().add(txtDato1);
+        txtObservaciones = agregarCampo("Observaciones:", 230);
+        txtUltimoControl = agregarCampo("Último control:", 265);
+        txtRaza = agregarCampo("Raza:", 300);
 
-        lblDato2 = new JLabel("Tamaño:");
-        lblDato2.setBounds(20, 260, 90, 25);
-        getContentPane().add(lblDato2);
-        txtDato2 = new JTextField();
-        txtDato2.setBounds(110, 260, 200, 25);
-        getContentPane().add(txtDato2);
+        chkCastrado = new JCheckBox("Castrado");
+        chkCastrado.setBounds(140, 335, 200, 25);
+        getContentPane().add(chkCastrado);
 
-        chkMarca = new JCheckBox("Castrado");
-        chkMarca.setBounds(110, 295, 200, 25);
-        getContentPane().add(chkMarca);
+        txtTipoAve = agregarCampo("Tipo de ave:", 370);
 
-        JButton btnNuevo = new JButton("Nuevo");
-        btnNuevo.setBounds(20, 340, 90, 30);
+        JLabel lblFechas = new JLabel("Fechas en formato dd/mm/aaaa");
+        lblFechas.setBounds(20, 400, 320, 20);
+        getContentPane().add(lblFechas);
+
+        JButton btnNuevo = new JButton("Nueva");
+        btnNuevo.setBounds(20, 430, 100, 30);
         getContentPane().add(btnNuevo);
 
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(115, 340, 90, 30);
+        btnGuardar.setBounds(130, 430, 100, 30);
         getContentPane().add(btnGuardar);
 
         JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setBounds(210, 340, 100, 30);
+        btnEliminar.setBounds(240, 430, 100, 30);
         getContentPane().add(btnEliminar);
 
-        JButton btnVacunas = new JButton("Vacunas de la mascota...");
-        btnVacunas.setBounds(20, 385, 290, 30);
+        JButton btnVacunas = new JButton("Vacunas...");
+        btnVacunas.setBounds(20, 465, 320, 30);
         getContentPane().add(btnVacunas);
 
-        modeloTabla = new DefaultTableModel(new String[] { "ID", "Nombre", "Especie", "Dueño", "Nacimiento",
-                "Peso", "Vacunas al día" }, 0);
+        modeloTabla = new DefaultTableModel(new String[] { "Id", "Nombre", "Especie", "Cliente", "Edad (meses)",
+                "Peso", "Raza / tipo", "Último control", "Puede ingresar hoy" }, 0);
         tabla = new JTable(modeloTabla);
-        tabla.setDefaultEditor(Object.class, null);
+        tabla.setDefaultEditor(Object.class, null); // la tabla es solo para mirar, no se edita
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBounds(330, 20, 640, 420);
+        scroll.setBounds(360, 20, 760, 475);
         getContentPane().add(scroll);
 
-        cmbEspecie.addActionListener(e -> actualizarCamposEspecie());
-        btnNuevo.addActionListener(e -> limpiar());
-        btnGuardar.addActionListener(e -> guardar());
-        btnEliminar.addActionListener(e -> eliminar());
-        btnVacunas.addActionListener(e -> abrirVacunas());
-        tabla.getSelectionModel().addListSelectionListener(e -> seleccionarFila());
+        // Eventos (listeners con clases anónimas)
+        cmbEspecie.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                habilitarCamposDeEspecie();
+            }
+        });
+        btnNuevo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                limpiar();
+            }
+        });
+        btnGuardar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                guardar();
+            }
+        });
+        btnEliminar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                eliminar();
+            }
+        });
+        btnVacunas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirVacunas();
+            }
+        });
+        tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                seleccionarFila();
+            }
+        });
 
-        actualizarCamposEspecie();
+        habilitarCamposDeEspecie();
         cargarTabla();
     }
 
-    private JTextField agregarCampo(String etiqueta, int y) {
-        JLabel lbl = new JLabel(etiqueta);
-        lbl.setBounds(20, y, 90, 25);
+    private void agregarEtiqueta(String texto, int y) {
+        JLabel lbl = new JLabel(texto);
+        lbl.setBounds(20, y, 120, 25);
         getContentPane().add(lbl);
+    }
+
+    private JTextField agregarCampo(String etiqueta, int y) {
+        agregarEtiqueta(etiqueta, y);
         JTextField campo = new JTextField();
-        campo.setBounds(110, y, 200, 25);
+        campo.setBounds(140, y, 200, 25);
         getContentPane().add(campo);
         return campo;
     }
 
-    // Cambia los textos y habilita/deshabilita campos según la especie elegida
-    private void actualizarCamposEspecie() {
-        Especie especie = (Especie) cmbEspecie.getSelectedItem();
+    // La posición elegida en el combo coincide con la posición en Especie.values()
+    private Especie getEspecieElegida() {
+        return Especie.values()[cmbEspecie.getSelectedIndex()];
+    }
+
+    // Habilita solo los campos propios de la especie elegida
+    private void habilitarCamposDeEspecie() {
+        Especie especie = getEspecieElegida();
         switch (especie) {
             case PERRO:
-                lblDato1.setText("Raza:");
-                lblDato2.setText("Tamaño:");
-                txtDato2.setEnabled(true);
-                chkMarca.setEnabled(false);
-                chkMarca.setText("-");
-                break;
             case GATO:
-                lblDato1.setText("Raza:");
-                lblDato2.setText("-");
-                txtDato2.setEnabled(false);
-                chkMarca.setEnabled(true);
-                chkMarca.setText("Castrado");
+                txtRaza.setEnabled(true);
+                chkCastrado.setEnabled(true);
+                txtTipoAve.setEnabled(false);
                 break;
             case CONEJO:
-                lblDato1.setText("Raza:");
-                lblDato2.setText("Dieta:");
-                txtDato2.setEnabled(true);
-                chkMarca.setEnabled(false);
-                chkMarca.setText("-");
+                txtRaza.setEnabled(true);
+                chkCastrado.setEnabled(false);
+                txtTipoAve.setEnabled(false);
                 break;
             case AVE:
-                lblDato1.setText("Tipo de ave:");
-                lblDato2.setText("-");
-                txtDato2.setEnabled(false);
-                chkMarca.setEnabled(true);
-                chkMarca.setText("Puede volar");
+                txtRaza.setEnabled(false);
+                chkCastrado.setEnabled(false);
+                txtTipoAve.setEnabled(true);
                 break;
         }
     }
 
+    // Devuelve la raza o el tipo de ave según la subclase (instanceof + cast)
+    private String getDatoPropio(Mascota m) {
+        String dato = "";
+        if (m instanceof Perro) {
+            Perro p = (Perro) m;
+            dato = p.getRaza();
+        } else if (m instanceof Gato) {
+            Gato g = (Gato) m;
+            dato = g.getRaza();
+        } else if (m instanceof Conejo) {
+            Conejo c = (Conejo) m;
+            dato = c.getRaza();
+        } else if (m instanceof Ave) {
+            Ave a = (Ave) m;
+            dato = a.getTipoAve();
+        }
+        return dato;
+    }
+
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
+        LocalDate hoy = LocalDate.now();
         for (Mascota m : sistema.getMascotas()) {
-            String alDia = "No";
-            if (m.tieneVacunasAlDia(LocalDate.now())) {
-                alDia = "Sí";
+            // Polimorfismo: cada especie valida su ingreso a su manera
+            List<String> problemas = m.validarIngreso(hoy);
+            String puedeIngresar = "No";
+            if (problemas.isEmpty()) {
+                puedeIngresar = "Sí";
             }
-            modeloTabla.addRow(new Object[] { m.getIdMascota(), m.getNombre(), m.getEspecie(),
-                    m.getDueno().getNombreCompleto(), Fechas.formatear(m.getFechaNacimiento()),
-                    m.getPeso() + " kg", alDia });
+            modeloTabla.addRow(new Object[] { m.getId(), m.getNombre(), m.getEspecie().getNombreVisible(),
+                    m.getCliente().getNombreCompleto(), m.getEdadEnMeses(), m.getPesoKg(), getDatoPropio(m),
+                    Validaciones.formatearFecha(m.getFechaUltimoControl()), puedeIngresar });
         }
     }
 
@@ -193,96 +241,89 @@ public class VentanaMascotas extends JFrame {
             return;
         }
         seleccionada = sistema.getMascotas().get(fila);
-        cmbEspecie.setSelectedItem(seleccionada.getEspecie());
-        cmbEspecie.setEnabled(false); // un perro no se convierte en gato
+        txtId.setText("" + seleccionada.getId());
+        cmbEspecie.setSelectedItem(seleccionada.getEspecie().getNombreVisible());
         txtNombre.setText(seleccionada.getNombre());
-        txtFechaNac.setText(Fechas.formatear(seleccionada.getFechaNacimiento()));
-        txtPeso.setText(String.valueOf(seleccionada.getPeso()));
-        cmbDueno.setSelectedItem(seleccionada.getDueno());
-        txtDato2.setText("");
-        chkMarca.setSelected(false);
+        txtNacimiento.setText(Validaciones.formatearFecha(seleccionada.getFechaNacimiento()));
+        txtPeso.setText("" + seleccionada.getPesoKg());
+        cmbCliente.setSelectedItem(seleccionada.getCliente());
+        txtObservaciones.setText(seleccionada.getObservaciones());
+        txtUltimoControl.setText(Validaciones.formatearFecha(seleccionada.getFechaUltimoControl()));
 
-        // Datos propios de cada subclase
-        if (seleccionada instanceof Perro) {
-            txtDato1.setText(((Perro) seleccionada).getRaza());
-            txtDato2.setText(((Perro) seleccionada).getTamanio());
-        } else if (seleccionada instanceof Gato) {
-            txtDato1.setText(((Gato) seleccionada).getRaza());
-            chkMarca.setSelected(((Gato) seleccionada).isEsCastrado());
-        } else if (seleccionada instanceof Conejo) {
-            txtDato1.setText(((Conejo) seleccionada).getRaza());
-            txtDato2.setText(((Conejo) seleccionada).getDieta());
-        } else if (seleccionada instanceof Ave) {
-            txtDato1.setText(((Ave) seleccionada).getTipoAve());
-            chkMarca.setSelected(((Ave) seleccionada).isPuedeVolar());
+        txtRaza.setText("");
+        txtTipoAve.setText("");
+        chkCastrado.setSelected(false);
+        if (seleccionada instanceof Ave) {
+            txtTipoAve.setText(getDatoPropio(seleccionada));
+        } else {
+            txtRaza.setText(getDatoPropio(seleccionada));
         }
+        if (seleccionada instanceof Perro) {
+            Perro p = (Perro) seleccionada;
+            chkCastrado.setSelected(p.isCastrado());
+        } else if (seleccionada instanceof Gato) {
+            Gato g = (Gato) seleccionada;
+            chkCastrado.setSelected(g.isCastrado());
+        }
+
+        // La especie y el cliente no se pueden cambiar en una modificación
+        cmbEspecie.setEnabled(false);
+        cmbCliente.setEnabled(false);
     }
 
     private void limpiar() {
         seleccionada = null;
-        cmbEspecie.setEnabled(true);
+        txtId.setText("");
         txtNombre.setText("");
-        txtFechaNac.setText("");
+        txtNacimiento.setText("");
         txtPeso.setText("");
-        txtDato1.setText("");
-        txtDato2.setText("");
-        chkMarca.setSelected(false);
+        txtObservaciones.setText("");
+        txtUltimoControl.setText("");
+        txtRaza.setText("");
+        txtTipoAve.setText("");
+        chkCastrado.setSelected(false);
+        cmbEspecie.setEnabled(true);
+        cmbCliente.setEnabled(true);
         tabla.clearSelection();
     }
 
     private void guardar() {
         try {
-            String nombre = Validaciones.texto(txtNombre, "Nombre");
-            LocalDate fechaNac = Fechas.parsear(Validaciones.texto(txtFechaNac, "Nacimiento"));
-            if (fechaNac.isAfter(LocalDate.now())) {
-                throw new DatoInvalidoException("La fecha de nacimiento no puede ser futura.");
+            Especie especie = getEspecieElegida();
+            String nombre = Validaciones.texto(txtNombre.getText(), "Nombre");
+            LocalDate nacimiento = Validaciones.parsearFecha(txtNacimiento.getText(), "Nacimiento");
+            double peso = Validaciones.numero(txtPeso.getText(), "Peso");
+            Cliente cliente = (Cliente) cmbCliente.getSelectedItem();
+            String observaciones = txtObservaciones.getText().trim();
+
+            // El último control es opcional: si está vacío queda sin fecha
+            LocalDate ultimoControl = null;
+            if (!txtUltimoControl.getText().trim().isEmpty()) {
+                ultimoControl = Validaciones.parsearFecha(txtUltimoControl.getText(), "Último control");
             }
-            double peso = Validaciones.numero(txtPeso, "Peso");
-            Dueno dueno = (Dueno) cmbDueno.getSelectedItem();
-            if (dueno == null) {
-                throw new DatoInvalidoException("Primero hay que cargar al dueño en el ABM de Dueños.");
+
+            // Para el ave el dato propio es el tipo de ave; para las demás, la raza
+            String datoPropio;
+            if (especie == Especie.AVE) {
+                datoPropio = Validaciones.texto(txtTipoAve.getText(), "Tipo de ave");
+            } else {
+                datoPropio = Validaciones.texto(txtRaza.getText(), "Raza");
             }
-            String dato1 = txtDato1.getText().trim();
-            String dato2 = txtDato2.getText().trim();
-            boolean marca = chkMarca.isSelected();
+            boolean castrado = chkCastrado.isSelected();
 
             if (seleccionada == null) {
-                Especie especie = (Especie) cmbEspecie.getSelectedItem();
-                Mascota nueva = MascotaFactory.crear(especie, sistema.proximoIdMascota(), nombre, fechaNac,
-                        peso, dueno, dato1, dato2, marca);
-                sistema.agregarMascota(nueva);
-                JOptionPane.showMessageDialog(this, nombre + " fue agregado. Acordate de cargarle las vacunas.");
+                sistema.altaMascota(especie, nombre, nacimiento, peso, observaciones, ultimoControl, cliente,
+                        datoPropio, castrado);
+                JOptionPane.showMessageDialog(this, "Mascota agregada.");
             } else {
-                seleccionada.setNombre(nombre);
-                seleccionada.setFechaNacimiento(fechaNac);
-                seleccionada.setPeso(peso);
-                if (seleccionada.getDueno() != dueno) {
-                    sistema.cambiarDueno(seleccionada, dueno);
-                }
-                actualizarDatosEspecie(seleccionada, dato1, dato2, marca);
-                sistema.guardarTodo();
+                sistema.modificarMascota(seleccionada, nombre, nacimiento, peso, observaciones, ultimoControl,
+                        datoPropio, castrado);
                 JOptionPane.showMessageDialog(this, "Mascota modificada.");
             }
             cargarTabla();
             limpiar();
         } catch (DatoInvalidoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void actualizarDatosEspecie(Mascota m, String dato1, String dato2, boolean marca) {
-        if (m instanceof Perro) {
-            ((Perro) m).setRaza(dato1);
-            ((Perro) m).setTamanio(dato2);
-        } else if (m instanceof Gato) {
-            ((Gato) m).setRaza(dato1);
-            ((Gato) m).setEsCastrado(marca);
-        } else if (m instanceof Conejo) {
-            ((Conejo) m).setRaza(dato1);
-            ((Conejo) m).setDieta(dato2);
-        } else if (m instanceof Ave) {
-            ((Ave) m).setTipoAve(dato1);
-            ((Ave) m).setPuedeVolar(marca);
         }
     }
 
@@ -298,7 +339,7 @@ public class VentanaMascotas extends JFrame {
             return;
         }
         try {
-            sistema.eliminarMascota(seleccionada);
+            sistema.bajaMascota(seleccionada);
             cargarTabla();
             limpiar();
         } catch (DatoInvalidoException ex) {
@@ -306,15 +347,22 @@ public class VentanaMascotas extends JFrame {
         }
     }
 
+    // Abre el diálogo modal de vacunas. Como es modal, el código sigue recién cuando se cierra.
     private void abrirVacunas() {
         if (seleccionada == null) {
             JOptionPane.showMessageDialog(this, "Primero elegí una mascota de la tabla.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
+        // Interfaz: solo perros y gatos son Vacunable
+        if (!(seleccionada instanceof Vacunable)) {
+            JOptionPane.showMessageDialog(this, "Los animales de especie " + seleccionada.getEspecie().getNombreVisible()
+                    + " no tienen vacunas obligatorias:\npara ingresar necesitan un control veterinario reciente.",
+                    "Vacunas", JOptionPane.INFORMATION_MESSAGE);
+        }
         DialogoVacunas dialogo = new DialogoVacunas(this, seleccionada);
-        dialogo.setVisible(true); // es modal: el código sigue cuando se cierra el diálogo
-        cargarTabla();
+        dialogo.setVisible(true);
+        cargarTabla(); // la columna "Puede ingresar hoy" puede haber cambiado
         limpiar();
     }
 }

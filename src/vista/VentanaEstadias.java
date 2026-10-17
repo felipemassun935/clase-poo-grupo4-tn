@@ -1,314 +1,330 @@
 package vista;
 
-import java.time.LocalDate;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.SistemaGuarderia;
 import excepciones.DatoInvalidoException;
-import excepciones.VacunacionVencidaException;
-import modelo.Empleado;
-import modelo.EntradaBitacora;
-import modelo.Estadia;
-import modelo.Gravedad;
-import modelo.MedioPago;
-import modelo.Pago;
-import modelo.RegistroComida;
-import modelo.RegistroIncidente;
-import modelo.RegistroMedicacion;
-import modelo.Reserva;
-import util.Fechas;
+import excepciones.IngresoRechazadoException;
+import modelo.enums.EstadoReserva;
+import modelo.enums.TipoRegistro;
+import modelo.persona.Empleado;
+import modelo.reserva.Reserva;
 
-// Pantalla de negocio 2: check-in, bitácora diaria y check-out con cobro
+// Pantalla de negocio 2: check-in, registros del día a día (bitácora) y check-out con cobro
 public class VentanaEstadias extends JFrame {
-    private static final long serialVersionUID = 1L; // lo pide Swing/Exception, Eclipse avisa si falta
+    private static final long serialVersionUID = 1L; // Eclipse avisa si falta en una ventana
+    // Medios de pago que se ofrecen en la lista del showInputDialog
+    private static final String[] MEDIOS_DE_PAGO = { "Efectivo", "Débito", "Crédito", "Transferencia" };
+
     private SistemaGuarderia sistema;
-    private ArrayList<Estadia> activas = new ArrayList<>(); // lo que se ve en la tabla
+    private List<Reserva> confirmadas; // filas de la tabla de check-in, en el mismo orden
+    private List<Reserva> enCurso;     // filas de la tabla de estadías, en el mismo orden
 
     private JComboBox<Empleado> cmbEmpleado;
-    private JComboBox<Reserva> cmbReserva;
-    private JTable tabla;
-    private DefaultTableModel modeloTabla;
+    private JTable tablaConfirmadas;
+    private DefaultTableModel modeloConfirmadas;
+    private JTable tablaEnCurso;
+    private DefaultTableModel modeloEnCurso;
     private JTextArea txtBitacora;
 
     public VentanaEstadias() {
         sistema = SistemaGuarderia.getInstancia();
+        confirmadas = new ArrayList<Reserva>();
+        enCurso = new ArrayList<Reserva>();
 
-        setTitle("Check-in / Estadías");
-        setSize(1000, 640);
+        setTitle("Check-in y estadías");
+        setSize(1100, 760);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
         JLabel lblEmpleado = new JLabel("Empleado que opera:");
-        lblEmpleado.setBounds(15, 10, 150, 25);
+        lblEmpleado.setBounds(20, 10, 150, 25);
         getContentPane().add(lblEmpleado);
-        cmbEmpleado = new JComboBox<>();
+        cmbEmpleado = new JComboBox<Empleado>();
         for (Empleado e : sistema.getEmpleados()) {
             cmbEmpleado.addItem(e);
         }
-        cmbEmpleado.setBounds(165, 10, 300, 25);
+        cmbEmpleado.setBounds(170, 10, 300, 25);
         getContentPane().add(cmbEmpleado);
 
-        // ----- Check-in -----
-        JPanel panelCheckIn = new JPanel();
-        panelCheckIn.setLayout(null);
-        panelCheckIn.setBorder(BorderFactory.createTitledBorder("Check-in (se controlan las vacunas)"));
-        panelCheckIn.setBounds(10, 45, 965, 70);
-        getContentPane().add(panelCheckIn);
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(930, 10, 140, 25);
+        getContentPane().add(btnActualizar);
 
-        cmbReserva = new JComboBox<>();
-        cmbReserva.setBounds(15, 27, 600, 28);
-        panelCheckIn.add(cmbReserva);
+        // ----- Check-in -----
+        JLabel lblCheckIn = new JLabel("Reservas confirmadas (esperando check-in)");
+        lblCheckIn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblCheckIn.setBounds(20, 45, 500, 25);
+        getContentPane().add(lblCheckIn);
+
+        modeloConfirmadas = new DefaultTableModel(new String[] { "Id", "Mascota", "Especie", "Cliente", "Sucursal",
+                "Alojamiento", "Desde", "Hasta" }, 0);
+        tablaConfirmadas = new JTable(modeloConfirmadas);
+        tablaConfirmadas.setDefaultEditor(Object.class, null);
+        tablaConfirmadas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollConfirmadas = new JScrollPane(tablaConfirmadas);
+        scrollConfirmadas.setBounds(20, 75, 880, 150);
+        getContentPane().add(scrollConfirmadas);
 
         JButton btnCheckIn = new JButton("Hacer check-in");
-        btnCheckIn.setBounds(630, 27, 180, 28);
-        panelCheckIn.add(btnCheckIn);
+        btnCheckIn.setBounds(910, 75, 160, 30);
+        getContentPane().add(btnCheckIn);
 
-        // ----- Estadías activas -----
-        JLabel lblActivas = new JLabel("Mascotas en la guardería ahora (elegí una para ver su bitácora)");
-        lblActivas.setBounds(15, 125, 600, 25);
-        getContentPane().add(lblActivas);
+        // ----- Estadías en curso -----
+        JLabel lblEnCurso = new JLabel("Estadías en curso");
+        lblEnCurso.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblEnCurso.setBounds(20, 240, 500, 25);
+        getContentPane().add(lblEnCurso);
 
-        modeloTabla = new DefaultTableModel(new String[] { "N°", "Mascota", "Especie", "Lugar", "Ingresó",
-                "Se va", "A cobrar" }, 0);
-        tabla = new JTable(modeloTabla);
-        tabla.setDefaultEditor(Object.class, null);
-        JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBounds(10, 150, 600, 380);
-        getContentPane().add(scroll);
+        modeloEnCurso = new DefaultTableModel(new String[] { "Id", "Mascota", "Cliente", "Sucursal", "Alojamiento",
+                "Desde", "Hasta", "Total", "Pagado", "Saldo" }, 0);
+        tablaEnCurso = new JTable(modeloEnCurso);
+        tablaEnCurso.setDefaultEditor(Object.class, null);
+        tablaEnCurso.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollEnCurso = new JScrollPane(tablaEnCurso);
+        scrollEnCurso.setBounds(20, 270, 880, 180);
+        getContentPane().add(scrollEnCurso);
 
-        JLabel lblBitacora = new JLabel("Bitácora diaria");
-        lblBitacora.setBounds(625, 125, 300, 25);
+        JButton btnRegistro = new JButton("Agregar registro");
+        btnRegistro.setBounds(910, 270, 160, 30);
+        getContentPane().add(btnRegistro);
+
+        JButton btnCheckOut = new JButton("Check-out y cobro");
+        btnCheckOut.setBounds(910, 310, 160, 30);
+        getContentPane().add(btnCheckOut);
+
+        JLabel lblBitacora = new JLabel("Bitácora de la estadía elegida");
+        lblBitacora.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblBitacora.setBounds(20, 465, 500, 25);
         getContentPane().add(lblBitacora);
 
         txtBitacora = new JTextArea();
         txtBitacora.setEditable(false);
-        txtBitacora.setLineWrap(true);
-        txtBitacora.setWrapStyleWord(true); // corta por palabra, no por letra
         JScrollPane scrollBitacora = new JScrollPane(txtBitacora);
-        scrollBitacora.setBounds(625, 150, 350, 230);
+        scrollBitacora.setBounds(20, 495, 1050, 210);
         getContentPane().add(scrollBitacora);
 
-        JButton btnComida = new JButton("Registrar comida");
-        btnComida.setBounds(625, 390, 170, 30);
-        getContentPane().add(btnComida);
+        // Eventos (listeners con clases anónimas)
+        btnActualizar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cargarTablas();
+            }
+        });
+        btnCheckIn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hacerCheckIn();
+            }
+        });
+        btnRegistro.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                agregarRegistro();
+            }
+        });
+        btnCheckOut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hacerCheckOut();
+            }
+        });
+        tablaEnCurso.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                mostrarBitacora();
+            }
+        });
 
-        JButton btnMedicacion = new JButton("Registrar medicación");
-        btnMedicacion.setBounds(805, 390, 170, 30);
-        getContentPane().add(btnMedicacion);
-
-        JButton btnIncidente = new JButton("Registrar incidente");
-        btnIncidente.setBounds(625, 430, 170, 30);
-        getContentPane().add(btnIncidente);
-
-        JButton btnCheckOut = new JButton("Check-out y cobro");
-        btnCheckOut.setBounds(625, 490, 350, 40);
-        getContentPane().add(btnCheckOut);
-
-        btnCheckIn.addActionListener(e -> hacerCheckIn());
-        btnComida.addActionListener(e -> registrarComida());
-        btnMedicacion.addActionListener(e -> registrarMedicacion());
-        btnIncidente.addActionListener(e -> registrarIncidente());
-        btnCheckOut.addActionListener(e -> hacerCheckOut());
-        tabla.getSelectionModel().addListSelectionListener(e -> mostrarBitacora());
-
-        cargarDatos();
+        cargarTablas();
     }
 
-    private void cargarDatos() {
-        cmbReserva.removeAllItems();
-        for (Reserva r : sistema.getReservasConfirmadas()) {
-            cmbReserva.addItem(r);
+    // Arma las dos tablas: reservas CONFIRMADAS y EN_CURSO
+    private void cargarTablas() {
+        confirmadas = new ArrayList<Reserva>();
+        enCurso = new ArrayList<Reserva>();
+        for (Reserva r : sistema.getReservas()) {
+            if (r.getEstado() == EstadoReserva.CONFIRMADA) {
+                confirmadas.add(r);
+            } else if (r.getEstado() == EstadoReserva.EN_CURSO) {
+                enCurso.add(r);
+            }
         }
 
-        activas = sistema.getEstadiasActivas();
-        modeloTabla.setRowCount(0);
-        for (Estadia e : activas) {
-            Reserva r = e.getReserva();
-            modeloTabla.addRow(new Object[] { e.getIdEstadia(), r.getMascota().getNombre(),
-                    r.getMascota().getEspecie(), r.getAlojamiento().getCodigo(), Fechas.formatear(e.getIngreso()),
-                    Fechas.formatear(r.getFechaHasta()), "$" + String.format("%.2f", e.calcularTotal()) });
+        modeloConfirmadas.setRowCount(0);
+        for (Reserva r : confirmadas) {
+            modeloConfirmadas.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
+                    r.getMascota().getEspecie().getNombreVisible(), r.getMascota().getCliente().getNombreCompleto(),
+                    r.getAlojamiento().getSucursal().getNombre(), r.getAlojamiento().getCodigo(),
+                    Validaciones.formatearFecha(r.getFechaDesde()), Validaciones.formatearFecha(r.getFechaHasta()) });
+        }
+
+        modeloEnCurso.setRowCount(0);
+        for (Reserva r : enCurso) {
+            modeloEnCurso.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
+                    r.getMascota().getCliente().getNombreCompleto(), r.getAlojamiento().getSucursal().getNombre(),
+                    r.getAlojamiento().getCodigo(), Validaciones.formatearFecha(r.getFechaDesde()),
+                    Validaciones.formatearFecha(r.getFechaHasta()), Validaciones.plata(r.calcularTotal()),
+                    Validaciones.plata(r.getTotalPagado()), Validaciones.plata(r.getSaldoPendiente()) });
         }
         txtBitacora.setText("");
     }
 
-    // Devuelve la estadía elegida en la tabla, o null (y avisa) si no hay ninguna
-    private Estadia getEstadiaSeleccionada() {
-        int fila = tabla.getSelectedRow();
+    // Devuelve la estadía elegida en la tabla de abajo, o null si no hay ninguna (y avisa)
+    private Reserva getEstadiaElegida() {
+        int fila = tablaEnCurso.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Primero elegí una mascota de la tabla.", "Atención",
+            JOptionPane.showMessageDialog(this, "Primero elegí una estadía en curso.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
             return null;
         }
-        return activas.get(fila);
+        return enCurso.get(fila);
     }
 
-    private Empleado getEmpleado() {
-        Empleado e = (Empleado) cmbEmpleado.getSelectedItem();
-        if (e == null) {
-            JOptionPane.showMessageDialog(this, "No hay empleados cargados.", "Atención", JOptionPane.WARNING_MESSAGE);
-        }
-        return e;
-    }
-
-    private void hacerCheckIn() {
-        Reserva r = (Reserva) cmbReserva.getSelectedItem();
-        Empleado empleado = getEmpleado();
-        if (r == null || empleado == null) {
-            return;
-        }
-        try {
-            Estadia est = sistema.realizarCheckIn(r, empleado);
-            JOptionPane.showMessageDialog(this, r.getMascota().getNombre() + " ingresó a "
-                    + r.getAlojamiento().getCodigo() + ". Estadía N° " + est.getIdEstadia(),
-                    "Check-in realizado", JOptionPane.INFORMATION_MESSAGE);
-            cargarDatos();
-        } catch (VacunacionVencidaException ex) {
-            // Nuestra excepción personalizada: la mascota no puede entrar
-            JOptionPane.showMessageDialog(this, ex.getMessage()
-                    + "\n\nCargá las vacunas en el ABM de Mascotas antes de recibirla.",
-                    "Vacunas vencidas", JOptionPane.ERROR_MESSAGE);
-        } catch (DatoInvalidoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
+    // Muestra todos los registros de la estadía elegida, uno por línea
     private void mostrarBitacora() {
-        int fila = tabla.getSelectedRow();
+        int fila = tablaEnCurso.getSelectedRow();
         if (fila == -1) {
+            txtBitacora.setText("");
             return;
         }
-        Estadia est = activas.get(fila);
+        Reserva r = enCurso.get(fila);
         String texto = "";
-        for (EntradaBitacora entrada : est.getBitacora()) {
-            texto = texto + entrada.toString() + "\n\n"; // cada tipo de entrada arma su propio resumen
+        for (Reserva.RegistroDiario reg : r.getRegistros()) {
+            texto = texto + reg.getResumen() + "\n";
         }
         if (texto.isEmpty()) {
-            texto = "Todavía no hay registros.";
+            texto = "Todavía no hay registros para " + r.getMascota().getNombre() + ".";
         }
         txtBitacora.setText(texto);
     }
 
-    private void registrarComida() {
-        Estadia est = getEstadiaSeleccionada();
-        Empleado empleado = getEmpleado();
-        if (est == null || empleado == null) {
+    private void hacerCheckIn() {
+        int fila = tablaConfirmadas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Primero elegí una reserva confirmada.", "Atención",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String alimento = JOptionPane.showInputDialog(this, "¿Qué comió?", "Registrar comida",
-                JOptionPane.QUESTION_MESSAGE);
-        if (alimento == null || alimento.trim().isEmpty()) {
-            return; // apretó Cancelar
-        }
-        String textoGramos = JOptionPane.showInputDialog(this, "¿Cuántos gramos?", "Registrar comida",
-                JOptionPane.QUESTION_MESSAGE);
-        if (textoGramos == null) {
-            return;
-        }
+        Reserva r = confirmadas.get(fila);
+        // try/catch: si la mascota no cumple los requisitos se atrapa la excepción propia
+        // IngresoRechazadoException, que trae la lista de problemas en el mensaje
         try {
-            double gramos = Double.parseDouble(textoGramos.replace(",", "."));
-            int comioTodo = JOptionPane.showConfirmDialog(this, "¿Comió todo?", "Registrar comida",
-                    JOptionPane.YES_NO_OPTION);
-            RegistroComida registro = new RegistroComida(LocalDate.now(), empleado, alimento.trim(), gramos,
-                    comioTodo == JOptionPane.YES_OPTION);
-            sistema.registrarEnBitacora(est, registro);
-            mostrarBitacora();
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Los gramos tienen que ser un número.", "Dato inválido",
+            sistema.checkIn(r);
+            JOptionPane.showMessageDialog(this, "Check-in hecho: " + r.getMascota().getNombre() + " ya está en "
+                    + r.getAlojamiento().getCodigo() + ".");
+            cargarTablas();
+        } catch (IngresoRechazadoException ex) {
+            JOptionPane.showMessageDialog(this, r.getMascota().getNombre() + " no puede ingresar:\n\n"
+                    + ex.getMessage(), "Ingreso rechazado", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se puede hacer el check-in",
                     JOptionPane.ERROR_MESSAGE);
-        } catch (DatoInvalidoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void registrarMedicacion() {
-        Estadia est = getEstadiaSeleccionada();
-        Empleado empleado = getEmpleado();
-        if (est == null || empleado == null) {
+    private void agregarRegistro() {
+        Reserva r = getEstadiaElegida();
+        if (r == null) {
             return;
         }
-        String medicamento = JOptionPane.showInputDialog(this, "Medicamento:", "Registrar medicación",
-                JOptionPane.QUESTION_MESSAGE);
-        if (medicamento == null || medicamento.trim().isEmpty()) {
-            return;
-        }
-        String dosis = JOptionPane.showInputDialog(this, "Dosis:", "Registrar medicación",
-                JOptionPane.QUESTION_MESSAGE);
-        if (dosis == null || dosis.trim().isEmpty()) {
-            return;
-        }
-        try {
-            sistema.registrarEnBitacora(est,
-                    new RegistroMedicacion(LocalDate.now(), empleado, medicamento.trim(), dosis.trim()));
-            mostrarBitacora();
-        } catch (DatoInvalidoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "No permitido", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+        Empleado empleado = (Empleado) cmbEmpleado.getSelectedItem();
 
-    private void registrarIncidente() {
-        Estadia est = getEstadiaSeleccionada();
-        Empleado empleado = getEmpleado();
-        if (est == null || empleado == null) {
-            return;
+        // showInputDialog con una lista: muestra los valores del enum TipoRegistro
+        TipoRegistro[] tipos = TipoRegistro.values();
+        Object elegido = JOptionPane.showInputDialog(this, "Tipo de registro:", "Nuevo registro",
+                JOptionPane.QUESTION_MESSAGE, null, tipos, tipos[0]);
+        if (elegido == null) {
+            return; // el usuario apretó "Cancelar"
         }
-        String descripcion = JOptionPane.showInputDialog(this, "¿Qué pasó?", "Registrar incidente",
-                JOptionPane.QUESTION_MESSAGE);
-        if (descripcion == null || descripcion.trim().isEmpty()) {
-            return;
-        }
-        // Diálogo con una lista desplegable para elegir la gravedad
-        Gravedad gravedad = (Gravedad) JOptionPane.showInputDialog(this, "Gravedad:", "Registrar incidente",
-                JOptionPane.QUESTION_MESSAGE, null, Gravedad.values(), Gravedad.LEVE);
-        if (gravedad == null) {
+        TipoRegistro tipo = (TipoRegistro) elegido;
+
+        String descripcion = JOptionPane.showInputDialog(this, "Descripción:");
+        if (descripcion == null) {
             return;
         }
         try {
-            RegistroIncidente incidente = new RegistroIncidente(LocalDate.now(), empleado, descripcion.trim(), gravedad);
-            sistema.registrarEnBitacora(est, incidente);
-            mostrarBitacora();
-            if (incidente.hayQueAvisarAlDueno()) {
-                JOptionPane.showMessageDialog(this, "Incidente GRAVE: avisar al dueño.\n"
-                        + est.getReserva().getMascota().getDueno().getNombreCompleto() + " - Tel: "
-                        + est.getReserva().getMascota().getDueno().getTelefono(),
-                        "Avisar al dueño", JOptionPane.WARNING_MESSAGE);
+            sistema.agregarRegistro(r, tipo, descripcion, empleado);
+            if (tipo.requiereAviso()) {
+                JOptionPane.showMessageDialog(this, "Se avisó al cliente y al encargado de la sucursal.", "Aviso",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
+            mostrarBitacora();
         } catch (DatoInvalidoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // Muestra total, pagado y saldo; si hay saldo lo cobra; después hace el check-out y muestra el comprobante
     private void hacerCheckOut() {
-        Estadia est = getEstadiaSeleccionada();
-        if (est == null) {
+        Reserva r = getEstadiaElegida();
+        if (r == null) {
             return;
         }
-        MedioPago medio = (MedioPago) JOptionPane.showInputDialog(this,
-                "Total a cobrar: $" + String.format("%.2f", est.calcularTotal()) + "\n¿Con qué paga?",
-                "Check-out", JOptionPane.QUESTION_MESSAGE, null, MedioPago.values(), MedioPago.EFECTIVO);
-        if (medio == null) {
-            return;
+        String resumen = "Total: " + Validaciones.plata(r.calcularTotal()) + "\nPagado: "
+                + Validaciones.plata(r.getTotalPagado()) + "\nSaldo: " + Validaciones.plata(r.getSaldoPendiente());
+
+        try {
+            if (r.getSaldoPendiente() > 0) {
+                Object medio = JOptionPane.showInputDialog(this, resumen + "\n\nMedio de pago para cobrar el saldo:",
+                        "Check-out y cobro", JOptionPane.QUESTION_MESSAGE, null, MEDIOS_DE_PAGO, MEDIOS_DE_PAGO[0]);
+                if (medio == null) {
+                    return; // el usuario apretó "Cancelar"
+                }
+                sistema.registrarPago(r, r.getSaldoPendiente(), medio.toString());
+            } else {
+                int respuesta = JOptionPane.showConfirmDialog(this, resumen + "\n\n¿Hacer el check-out?",
+                        "Check-out", JOptionPane.YES_NO_OPTION);
+                if (respuesta != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+
+            // try/catch: si quedara saldo o el estado no lo permite, la Reserva tira IllegalStateException
+            sistema.checkOut(r);
+            JOptionPane.showMessageDialog(this, armarComprobante(r), "Comprobante", JOptionPane.INFORMATION_MESSAGE);
+            cargarTablas();
+        } catch (DatoInvalidoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se puede hacer el check-out",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Confirmar el cobro y la salida de "
-                + est.getReserva().getMascota().getNombre() + "?", "Check-out", JOptionPane.YES_NO_OPTION);
-        if (respuesta != JOptionPane.YES_OPTION) {
-            return;
+    }
+
+    // Arma el texto del comprobante con todos los pagos de la reserva
+    private String armarComprobante(Reserva r) {
+        String texto = "COMPROBANTE - Reserva " + r.getId() + "\n\n";
+        texto = texto + "Cliente: " + r.getMascota().getCliente().getNombreCompleto() + "\n";
+        texto = texto + "Mascota: " + r.getMascota().getNombre() + "\n";
+        texto = texto + "Sucursal: " + r.getAlojamiento().getSucursal().getNombre() + "\n";
+        texto = texto + "Alojamiento: " + r.getAlojamiento().getCodigo() + " (" + r.getAlojamiento().getCategoria()
+                + ")\n";
+        texto = texto + "Estadía: " + Validaciones.formatearFecha(r.getFechaDesde()) + " al "
+                + Validaciones.formatearFecha(r.getFechaHasta()) + "\n";
+        texto = texto + r.getCantidadNoches() + " noches x " + Validaciones.plata(r.getAlojamiento().getPrecioNoche())
+                + "\n\n";
+        texto = texto + "Pagos:\n";
+        for (Reserva.Pago p : r.getPagos()) {
+            texto = texto + "   " + Validaciones.formatearFecha(p.getFecha()) + "  " + Validaciones.plata(p.getMonto())
+                    + "  (" + p.getMedio() + ")\n";
         }
-        Pago pago = sistema.realizarCheckOut(est, medio);
-        JOptionPane.showMessageDialog(this, pago.generarComprobante(est), "Comprobante",
-                JOptionPane.INFORMATION_MESSAGE);
-        cargarDatos();
+        texto = texto + "\nTotal: " + Validaciones.plata(r.calcularTotal());
+        texto = texto + "\nPagado: " + Validaciones.plata(r.getTotalPagado());
+        texto = texto + "\nEstado: " + r.getEstado();
+        return texto;
     }
 }

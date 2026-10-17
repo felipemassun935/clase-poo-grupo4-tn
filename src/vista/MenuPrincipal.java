@@ -1,6 +1,9 @@
 package vista;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -8,11 +11,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import controlador.SistemaGuarderia;
-import modelo.Especie;
-import modelo.Sucursal;
+import modelo.enums.Especie;
+import modelo.sucursal.Sucursal;
 
+// Ventana principal: tiene un botón para abrir cada pantalla del sistema
 public class MenuPrincipal extends JFrame {
-    private static final long serialVersionUID = 1L; // lo pide Swing/Exception, Eclipse avisa si falta
+    private static final long serialVersionUID = 1L; // Eclipse avisa si falta en una ventana
     private SistemaGuarderia sistema;
 
     public MenuPrincipal() {
@@ -30,9 +34,9 @@ public class MenuPrincipal extends JFrame {
         lblTitulo.setBounds(30, 20, 460, 30);
         getContentPane().add(lblTitulo);
 
-        JLabel lblSucursal = new JLabel(sistema.getSucursal().getNombre() + " - " + sistema.getSucursal().getDireccion());
-        lblSucursal.setBounds(30, 52, 460, 20);
-        getContentPane().add(lblSucursal);
+        JLabel lblSucursales = new JLabel("Sucursales: " + sistema.getSucursales().size());
+        lblSucursales.setBounds(30, 52, 460, 20);
+        getContentPane().add(lblSucursales);
 
         // ABM (alta, baja y modificación)
         JLabel lblAbm = new JLabel("Administración");
@@ -40,7 +44,7 @@ public class MenuPrincipal extends JFrame {
         lblAbm.setBounds(30, 90, 200, 20);
         getContentPane().add(lblAbm);
 
-        JButton btnDuenos = crearBoton("Dueños", 30, 120);
+        JButton btnClientes = crearBoton("Clientes", 30, 120);
         JButton btnMascotas = crearBoton("Mascotas", 260, 120);
         JButton btnEmpleados = crearBoton("Empleados", 30, 170);
         JButton btnAlojamientos = crearBoton("Alojamientos", 260, 170);
@@ -56,19 +60,51 @@ public class MenuPrincipal extends JFrame {
         JButton btnOcupacion = crearBoton("Ver ocupación", 30, 310);
         JButton btnSalir = crearBoton("Salir", 260, 310);
 
-        // Cada botón abre su ventana
-        btnDuenos.addActionListener(e -> new VentanaDuenos().setVisible(true));
-        btnMascotas.addActionListener(e -> new VentanaMascotas().setVisible(true));
-        btnEmpleados.addActionListener(e -> new VentanaEmpleados().setVisible(true));
-        btnAlojamientos.addActionListener(e -> new VentanaAlojamientos().setVisible(true));
-        btnReservas.addActionListener(e -> new VentanaReservas().setVisible(true));
-        btnEstadias.addActionListener(e -> new VentanaEstadias().setVisible(true));
-        btnOcupacion.addActionListener(e -> mostrarOcupacion());
-        btnSalir.addActionListener(e -> salir());
-
         JLabel lblPie = new JLabel("TPO Paradigma Orientado a Objetos - UADE 2026");
         lblPie.setBounds(30, 380, 460, 20);
         getContentPane().add(lblPie);
+
+        // Eventos: cada botón abre su ventana (listeners con clases anónimas)
+        btnClientes.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaClientes().setVisible(true);
+            }
+        });
+        btnMascotas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaMascotas().setVisible(true);
+            }
+        });
+        btnEmpleados.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaEmpleados().setVisible(true);
+            }
+        });
+        btnAlojamientos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaAlojamientos().setVisible(true);
+            }
+        });
+        btnReservas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaReservas().setVisible(true);
+            }
+        });
+        btnEstadias.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaEstadias().setVisible(true);
+            }
+        });
+        btnOcupacion.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mostrarOcupacion();
+            }
+        });
+        btnSalir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                salir();
+            }
+        });
     }
 
     private JButton crearBoton(String texto, int x, int y) {
@@ -78,22 +114,26 @@ public class MenuPrincipal extends JFrame {
         return boton;
     }
 
-    // Control de ocupación: porcentaje general y por especie
+    // Control de ocupación: para cada sucursal, "ocupados/capacidad" de cada especie
     private void mostrarOcupacion() {
-        Sucursal s = sistema.getSucursal();
-        String texto = "Ocupación general: " + String.format("%.0f", s.calcularOcupacion()) + "%\n\n";
-        for (Especie esp : Especie.values()) {
-            texto = texto + esp + ": " + String.format("%.0f", s.calcularOcupacion(esp)) + "%\n";
+        String texto = "";
+        for (Sucursal s : sistema.getSucursales()) {
+            texto = texto + s.getNombre() + "\n";
+            Map<Especie, String> ocupacion = sistema.getOcupacion(s);
+            for (Especie e : Especie.values()) {
+                texto = texto + "   " + e.getNombreVisible() + ": " + ocupacion.get(e) + "\n";
+            }
+            texto = texto + "\n";
         }
-        texto = texto + "\nMascotas alojadas ahora: " + sistema.getEstadiasActivas().size();
+        texto = texto + "(alojados ahora / alojamientos activos)";
         JOptionPane.showMessageDialog(this, texto, "Control de ocupación", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // Los datos ya se guardan después de cada cambio, así que solo hay que cerrar
     private void salir() {
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que querés salir?", "Salir",
                 JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
-            sistema.guardarTodo();
             System.exit(0);
         }
     }
