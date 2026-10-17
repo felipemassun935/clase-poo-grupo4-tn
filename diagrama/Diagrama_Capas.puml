@@ -1,0 +1,97 @@
+@startuml Diagrama_Capas
+title Sistema de Gestión para Guarderías de Mascotas — Capas y cómo usan al modelo
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor #EEF2F5
+  BorderColor #4A5A66
+}
+hide empty members
+
+package "app" {
+  class Main {
+    + {static} main(args: String[]): void
+  }
+}
+
+package "vista" {
+  class MenuPrincipal
+  class "VentanaClientes\nVentanaMascotas\nVentanaEmpleados\nVentanaAlojamientos" as ABM <<4 ABM>>
+  class "VentanaReservas\nVentanaEstadias" as Negocio <<2 pantallas de negocio>>
+  class DialogoVacunas <<JDialog modal>>
+  class Validaciones {
+    + {static} texto(valor: String, campo: String): String
+    + {static} numero(valor: String, campo: String): double
+    + {static} entero(valor: String, campo: String): int
+    + {static} parsearFecha(valor: String, campo: String): LocalDate
+    + {static} formatearFecha(fecha: LocalDate): String
+  }
+}
+
+package "controlador" {
+  class SistemaGuarderia <<Controlador>> <<Singleton>> {
+    - {static} instancia: SistemaGuarderia
+    - sucursales: List<Sucursal>
+    - empleados: List<Empleado>
+    - clientes: List<Cliente>
+    - mascotas: List<Mascota>
+    - reservas: List<Reserva>
+    - SistemaGuarderia()
+    + {static} getInstancia(): SistemaGuarderia
+    + altaCliente(...) / altaMascota(...) / altaEmpleado(...) / altaAlojamiento(...)
+    + buscarDisponibles(s, m, desde, hasta): List<Alojamiento>
+    + reservar(m, a, desde, hasta): Reserva
+    + confirmar(r) / cancelar(r) / checkIn(r) / checkOut(r)
+    + agregarRegistro(r, tipo, descripcion, empleado): void
+    + registrarPago(r, monto, medio): void
+    + getOcupacion(s: Sucursal): Map<Especie, String>
+  }
+}
+
+package "persistencia" {
+  class ArchivoDatos {
+    + cargar(sucursales, empleados, clientes, mascotas, reservas): void
+    + guardar(sucursales, empleados, clientes, mascotas, reservas): void
+    - leerLineas(ruta: String): List<String>
+    - escribirLineas(ruta: String, lineas: List<String>): void
+  }
+}
+
+package "excepciones" {
+  class IngresoRechazadoException {
+    - problemas: List<String>
+  }
+  class DatoInvalidoException
+  IngresoRechazadoException -[hidden]- DatoInvalidoException
+}
+
+package "modelo" <<Rectangle>> {
+  class "persona · mascota · sucursal\nreserva · interfaces · enums" as Modelo <<21 clases, ver Diagrama_de_Clases>>
+}
+
+note "datos/*.txt\n(un archivo por tabla, campos separados por ;)" as Archivos
+
+Main ..> MenuPrincipal : abre
+MenuPrincipal ..> ABM : abre
+MenuPrincipal ..> Negocio : abre
+ABM ..> DialogoVacunas : abre
+ABM ..> Validaciones
+Negocio ..> Validaciones
+
+ABM --> SistemaGuarderia : getInstancia()
+Negocio --> SistemaGuarderia : getInstancia()
+ABM ..> Modelo : muestra
+Negocio ..> Modelo : muestra
+
+SistemaGuarderia --> Modelo : guarda las listas\ny delega
+SistemaGuarderia --> ArchivoDatos : guarda después\nde cada cambio
+ArchivoDatos ..> Modelo : arma los objetos\ny sus referencias
+ArchivoDatos .. Archivos
+
+Modelo ..> IngresoRechazadoException : Reserva.realizarCheckIn()\nla lanza
+SistemaGuarderia ..> DatoInvalidoException : lanza
+Validaciones ..> DatoInvalidoException : lanza
+Negocio ..> IngresoRechazadoException : atrapa
+
+@enduml
