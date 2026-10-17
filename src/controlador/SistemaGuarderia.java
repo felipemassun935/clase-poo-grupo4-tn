@@ -2,63 +2,60 @@ package controlador;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import excepciones.AlojamientoNoDisponibleException;
 import excepciones.DatoInvalidoException;
-import excepciones.VacunacionVencidaException;
-import modelo.Alojamiento;
-import modelo.Dueno;
-import modelo.Empleado;
-import modelo.EntradaBitacora;
-import modelo.Especie;
-import modelo.Estadia;
-import modelo.EstadoReserva;
-import modelo.Mascota;
-import modelo.MedioPago;
-import modelo.Pago;
-import modelo.RegistroMedicacion;
-import modelo.Reserva;
-import modelo.ReservaGuarderiaDiurna;
-import modelo.ReservaHospedaje;
-import modelo.Sucursal;
-import persistencia.RepositorioAlojamientos;
-import persistencia.RepositorioDuenos;
-import persistencia.RepositorioEmpleados;
-import persistencia.RepositorioEstadias;
-import persistencia.RepositorioMascotas;
-import persistencia.RepositorioReservas;
+import excepciones.IngresoRechazadoException;
+import modelo.enums.Categoria;
+import modelo.enums.Especie;
+import modelo.enums.EstadoReserva;
+import modelo.enums.TipoRegistro;
+import modelo.mascota.Ave;
+import modelo.mascota.Conejo;
+import modelo.mascota.Gato;
+import modelo.mascota.Mascota;
+import modelo.mascota.Perro;
+import modelo.persona.Cliente;
+import modelo.persona.Empleado;
+import modelo.reserva.Reserva;
+import modelo.sucursal.Alojamiento;
+import modelo.sucursal.Sucursal;
+import persistencia.ArchivoDatos;
 
 /*
  * Controlador del sistema (patrón GRASP Controlador).
- * Las pantallas no tocan las listas ni los archivos directamente:
- * le piden todo a esta clase.
+ * Las pantallas no tocan las listas ni los archivos directamente: le piden todo a esta clase.
+ * Acá se hacen las validaciones de los formularios y, después de cada cambio, se guardan los archivos.
  *
- * También es un Singleton: hay un solo objeto SistemaGuarderia en todo el programa,
+ * Singleton: hay un solo objeto SistemaGuarderia en todo el programa
  * y todas las pantallas lo obtienen con SistemaGuarderia.getInstancia().
  */
 public class SistemaGuarderia {
-    private static SistemaGuarderia instancia; // la única instancia
+    private static SistemaGuarderia instancia; // la única instancia (Singleton)
 
-    private Sucursal sucursal;
-    private ArrayList<Dueno> duenos;
-    private ArrayList<Empleado> empleados;
-    private ArrayList<Mascota> mascotas;
-    private ArrayList<Reserva> reservas;
-    private ArrayList<Estadia> estadias;
+    private List<Sucursal> sucursales;
+    private List<Empleado> empleados;
+    private List<Cliente> clientes;
+    private List<Mascota> mascotas;
+    private List<Reserva> reservas;
+    // Los alojamientos no tienen lista propia: se acceden por cada sucursal
 
-    private RepositorioDuenos repoDuenos;
-    private RepositorioEmpleados repoEmpleados;
-    private RepositorioMascotas repoMascotas;
-    private RepositorioAlojamientos repoAlojamientos;
-    private RepositorioReservas repoReservas;
-    private RepositorioEstadias repoEstadias;
+    private ArchivoDatos archivo;
 
-    // Constructor privado: desde afuera no se puede hacer "new SistemaGuarderia()"
+    // Singleton: el constructor es privado, desde afuera no se puede hacer "new SistemaGuarderia()"
     private SistemaGuarderia() {
-        sucursal = new Sucursal(1, "Patitas Felices - Belgrano", "Av. Cabildo 1234, CABA", "11-4785-0000");
-        cargarDatos();
+        sucursales = new ArrayList<Sucursal>();
+        empleados = new ArrayList<Empleado>();
+        clientes = new ArrayList<Cliente>();
+        mascotas = new ArrayList<Mascota>();
+        reservas = new ArrayList<Reserva>();
+        archivo = new ArchivoDatos();
+        archivo.cargar(sucursales, empleados, clientes, mascotas, reservas);
     }
 
+    // Singleton: la primera vez crea el objeto, las siguientes devuelve siempre el mismo
     public static SistemaGuarderia getInstancia() {
         if (instancia == null) {
             instancia = new SistemaGuarderia();
@@ -66,320 +63,546 @@ public class SistemaGuarderia {
         return instancia;
     }
 
-    // ===================== Carga y guardado de archivos =====================
-
-    // El orden importa: las mascotas necesitan a los dueños, las reservas a las mascotas, etc.
-    private void cargarDatos() {
-        repoDuenos = new RepositorioDuenos("datos/duenos.txt");
-        duenos = repoDuenos.cargarTodos();
-
-        repoEmpleados = new RepositorioEmpleados("datos/empleados.txt");
-        empleados = repoEmpleados.cargarTodos();
-
-        repoMascotas = new RepositorioMascotas("datos/mascotas.txt", duenos);
-        mascotas = repoMascotas.cargarTodos();
-        for (Mascota m : mascotas) {
-            m.getDueno().agregarMascota(m);
-        }
-
-        repoAlojamientos = new RepositorioAlojamientos("datos/alojamientos.txt");
-        for (Alojamiento a : repoAlojamientos.cargarTodos()) {
-            sucursal.agregarAlojamiento(a);
-        }
-
-        repoReservas = new RepositorioReservas("datos/reservas.txt", mascotas, sucursal.getAlojamientos());
-        reservas = repoReservas.cargarTodos();
-        for (Reserva r : reservas) {
-            r.getAlojamiento().agregarReserva(r);
-        }
-
-        repoEstadias = new RepositorioEstadias("datos/estadias.txt", reservas, empleados);
-        estadias = repoEstadias.cargarTodos();
+    // Guarda todos los datos en los archivos. Se llama después de cada cambio.
+    private void guardar() {
+        archivo.guardar(sucursales, empleados, clientes, mascotas, reservas);
     }
 
-    public void guardarTodo() {
-        repoDuenos.guardarTodos(duenos);
-        repoEmpleados.guardarTodos(empleados);
-        repoMascotas.guardarTodos(mascotas);
-        repoAlojamientos.guardarTodos(sucursal.getAlojamientos());
-        repoReservas.guardarTodos(reservas);
-        repoEstadias.guardarTodos(estadias);
+    // ===================== Consultas =====================
+
+    public List<Sucursal> getSucursales() {
+        return sucursales;
     }
 
-    // ===================== ABM de dueños =====================
+    public List<Empleado> getEmpleados() {
+        return empleados;
+    }
 
-    public void agregarDueno(Dueno d) throws DatoInvalidoException {
-        if (buscarDueno(d.getDni()) != null) {
-            throw new DatoInvalidoException("Ya existe un dueño con DNI " + d.getDni());
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public List<Mascota> getMascotas() {
+        return mascotas;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    // Junta los alojamientos de todas las sucursales en una sola lista
+    public List<Alojamiento> getAlojamientos() {
+        List<Alojamiento> todos = new ArrayList<Alojamiento>();
+        for (Sucursal s : sucursales) {
+            for (Alojamiento a : s.getAlojamientos()) {
+                todos.add(a);
+            }
         }
-        duenos.add(d);
-        guardarTodo();
+        return todos;
     }
 
-    public void eliminarDueno(Dueno d) throws DatoInvalidoException {
-        if (!d.getMascotas().isEmpty()) {
-            throw new DatoInvalidoException("No se puede eliminar a " + d.getNombreCompleto()
-                    + " porque tiene mascotas cargadas. Primero eliminá sus mascotas.");
+    // ===================== Clientes =====================
+
+    public Cliente altaCliente(String nombre, String apellido, String dni, String telefono, String email,
+            String direccion) throws DatoInvalidoException {
+        validarPersona(nombre, apellido, dni);
+        if (buscarClientePorDni(dni) != null) {
+            throw new DatoInvalidoException("Ya existe un cliente con el DNI " + dni + ".");
         }
-        duenos.remove(d);
-        guardarTodo();
+        Cliente c = new Cliente(siguienteIdCliente(), nombre, apellido, dni, telefono, email, direccion);
+        clientes.add(c);
+        guardar();
+        return c;
     }
 
-    public Dueno buscarDueno(String dni) {
-        for (Dueno d : duenos) {
-            if (d.getDni().equals(dni)) {
-                return d;
+    public void modificarCliente(Cliente c, String nombre, String apellido, String dni, String telefono,
+            String email, String direccion) throws DatoInvalidoException {
+        validarPersona(nombre, apellido, dni);
+        Cliente otro = buscarClientePorDni(dni);
+        if (otro != null && otro != c) {
+            throw new DatoInvalidoException("Ya existe otro cliente con el DNI " + dni + ".");
+        }
+        c.setNombre(nombre);
+        c.setApellido(apellido);
+        c.setDni(dni);
+        c.setTelefono(telefono);
+        c.setEmail(email);
+        c.setDireccion(direccion);
+        guardar();
+    }
+
+    // No se puede borrar un cliente que todavía tiene mascotas
+    public void bajaCliente(Cliente c) throws DatoInvalidoException {
+        if (!c.getMascotas().isEmpty()) {
+            throw new DatoInvalidoException("No se puede borrar a " + c.getNombreCompleto()
+                    + " porque tiene mascotas cargadas. Primero borrá sus mascotas.");
+        }
+        clientes.remove(c);
+        guardar();
+    }
+
+    private Cliente buscarClientePorDni(String dni) {
+        for (Cliente c : clientes) {
+            if (c.getDni().equals(dni)) {
+                return c;
             }
         }
         return null;
     }
 
-    // ===================== ABM de empleados =====================
+    // ===================== Mascotas =====================
 
-    public void agregarEmpleado(Empleado e) throws DatoInvalidoException {
-        if (buscarEmpleado(e.getLegajo()) != null) {
-            throw new DatoInvalidoException("Ya existe un empleado con legajo " + e.getLegajo());
+    // "raza" es la raza para perro, gato y conejo, y el tipo de ave para el ave.
+    // "castrado" solo se usa para perro y gato.
+    public Mascota altaMascota(Especie especie, String nombre, LocalDate fechaNacimiento, double pesoKg,
+            String observaciones, LocalDate fechaUltimoControl, Cliente cliente, String raza, boolean castrado)
+            throws DatoInvalidoException {
+        if (especie == null) {
+            throw new DatoInvalidoException("Elegí la especie.");
         }
-        empleados.add(e);
-        guardarTodo();
+        if (cliente == null) {
+            throw new DatoInvalidoException("Elegí el cliente dueño de la mascota.");
+        }
+        validarMascota(nombre, fechaNacimiento, pesoKg, fechaUltimoControl);
+
+        Integer id = siguienteIdMascota();
+        Mascota m = null;
+        switch (especie) {
+            case PERRO:
+                m = new Perro(id, nombre, fechaNacimiento, pesoKg, observaciones, fechaUltimoControl, raza, castrado);
+                break;
+            case GATO:
+                m = new Gato(id, nombre, fechaNacimiento, pesoKg, observaciones, fechaUltimoControl, raza, castrado);
+                break;
+            case CONEJO:
+                m = new Conejo(id, nombre, fechaNacimiento, pesoKg, observaciones, fechaUltimoControl, raza);
+                break;
+            case AVE:
+                m = new Ave(id, nombre, fechaNacimiento, pesoKg, observaciones, fechaUltimoControl, raza);
+                break;
+        }
+        // agregarMascota también le deja anotado a la mascota quién es su cliente
+        cliente.agregarMascota(m);
+        mascotas.add(m);
+        guardar();
+        return m;
     }
 
-    public void eliminarEmpleado(Empleado e) throws DatoInvalidoException {
-        // Si ya atendió estadías no se borra, para no perder el historial
-        for (Estadia est : estadias) {
-            if (est.getRecibidaPor() == e) {
-                throw new DatoInvalidoException("No se puede eliminar a " + e.getNombreCompleto()
-                        + " porque tiene estadías registradas.");
+    // La especie y el cliente no se cambian: para eso se borra y se vuelve a cargar
+    public void modificarMascota(Mascota m, String nombre, LocalDate fechaNacimiento, double pesoKg,
+            String observaciones, LocalDate fechaUltimoControl, String raza, boolean castrado)
+            throws DatoInvalidoException {
+        validarMascota(nombre, fechaNacimiento, pesoKg, fechaUltimoControl);
+        m.setNombre(nombre);
+        m.setFechaNacimiento(fechaNacimiento);
+        m.setPesoKg(pesoKg);
+        m.setObservaciones(observaciones);
+        m.setFechaUltimoControl(fechaUltimoControl);
+
+        // Los datos propios de cada especie se cambian con instanceof + cast
+        if (m instanceof Perro) {
+            Perro p = (Perro) m;
+            p.setRaza(raza);
+            p.setCastrado(castrado);
+        } else if (m instanceof Gato) {
+            Gato g = (Gato) m;
+            g.setRaza(raza);
+            g.setCastrado(castrado);
+        } else if (m instanceof Conejo) {
+            Conejo c = (Conejo) m;
+            c.setRaza(raza);
+        } else if (m instanceof Ave) {
+            Ave a = (Ave) m;
+            a.setTipoAve(raza);
+        }
+        guardar();
+    }
+
+    // No se puede borrar una mascota que tiene reservas (aunque sean viejas)
+    public void bajaMascota(Mascota m) throws DatoInvalidoException {
+        for (Reserva r : reservas) {
+            if (r.getMascota() == m) {
+                throw new DatoInvalidoException("No se puede borrar a " + m.getNombre() + " porque tiene reservas.");
             }
-            for (EntradaBitacora entrada : est.getBitacora()) {
-                if (entrada.getRegistradaPor() == e) {
-                    throw new DatoInvalidoException("No se puede eliminar a " + e.getNombreCompleto()
-                            + " porque tiene registros en bitácoras.");
+        }
+        m.getCliente().quitarMascota(m);
+        mascotas.remove(m);
+        guardar();
+    }
+
+    public void agregarVacuna(Mascota m, String nombre, LocalDate fechaAplicacion, LocalDate fechaVencimiento)
+            throws DatoInvalidoException {
+        validarTexto(nombre, "el nombre de la vacuna");
+        if (fechaAplicacion == null || fechaVencimiento == null) {
+            throw new DatoInvalidoException("Completá la fecha de aplicación y la de vencimiento.");
+        }
+        if (!fechaVencimiento.isAfter(fechaAplicacion)) {
+            throw new DatoInvalidoException("El vencimiento tiene que ser posterior a la aplicación.");
+        }
+        m.agregarVacuna(new Mascota.Vacuna(nombre, fechaAplicacion, fechaVencimiento));
+        guardar();
+    }
+
+    public void quitarVacuna(Mascota m, Mascota.Vacuna v) {
+        m.getVacunas().remove(v);
+        guardar();
+    }
+
+    // ===================== Empleados =====================
+
+    public Empleado altaEmpleado(String nombre, String apellido, String dni, String telefono, String email,
+            String legajo, LocalDate fechaIngreso, Sucursal sucursal) throws DatoInvalidoException {
+        validarEmpleado(nombre, apellido, dni, legajo, fechaIngreso, null);
+        if (sucursal == null) {
+            throw new DatoInvalidoException("Elegí la sucursal del empleado.");
+        }
+        Empleado e = new Empleado(siguienteIdEmpleado(), nombre, apellido, dni, telefono, email, legajo,
+                fechaIngreso);
+        // agregarEmpleado también le deja anotada la sucursal al empleado
+        sucursal.agregarEmpleado(e);
+        empleados.add(e);
+        guardar();
+        return e;
+    }
+
+    // La sucursal no se cambia: para eso se borra y se vuelve a cargar
+    public void modificarEmpleado(Empleado e, String nombre, String apellido, String dni, String telefono,
+            String email, String legajo, LocalDate fechaIngreso) throws DatoInvalidoException {
+        validarEmpleado(nombre, apellido, dni, legajo, fechaIngreso, e);
+        e.setNombre(nombre);
+        e.setApellido(apellido);
+        e.setDni(dni);
+        e.setTelefono(telefono);
+        e.setEmail(email);
+        e.setLegajo(legajo);
+        e.setFechaIngreso(fechaIngreso);
+        guardar();
+    }
+
+    // No se puede borrar al encargado de una sucursal ni a alguien que cargó registros
+    public void bajaEmpleado(Empleado e) throws DatoInvalidoException {
+        for (Sucursal s : sucursales) {
+            if (s.getEncargado() == e) {
+                throw new DatoInvalidoException(e.getNombreCompleto() + " es el encargado de " + s.getNombre()
+                        + ". Primero asigná otro encargado.");
+            }
+        }
+        for (Reserva r : reservas) {
+            for (Reserva.RegistroDiario reg : r.getRegistros()) {
+                if (reg.getEmpleado() == e) {
+                    throw new DatoInvalidoException("No se puede borrar a " + e.getNombreCompleto()
+                            + " porque cargó registros de estadías.");
                 }
             }
         }
+        e.getSucursal().getEmpleados().remove(e);
         empleados.remove(e);
-        guardarTodo();
+        guardar();
     }
 
-    public Empleado buscarEmpleado(int legajo) {
-        for (Empleado e : empleados) {
-            if (e.getLegajo() == legajo) {
-                return e;
+    // El encargado tiene que trabajar en esa sucursal
+    public void setEncargado(Sucursal s, Empleado e) throws DatoInvalidoException {
+        if (e.getSucursal() != s) {
+            throw new DatoInvalidoException(e.getNombreCompleto() + " no trabaja en " + s.getNombre() + ".");
+        }
+        s.setEncargado(e);
+        guardar();
+    }
+
+    // "actual" es el empleado que se está modificando (null si es un alta), para no compararlo consigo mismo
+    private void validarEmpleado(String nombre, String apellido, String dni, String legajo, LocalDate fechaIngreso,
+            Empleado actual) throws DatoInvalidoException {
+        validarPersona(nombre, apellido, dni);
+        validarTexto(legajo, "el legajo");
+        if (fechaIngreso == null) {
+            throw new DatoInvalidoException("Completá la fecha de ingreso.");
+        }
+        for (Empleado otro : empleados) {
+            if (otro != actual) {
+                if (otro.getDni().equals(dni)) {
+                    throw new DatoInvalidoException("Ya existe un empleado con el DNI " + dni + ".");
+                }
+                if (otro.getLegajo().equals(legajo)) {
+                    throw new DatoInvalidoException("Ya existe un empleado con el legajo " + legajo + ".");
+                }
             }
         }
-        return null;
     }
 
-    // ===================== ABM de mascotas =====================
+    // ===================== Alojamientos =====================
 
-    public int proximoIdMascota() {
-        int max = 0;
-        for (Mascota m : mascotas) {
-            if (m.getIdMascota() > max) {
-                max = m.getIdMascota();
-            }
+    public Alojamiento altaAlojamiento(Sucursal sucursal, String codigo, Especie especie, Categoria categoria,
+            double precioBaseNoche, boolean activo) throws DatoInvalidoException {
+        if (sucursal == null) {
+            throw new DatoInvalidoException("Elegí la sucursal.");
         }
-        return max + 1;
-    }
-
-    public void agregarMascota(Mascota m) {
-        mascotas.add(m);
-        m.getDueno().agregarMascota(m);
-        guardarTodo();
-    }
-
-    // Cambia el dueño de una mascota (se usa al modificar)
-    public void cambiarDueno(Mascota m, Dueno nuevo) {
-        m.getDueno().quitarMascota(m);
-        m.setDueno(nuevo);
-        nuevo.agregarMascota(m);
-    }
-
-    public void eliminarMascota(Mascota m) throws DatoInvalidoException {
-        for (Reserva r : reservas) {
-            if (r.getMascota() == m) {
-                throw new DatoInvalidoException("No se puede eliminar a " + m.getNombre()
-                        + " porque tiene reservas en el historial.");
-            }
-        }
-        mascotas.remove(m);
-        m.getDueno().quitarMascota(m);
-        guardarTodo();
-    }
-
-    // ===================== ABM de alojamientos =====================
-
-    public int proximoIdAlojamiento() {
-        int max = 0;
-        for (Alojamiento a : sucursal.getAlojamientos()) {
-            if (a.getIdAlojamiento() > max) {
-                max = a.getIdAlojamiento();
-            }
-        }
-        return max + 1;
-    }
-
-    public void agregarAlojamiento(Alojamiento a) throws DatoInvalidoException {
-        if (buscarAlojamiento(a.getCodigo()) != null) {
-            throw new DatoInvalidoException("Ya existe un alojamiento con código " + a.getCodigo());
-        }
+        validarAlojamiento(sucursal, codigo, especie, categoria, precioBaseNoche, null);
+        Alojamiento a = new Alojamiento(siguienteIdAlojamiento(), codigo, especie, categoria, precioBaseNoche, activo);
+        // agregarAlojamiento también le deja anotada la sucursal al alojamiento
         sucursal.agregarAlojamiento(a);
-        guardarTodo();
+        guardar();
+        return a;
     }
 
-    public void eliminarAlojamiento(Alojamiento a) throws DatoInvalidoException {
-        if (!a.getReservas().isEmpty()) {
-            throw new DatoInvalidoException("No se puede eliminar " + a.getCodigo()
-                    + " porque tiene reservas en el historial.");
+    public void modificarAlojamiento(Alojamiento a, String codigo, Especie especie, Categoria categoria,
+            double precioBaseNoche, boolean activo) throws DatoInvalidoException {
+        validarAlojamiento(a.getSucursal(), codigo, especie, categoria, precioBaseNoche, a);
+        if (especie != a.getEspecie() && tieneReservas(a)) {
+            throw new DatoInvalidoException("No se puede cambiar la especie de un alojamiento que tiene reservas.");
         }
-        sucursal.eliminarAlojamiento(a);
-        guardarTodo();
+        a.setCodigo(codigo);
+        a.setEspecie(especie);
+        a.setCategoria(categoria);
+        a.setPrecioBaseNoche(precioBaseNoche);
+        a.setActivo(activo);
+        guardar();
     }
 
-    public Alojamiento buscarAlojamiento(String codigo) {
-        for (Alojamiento a : sucursal.getAlojamientos()) {
-            if (a.getCodigo().equalsIgnoreCase(codigo)) {
-                return a;
+    // No se puede borrar un alojamiento que tiene reservas (aunque sean viejas)
+    public void bajaAlojamiento(Alojamiento a) throws DatoInvalidoException {
+        if (tieneReservas(a)) {
+            throw new DatoInvalidoException("No se puede borrar el alojamiento " + a.getCodigo()
+                    + " porque tiene reservas. Si no se usa más, marcalo como inactivo.");
+        }
+        a.getSucursal().getAlojamientos().remove(a);
+        guardar();
+    }
+
+    // El código no se puede repetir dentro de la misma sucursal.
+    // "actual" es el alojamiento que se está modificando (null si es un alta).
+    private void validarAlojamiento(Sucursal sucursal, String codigo, Especie especie, Categoria categoria,
+            double precioBaseNoche, Alojamiento actual) throws DatoInvalidoException {
+        validarTexto(codigo, "el código");
+        if (especie == null || categoria == null) {
+            throw new DatoInvalidoException("Elegí la especie y la categoría.");
+        }
+        if (precioBaseNoche <= 0) {
+            throw new DatoInvalidoException("El precio por noche tiene que ser mayor a 0.");
+        }
+        for (Alojamiento otro : sucursal.getAlojamientos()) {
+            if (otro != actual && otro.getCodigo().equalsIgnoreCase(codigo)) {
+                throw new DatoInvalidoException("Ya existe el código " + codigo + " en " + sucursal.getNombre() + ".");
             }
         }
-        return null;
+    }
+
+    private boolean tieneReservas(Alojamiento a) {
+        for (Reserva r : reservas) {
+            if (r.getAlojamiento() == a) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ===================== Reservas =====================
 
-    public ArrayList<Alojamiento> buscarAlojamientos(Especie especie, LocalDate desde, LocalDate hasta) {
-        return sucursal.buscarDisponibles(especie, desde, hasta);
+    // Alojamientos de la sucursal que sirven para la mascota y están libres entre esas fechas
+    public List<Alojamiento> buscarDisponibles(Sucursal s, Mascota m, LocalDate desde, LocalDate hasta) {
+        List<Alojamiento> disponibles = new ArrayList<Alojamiento>();
+        for (Alojamiento a : s.getAlojamientos()) {
+            if (a.admite(m) && estaLibre(a, desde, hasta)) {
+                disponibles.add(a);
+            }
+        }
+        return disponibles;
     }
 
-    public Reserva reservar(Mascota m, Alojamiento a, LocalDate desde, LocalDate hasta,
-                            boolean esHospedaje, boolean conExtra)
-            throws AlojamientoNoDisponibleException, DatoInvalidoException {
-        if (hasta.isBefore(desde)) {
-            throw new DatoInvalidoException("La fecha hasta no puede ser anterior a la fecha desde.");
+    // Crea una reserva nueva (arranca PENDIENTE)
+    public Reserva reservar(Mascota m, Alojamiento a, LocalDate desde, LocalDate hasta) throws DatoInvalidoException {
+        if (m == null || a == null) {
+            throw new DatoInvalidoException("Elegí la mascota y el alojamiento.");
         }
-        if (esHospedaje && hasta.equals(desde)) {
-            throw new DatoInvalidoException("Un hospedaje tiene que ser de al menos una noche.");
+        if (desde == null || hasta == null) {
+            throw new DatoInvalidoException("Completá las dos fechas.");
         }
-        if (a.getEspecie() != m.getEspecie()) {
-            throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " es para "
-                    + a.getEspecie() + " y la mascota es " + m.getEspecie() + ".");
+        if (!hasta.isAfter(desde)) {
+            throw new DatoInvalidoException("La fecha de salida tiene que ser posterior a la de entrada.");
         }
-        if (!a.estaDisponible(desde, hasta)) {
-            throw new AlojamientoNoDisponibleException(a);
+        if (!a.admite(m)) {
+            throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " no admite a " + m.getNombre()
+                    + " (está inactivo o es para otra especie).");
         }
-
-        int id = reservas.size() + 1;
-        Reserva r;
-        if (esHospedaje) {
-            r = new ReservaHospedaje(id, m, a, desde, hasta, conExtra);
-        } else {
-            r = new ReservaGuarderiaDiurna(id, m, a, desde, hasta, conExtra);
+        if (!estaLibre(a, desde, hasta)) {
+            throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " ya está reservado en esas fechas.");
         }
+        Reserva r = new Reserva(siguienteIdReserva(), m, a, desde, hasta);
         reservas.add(r);
-        a.agregarReserva(r);
-        guardarTodo();
+        guardar();
         return r;
     }
 
-    public void cancelarReserva(Reserva r) throws DatoInvalidoException {
-        if (r.getEstado() != EstadoReserva.CONFIRMADA) {
-            throw new DatoInvalidoException("Solo se pueden cancelar reservas confirmadas. Esta está " + r.getEstado());
-        }
+    public void confirmar(Reserva r) {
+        r.confirmar();
+        guardar();
+    }
+
+    public void cancelar(Reserva r) {
         r.cancelar();
-        guardarTodo();
+        guardar();
     }
 
-    public ArrayList<Reserva> getReservasConfirmadas() {
-        ArrayList<Reserva> lista = new ArrayList<>();
+    // Si la mascota no cumple los requisitos, la excepción sube hasta la pantalla
+    public void checkIn(Reserva r) throws IngresoRechazadoException {
+        r.realizarCheckIn(LocalDate.now());
+        guardar();
+    }
+
+    public void agregarRegistro(Reserva r, TipoRegistro tipo, String descripcion, Empleado empleado)
+            throws DatoInvalidoException {
+        if (tipo == null || empleado == null) {
+            throw new DatoInvalidoException("Elegí el tipo de registro y el empleado.");
+        }
+        validarTexto(descripcion, "la descripción");
+        r.agregarRegistro(tipo, descripcion, empleado);
+        guardar();
+    }
+
+    public void registrarPago(Reserva r, double monto, String medio) throws DatoInvalidoException {
+        if (monto <= 0) {
+            throw new DatoInvalidoException("El monto tiene que ser mayor a 0.");
+        }
+        validarTexto(medio, "el medio de pago");
+        r.registrarPago(monto, medio);
+        guardar();
+    }
+
+    public void checkOut(Reserva r) {
+        r.realizarCheckOut();
+        guardar();
+    }
+
+    // Una reserva "ocupa" el alojamiento si está PENDIENTE, CONFIRMADA o EN_CURSO
+    private boolean ocupaAlojamiento(Reserva r) {
+        EstadoReserva e = r.getEstado();
+        return e == EstadoReserva.PENDIENTE || e == EstadoReserva.CONFIRMADA || e == EstadoReserva.EN_CURSO;
+    }
+
+    // true si ninguna reserva que ocupa el alojamiento se superpone con esas fechas
+    private boolean estaLibre(Alojamiento a, LocalDate desde, LocalDate hasta) {
         for (Reserva r : reservas) {
-            if (r.getEstado() == EstadoReserva.CONFIRMADA) {
-                lista.add(r);
+            if (r.getAlojamiento() == a && ocupaAlojamiento(r) && r.seSuperponeCon(desde, hasta)) {
+                return false;
             }
         }
-        return lista;
+        return true;
     }
 
-    // ===================== Estadías: check-in, bitácora y check-out =====================
+    // ===================== Control de ocupación =====================
 
-    public Estadia realizarCheckIn(Reserva r, Empleado e) throws VacunacionVencidaException, DatoInvalidoException {
-        if (r.getEstado() != EstadoReserva.CONFIRMADA) {
-            throw new DatoInvalidoException("La reserva está " + r.getEstado() + ", no se puede hacer el check-in.");
+    // Para cada especie devuelve un texto "ocupados/capacidad".
+    // Ocupados = reservas EN_CURSO en la sucursal. Capacidad = alojamientos activos.
+    public Map<Especie, String> getOcupacion(Sucursal s) {
+        Map<Especie, Integer> capacidad = s.getCapacidadPorEspecie();
+
+        Map<Especie, Integer> ocupados = new HashMap<Especie, Integer>();
+        for (Especie e : Especie.values()) {
+            ocupados.put(e, 0);
         }
-        // Las vacunas tienen que estar vigentes hasta el último día de la estadía
-        Mascota m = r.getMascota();
-        if (!m.tieneVacunasAlDia(r.getFechaHasta())) {
-            throw new VacunacionVencidaException(m, m.getVacunasFaltantes(r.getFechaHasta()));
-        }
-
-        Estadia est = new Estadia(estadias.size() + 1, r, e, LocalDate.now());
-        estadias.add(est);
-        r.iniciar();
-        guardarTodo();
-        return est;
-    }
-
-    public void registrarEnBitacora(Estadia est, EntradaBitacora entrada) throws DatoInvalidoException {
-        if (entrada instanceof RegistroMedicacion && !entrada.getRegistradaPor().puedeAdministrarMedicacion()) {
-            throw new DatoInvalidoException(entrada.getRegistradaPor().getNombreCompleto()
-                    + " es " + entrada.getRegistradaPor().getRol()
-                    + " y no puede administrar medicación. Tiene que hacerlo un cuidador o veterinario.");
-        }
-        est.registrar(entrada);
-        guardarTodo();
-    }
-
-    public Pago realizarCheckOut(Estadia est, MedioPago medio) {
-        int idPago = 1;
-        for (Estadia e : estadias) {
-            if (e.getPago() != null) {
-                idPago++;
+        for (Reserva r : reservas) {
+            if (r.getEstado() == EstadoReserva.EN_CURSO && r.getAlojamiento().getSucursal() == s) {
+                Especie e = r.getAlojamiento().getEspecie();
+                ocupados.put(e, ocupados.get(e) + 1);
             }
         }
-        Pago pago = new Pago(idPago, LocalDate.now(), est.calcularTotal(), medio);
-        est.cerrar(LocalDate.now(), pago);
-        est.getReserva().finalizar();
-        guardarTodo();
-        return pago;
+
+        Map<Especie, String> resultado = new HashMap<Especie, String>();
+        for (Especie e : Especie.values()) {
+            resultado.put(e, ocupados.get(e) + "/" + capacidad.get(e));
+        }
+        return resultado;
     }
 
-    public ArrayList<Estadia> getEstadiasActivas() {
-        ArrayList<Estadia> lista = new ArrayList<>();
-        for (Estadia e : estadias) {
-            if (e.estaActiva()) {
-                lista.add(e);
+    // ===================== Ids nuevos =====================
+    // Cada alta usa el id más alto que haya en la lista + 1
+
+    private Integer siguienteIdCliente() {
+        int maximo = 0;
+        for (Cliente c : clientes) {
+            if (c.getId() > maximo) {
+                maximo = c.getId();
             }
         }
-        return lista;
+        return maximo + 1;
     }
 
-    // ===================== Getters =====================
-
-    public Sucursal getSucursal() {
-        return sucursal;
+    private Integer siguienteIdMascota() {
+        int maximo = 0;
+        for (Mascota m : mascotas) {
+            if (m.getId() > maximo) {
+                maximo = m.getId();
+            }
+        }
+        return maximo + 1;
     }
 
-    public ArrayList<Dueno> getDuenos() {
-        return duenos;
+    private Integer siguienteIdEmpleado() {
+        int maximo = 0;
+        for (Empleado e : empleados) {
+            if (e.getId() > maximo) {
+                maximo = e.getId();
+            }
+        }
+        return maximo + 1;
     }
 
-    public ArrayList<Empleado> getEmpleados() {
-        return empleados;
+    // Los alojamientos están repartidos en las sucursales, por eso se recorren todas
+    private Integer siguienteIdAlojamiento() {
+        int maximo = 0;
+        for (Sucursal s : sucursales) {
+            for (Alojamiento a : s.getAlojamientos()) {
+                if (a.getId() > maximo) {
+                    maximo = a.getId();
+                }
+            }
+        }
+        return maximo + 1;
     }
 
-    public ArrayList<Mascota> getMascotas() {
-        return mascotas;
+    private Integer siguienteIdReserva() {
+        int maximo = 0;
+        for (Reserva r : reservas) {
+            if (r.getId() > maximo) {
+                maximo = r.getId();
+            }
+        }
+        return maximo + 1;
     }
 
-    public ArrayList<Alojamiento> getAlojamientos() {
-        return sucursal.getAlojamientos();
+    // ===================== Validaciones comunes =====================
+
+    // Tira una excepción si el texto está vacío. "campo" se usa para armar el mensaje.
+    private void validarTexto(String valor, String campo) throws DatoInvalidoException {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new DatoInvalidoException("Completá " + campo + ".");
+        }
     }
 
-    public ArrayList<Reserva> getReservas() {
-        return reservas;
+    private void validarPersona(String nombre, String apellido, String dni) throws DatoInvalidoException {
+        validarTexto(nombre, "el nombre");
+        validarTexto(apellido, "el apellido");
+        validarTexto(dni, "el DNI");
+        for (int i = 0; i < dni.length(); i++) {
+            if (!Character.isDigit(dni.charAt(i))) {
+                throw new DatoInvalidoException("El DNI tiene que tener solo números.");
+            }
+        }
     }
 
-    public ArrayList<Estadia> getEstadias() {
-        return estadias;
+    private void validarMascota(String nombre, LocalDate fechaNacimiento, double pesoKg, LocalDate fechaUltimoControl)
+            throws DatoInvalidoException {
+        validarTexto(nombre, "el nombre de la mascota");
+        if (fechaNacimiento == null) {
+            throw new DatoInvalidoException("Completá la fecha de nacimiento.");
+        }
+        if (fechaNacimiento.isAfter(LocalDate.now())) {
+            throw new DatoInvalidoException("La fecha de nacimiento no puede ser futura.");
+        }
+        if (fechaUltimoControl != null && fechaUltimoControl.isAfter(LocalDate.now())) {
+            throw new DatoInvalidoException("La fecha del último control no puede ser futura.");
+        }
+        if (pesoKg <= 0) {
+            throw new DatoInvalidoException("El peso tiene que ser mayor a 0.");
+        }
     }
 }

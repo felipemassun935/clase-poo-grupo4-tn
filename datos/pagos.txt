@@ -1,0 +1,3 @@
+1;2026-10-10;30000.0;Transferencia
+2;2026-10-01;32000.0;Efectivo
+8;2026-10-12;50000.0;Tarjeta de débito

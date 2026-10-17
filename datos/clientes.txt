@@ -1,0 +1,4 @@
+1;Lucía;Fernández;30111222;11-5555-1001;lucia.fernandez@mail.com;Juramento 2100, CABA
+2;Martín;Gómez;28999333;11-5555-1002;martin.gomez@mail.com;Av. Cabildo 3300, CABA
+3;Sofía;Ruiz;35444555;11-5555-1003;sofi.ruiz@mail.com;Monroe 1500, CABA
+4;Tomás;Benítez;33666777;11-5555-1004;tomas.benitez@mail.com;Av. Acoyte 400, CABA

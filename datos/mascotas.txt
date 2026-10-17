@@ -1,5 +1,8 @@
-PERRO;1;Rocco;2021-03-10;28.5;30111222;Labrador;Grande;false;Antirrábica#2026-03-01#2027-03-01#Dra. Sosa|Séxtuple#2026-03-01#2027-03-01#Dra. Sosa
-GATO;2;Mishi;2022-07-22;4.2;30111222;Siamés;;true;Antirrábica#2026-01-15#2027-01-15#Dr. Ibarra|Triple felina#2026-01-15#2027-01-15#Dr. Ibarra
-PERRO;3;Toby;2019-11-05;9.0;28999333;Caniche;Chico;false;Antirrábica#2025-05-01#2026-05-01#Dr. Ibarra|Séxtuple#2026-02-10#2027-02-10#Dr. Ibarra
-CONEJO;4;Copito;2023-04-01;2.1;35444555;Belier;Heno y verduras;false;Mixomatosis#2026-04-01#2027-04-01#Dra. Sosa|Hemorrágica viral#2026-04-01#2027-04-01#Dra. Sosa
-AVE;5;Pancho;2020-09-09;0.4;35444555;Loro hablador;;true;
+PERRO;1;Rocco;2021-03-10;28.5;Le tiene miedo a los truenos;2026-03-01;1;Labrador;false
+GATO;2;Mishi;2022-07-22;4.2;;2026-01-15;1;Siamés;true
+PERRO;3;Toby;2019-11-05;9.0;Come alimento light;2026-02-10;2;Caniche;false
+CONEJO;4;Copito;2023-09-01;1.8;;2026-02-10;3;Enano holandés;
+AVE;5;Pepe;2020-06-12;0.3;Habla mucho;2026-06-01;3;Loro;
+CONEJO;6;Nube;2024-04-20;2.1;;2026-08-20;4;Cabeza de león;
+PERRO;7;Luna;2022-12-01;15.0;;2026-04-10;4;Mestizo;true
+GATO;8;Garfield;2018-05-05;6.5;Es mayor, toma medicación para la artrosis;2026-07-01;2;Persa;true

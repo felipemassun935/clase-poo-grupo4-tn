@@ -1,2 +1,0 @@
-1;4;101;2026-10-01;2026-10-05;1#2026-10-05#40000.0#EFECTIVO;C#2026-10-02#102#Heno#150.0#true
-2;1;101;2026-10-14;;;C#2026-10-14#102#Balanceado adulto#350.0#true|M#2026-10-15#103#Antiparasitario#1 comprimido|I#2026-10-15#102#Se raspó una pata jugando en el patio#LEVE
