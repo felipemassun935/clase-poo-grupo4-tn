@@ -1,5 +1,5 @@
 @startuml Diagrama_de_Clases_Guarderia
-title Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases del modelo
+title Sistema de Gestión para Guarderías de Mascotas — Diagrama de clases del modelo (entrega final)
 skinparam classAttributeIconSize 0
 skinparam shadowing false
 skinparam packageStyle rectangle
@@ -56,9 +56,44 @@ package "modelo.enums" {
   enum TipoRegistro <<enumeration>> {
     COMIDA
     MEDICACION
+    PASEO
+    SERVICIO
+    OBSERVACION
     INCIDENTE
+    - nombreVisible: String
     - requiereAviso: boolean
     + requiereAviso(): boolean
+  }
+  enum TipoServicio <<enumeration>> {
+    BANIO
+    CORTE_PELO
+    CORTE_UNIAS
+    PASEO_EXTRA
+    - nombreVisible: String
+    - precio: double
+    + seAplicaA(especie: Especie): boolean
+  }
+  enum TipoIndicacion <<enumeration>> {
+    ALIMENTACION
+    MEDICACION
+    CUIDADO_ESPECIAL
+    - nombreVisible: String
+    - tipoRegistro: TipoRegistro
+    + getTipoRegistro(): TipoRegistro
+  }
+  enum AccionLog <<enumeration>> {
+    INGRESO
+    ALTA
+    MODIFICACION
+    BAJA
+    RESERVA
+    PAGO
+    CHECK_IN
+    CHECK_OUT
+    SERVICIO
+    INDICACION
+    REGISTRO
+    RECHAZO
   }
 }
 
@@ -89,6 +124,7 @@ package "modelo.persona" {
     - legajo: String
     - fechaIngreso: LocalDate
     - sucursal: Sucursal
+    + esEncargado(): boolean
     + getRol(): String
     + notificar(mensaje: String): void
   }
@@ -100,6 +136,7 @@ package "modelo.persona" {
 package "modelo.mascota" {
   abstract class Mascota {
     - id: Integer
+    - codigoCollar: String
     - nombre: String
     - fechaNacimiento: LocalDate
     - pesoKg: double
@@ -109,6 +146,7 @@ package "modelo.mascota" {
     - vacunas: List<Vacuna>
     + {abstract} getEspecie(): Especie
     + {abstract} validarIngreso(fecha: LocalDate): List<String>
+    + {static} generarCodigoCollar(id: Integer): String
     + agregarVacuna(v: Vacuna): void
     + tieneVacunaVigente(nombre: String, fecha: LocalDate): boolean
     # tieneControlVigente(fecha: LocalDate, dias: int): boolean
@@ -189,7 +227,11 @@ package "modelo.reserva" {
     - estado: EstadoReserva
     - pagos: List<Pago>
     - registros: List<RegistroDiario>
+    - servicios: List<ServicioContratado>
+    - indicaciones: List<Indicacion>
     + getCantidadNoches(): long
+    + getTotalAlojamiento(): double
+    + getTotalServicios(): double
     + calcularTotal(): double
     + getTotalPagado(): double
     + getSaldoPendiente(): double
@@ -198,8 +240,17 @@ package "modelo.reserva" {
     + realizarCheckOut(): void
     + cancelar(): void
     - cambiarEstado(nuevo: EstadoReserva): void
-    + registrarPago(monto: double, medio: String): void
-    + agregarRegistro(tipo: TipoRegistro, descripcion: String, empleado: Empleado): void
+    + registrarPago(monto: double, medio: String): Pago
+    + agregarRegistro(tipo, descripcion, empleado): RegistroDiario
+    + agregarRegistro(tipo, descripcion, empleado, indicacion: Indicacion): RegistroDiario
+    + contratarServicio(id: Integer, tipo: TipoServicio): ServicioContratado
+    + realizarServicio(s: ServicioContratado, empleado: Empleado): RegistroDiario
+    + quitarServicio(s: ServicioContratado): void
+    + tieneServiciosPendientes(): boolean
+    + agregarIndicacion(id, tipo: TipoIndicacion, descripcion, horario): Indicacion
+    + quitarIndicacion(i: Indicacion): void
+    + getCantidadCumplimientos(i: Indicacion): int
+    + getUltimoCumplimiento(i: Indicacion): RegistroDiario
     + seSuperponeCon(desde: LocalDate, hasta: LocalDate): boolean
   }
   class "Reserva.Pago" as Pago <<clase anidada static>> {
@@ -212,8 +263,38 @@ package "modelo.reserva" {
     - tipo: TipoRegistro
     - descripcion: String
     - empleado: Empleado
+    - indicacion: Indicacion
     + getResumen(): String
     + notificarSiCorresponde(): void
+  }
+  class ServicioContratado {
+    - id: Integer
+    - tipo: TipoServicio
+    - precio: double
+    - fechaSolicitud: LocalDate
+    - realizado: boolean
+    - fechaHoraRealizado: LocalDateTime
+    - realizadoPor: Empleado
+    + marcarRealizado(empleado: Empleado, fechaHora: LocalDateTime): void
+    + getEstadoTexto(): String
+  }
+  class Indicacion {
+    - id: Integer
+    - tipo: TipoIndicacion
+    - descripcion: String
+    - horario: String
+  }
+}
+
+' ============================================================
+' modelo.log
+' ============================================================
+package "modelo.log" {
+  class EntradaLog {
+    - fechaHora: LocalDateTime
+    - usuario: String
+    - accion: AccionLog
+    - detalle: String
   }
 }
 
@@ -250,5 +331,9 @@ Reserva "1" *-- "0..*" Pago
 Reserva "1" *-- "0..*" RegistroDiario
 RegistroDiario "*" --> "1" Empleado
 RegistroDiario ..> Notificable : <<usa>>
+Reserva "1" *-- "0..*" ServicioContratado
+Reserva "1" *-- "0..*" Indicacion
+RegistroDiario "*" --> "0..1" Indicacion : cumple
+ServicioContratado "*" --> "0..1" Empleado : realizadoPor
 
 @enduml

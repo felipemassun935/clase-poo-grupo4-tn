@@ -1,215 +1,123 @@
 TPO POO (UADE) - Sistema de Gestión para Guarderías de Mascotas - Grupo 4
 =========================================================================
 
-El diseño está en docs/Entrega_Parcial_1.pdf. El paquete modelo del código coincide con ese diagrama
-(mismos paquetes, clases, atributos, métodos y relaciones).
+Java 17 o superior + Swing + SQL Server (JDBC). El diseño original está en docs/Entrega_Parcial_1.pdf;
+el modelo actual está en diagrama/Diagrama_de_Clases_Guarderia.puml (.png / .svg).
 
 
-1. CÓMO ABRIRLO Y EJECUTARLO EN ECLIPSE
----------------------------------------
-  1. File > Import > General > Existing Projects into Workspace > Next.
-  2. En "Select root directory" elegir la carpeta del repositorio. Aparece el proyecto "GuarderiaMascotas".
-  3. Finish. Requiere Java 17 o superior (el proyecto está configurado como JavaSE-17).
-  4. Ejecutar: botón derecho sobre src/app/Main.java > Run As > Java Application.
+1. PREPARAR SQL SERVER (una sola vez por computadora)
+-----------------------------------------------------
+  a) Habilitar el usuario de SQL Server (autenticación mixta):
+     SSMS > clic derecho sobre el servidor > Properties > Security >
+     "SQL Server and Windows Authentication mode" > OK. Reiniciar el servicio SQL Server
+     (SQL Server Configuration Manager > SQL Server Services > clic derecho > Restart).
+  b) Habilitar TCP/IP en el puerto 1433:
+     SQL Server Configuration Manager > SQL Server Network Configuration > Protocols for SQLEXPRESS >
+     TCP/IP > Enabled. En TCP/IP > Properties > IP Addresses > IPAll: borrar "TCP Dynamic Ports" y poner
+     "TCP Port" = 1433. Reiniciar el servicio.
+  c) En SSMS abrir y ejecutar (F5), en este orden:
+       bd/1_crear_base_y_tablas.sql   crea la base GuarderiaMascotas, el usuario "guarderia" y las tablas.
+       bd/2_datos_de_ejemplo.sql      carga los datos de ejemplo (se puede volver a ejecutar para resetear).
+  d) Si hace falta, cambiar url/usuario/clave en conexion.txt (está en la carpeta del proyecto).
 
-  Los datos se leen y se guardan en la carpeta datos/ (relativa a la carpeta del proyecto, que es la
-  carpeta de trabajo por defecto de Eclipse). Se guardan solos después de cada cambio.
-  Los avisos de incidentes (SMS al cliente y aviso interno al encargado) se ven en la consola de Eclipse.
-
-  Para volver a los datos de ejemplo originales antes de la defensa:  git checkout -- datos/
+  Las fechas de los datos de ejemplo se calculan desde el día en que se ejecuta el script 2.
+  Conviene ejecutarlo de nuevo el día de la defensa.
 
 
-2. ESTRUCTURA DE PAQUETES
+2. ABRIR Y EJECUTAR
+-------------------
+  IntelliJ IDEA: File > Open > elegir la carpeta del repositorio. El proyecto ya trae la configuración
+  (GuarderiaMascotas.iml y .idea/). Si pide SDK: File > Project Structure > Project > SDK = 17 o más.
+  Ejecutar con la configuración "Main" (arriba a la derecha) o clic derecho en src/app/Main.java > Run.
+  La carpeta de trabajo tiene que ser la del proyecto (para encontrar conexion.txt): la configuración
+  "Main" ya lo trae así.
+
+  Eclipse: File > Import > Existing Projects into Workspace. Ejecutar src/app/Main.java.
+
+  El driver de SQL Server (lib/mssql-jdbc-12.8.1.jre11.jar) ya está en el proyecto, en los dos IDE.
+
+  Al arrancar pide el legajo del empleado que va a operar. Legajos de ejemplo:
+    101 Carla López (encargada de Belgrano)    102 Diego Pérez    103 Valeria Sosa
+    201 Marcos Ibarra (encargado de Caballito) 202 Julieta Romero
+  Todo lo que se hace queda en el log a nombre de ese empleado. Solo los encargados ven el log.
+  Los avisos de incidentes (SMS al cliente y aviso interno al encargado) y el log se ven en la consola.
+
+
+3. ESTRUCTURA DE PAQUETES
 -------------------------
-  app                 Main: aplica el estilo Nimbus y abre el menú principal.
-  vista               Las 6 pantallas Swing, el menú, DialogoVacunas y Validaciones.
+  app                 Main: estilo Nimbus, abre la interfaz con invokeLater, conecta y pide el legajo.
+  vista               Menú (con JMenuBar), 4 ABM, Reservas, Estadías, VentanaLog, DialogoVacunas,
+                      DialogoDetalleReserva y Validaciones.
   controlador         SistemaGuarderia (Controlador GRASP + Singleton): las pantallas le piden todo a esta
-                      clase. Valida los formularios, asigna los id y guarda después de cada cambio.
-  persistencia        ArchivoDatos: lee y escribe los .txt y reconstruye las referencias entre objetos.
-  excepciones         IngresoRechazadoException y DatoInvalidoException.
+                      clase. Valida, guarda cada cambio en la base y escribe el log.
+  persistencia        ConexionBD (lee conexion.txt y abre la conexión) y Repositorio (SQL con JDBC).
+  excepciones         IngresoRechazadoException y DatoInvalidoException (checked),
+                      ErrorBaseDeDatosException (unchecked).
   modelo.persona      Persona (abstracta), Cliente, Empleado.
   modelo.mascota      Mascota (abstracta), Perro, Gato, Conejo, Ave, Mascota.Vacuna (anidada estática).
   modelo.sucursal     Sucursal, Alojamiento.
-  modelo.reserva      Reserva, Reserva.Pago (anidada estática), Reserva.RegistroDiario (clase interna).
+  modelo.reserva      Reserva, Reserva.Pago (anidada estática), Reserva.RegistroDiario (clase interna),
+                      ServicioContratado, Indicacion.
+  modelo.log          EntradaLog.
   modelo.interfaces   Facturable, Vacunable, Notificable.
-  modelo.enums        Especie, Categoria, EstadoReserva, TipoRegistro.
-
-  Diagramas (PlantUML, con su .png y .svg):
-    diagrama/Diagrama_de_Clases_Guarderia.puml   el modelo completo (21 elementos) con sus relaciones.
-    diagrama/Diagrama_Capas.puml                 vista, controlador, persistencia y excepciones, y cómo
-                                                 usan al modelo.
+  modelo.enums        Especie, Categoria, EstadoReserva, TipoRegistro, TipoServicio, TipoIndicacion, AccionLog.
+  bd                  Scripts SQL (crear base y tablas, datos de ejemplo).
 
 
-3. CÓMO SE CUMPLE LA CONSIGNA
------------------------------
-
-3.1 Patrones GRASP (sección 4 del PDF)
-  Experto en información
-    - Reserva.calcularTotal(), getTotalPagado(), getSaldoPendiente(): la reserva conoce sus noches,
-      su alojamiento y sus pagos.
-    - Alojamiento.admite(Mascota) y Alojamiento.getPrecioNoche().
-    - Mascota.validarIngreso(LocalDate), implementado en Perro, Gato, Conejo y Ave.
-    - Mascota.Vacuna.estaVigente(LocalDate).
-  Creador
-    - Reserva.registrarPago(monto, medio) crea el Reserva.Pago.
-    - Reserva.agregarRegistro(tipo, descripcion, empleado) crea el Reserva.RegistroDiario.
-    - Mascota contiene sus vacunas y las agrega con Mascota.agregarVacuna(Vacuna).
-  Bajo acoplamiento
-    - Reserva.RegistroDiario.notificarSiCorresponde() arma una List<Notificable> y llama a notificar()
-      sin conocer a Cliente ni a Empleado.
-  Alta cohesión
-    - Mascota.Vacuna solo sabe de su vigencia (estaVigente) y Categoria solo del recargo (aplicarRecargo).
-  Polimorfismo
-    - validarIngreso(): Perro y Gato revisan vacunas, Conejo y Ave revisan el control veterinario.
-    - notificar(): Cliente.notificar() manda un "SMS" y Empleado.notificar() un aviso interno.
-    - getRol(): Cliente devuelve "Cliente"; Empleado devuelve "Encargado" o "Empleado".
-    Ningún if pregunta por el tipo concreto para decidir qué hacer.
-  Variaciones protegidas
-    - La forma de avisar queda detrás de la interfaz Notificable.
-    - Las reglas sanitarias de cada especie quedan encapsuladas en su clase (validarIngreso).
-
-3.2 Principios SOLID (sección 4 del PDF)
-  S - Responsabilidad única: Reserva gestiona la estadía (estado, pagos, registros), Mascota.Vacuna su
-      vigencia y Categoria el recargo.
-  O - Abierto/cerrado: para sumar una especie se crea una subclase de Mascota con su validarIngreso() y
-      un valor más en Especie, sin tocar las otras especies. Una categoría nueva es un valor más del enum
-      Categoria (con su recargo). Fuera del modelo hay que sumar un "case" en los switch de
-      ArchivoDatos.cargar() y SistemaGuarderia.altaMascota().
-  L - Sustitución de Liskov: SistemaGuarderia guarda List<Mascota> y Reserva guarda una Mascota; cualquier
-      Perro, Gato, Conejo o Ave funciona ahí. Igual con Persona (Cliente y Empleado).
-  I - Segregación de interfaces: Vacunable la implementan solo Perro y Gato. DialogoVacunas pregunta
-      "mascota instanceof Vacunable" para mostrar las obligatorias.
-  D - Inversión de dependencias: RegistroDiario.notificarSiCorresponde() depende de la interfaz
-      Notificable y no de las clases concretas Cliente y Empleado.
-
-3.3 Singleton
-  SistemaGuarderia: constructor privado, atributo static "instancia" y método static getInstancia().
-  Todas las pantallas usan SistemaGuarderia.getInstancia().
-
-3.4 Otros conceptos del programa
-  - Herencia y clases abstractas: Persona y Mascota (getRol, getEspecie y validarIngreso son abstractos).
-  - Interfaces: Facturable (Reserva), Vacunable (Perro, Gato), Notificable (Cliente, Empleado).
-  - Clase interna: Reserva.RegistroDiario usa la mascota y el alojamiento de su Reserva para saber a quién
-    avisar. Al cargar desde archivo se crea con "reserva.new RegistroDiario(...)" (ArchivoDatos.cargar).
-  - Clases anidadas estáticas: Mascota.Vacuna y Reserva.Pago.
-  - Enums con atributos y métodos: Especie.getNombreVisible(), Categoria.aplicarRecargo(),
-    EstadoReserva.puedePasarA() (switch clásico), TipoRegistro.requiereAviso().
-  - Encapsulamiento: el estado de una reserva solo cambia por el método privado Reserva.cambiarEstado(),
-    que valida con EstadoReserva.puedePasarA().
-  - Colecciones: List en todo el modelo, Map<Especie, Integer> en Sucursal.getCapacidadPorEspecie() y
-    Map<Especie, String> en SistemaGuarderia.getOcupacion().
-  - Wrapper: los id son Integer.
-
-3.5 Excepciones
-  Propias (paquete excepciones, las dos son checked):
-    - IngresoRechazadoException: la lanza Reserva.realizarCheckIn() cuando mascota.validarIngreso()
-      devuelve problemas. Guarda la lista de problemas y arma el mensaje con un for-each.
-      SistemaGuarderia.checkIn() la deja subir y la atrapa VentanaEstadias.hacerCheckIn().
-    - DatoInvalidoException: la lanzan Validaciones (campos mal escritos) y SistemaGuarderia (reglas de
-      negocio: DNI o legajo repetido, código de alojamiento repetido, bajas no permitidas, alojamiento
-      ocupado, etc.). La atrapan todas las pantallas.
-  De Java:
-    - IllegalStateException: la lanza Reserva.cambiarEstado() ante una transición inválida y
-      Reserva.realizarCheckOut() si queda saldo.
-
-3.6 try/catch (archivo y método)
-  persistencia/ArchivoDatos.java   leerLineas(), escribirLineas()   IOException, con try-with-resources
-  vista/Validaciones.java          numero(), entero()               NumberFormatException
-  vista/Validaciones.java          parsearFecha()                   DateTimeParseException
-  vista/VentanaEstadias.java       hacerCheckIn()                   IngresoRechazadoException,
-                                                                    IllegalStateException
-  vista/VentanaEstadias.java       hacerCheckOut()                  IllegalStateException,
-                                                                    DatoInvalidoException
-  vista/VentanaEstadias.java       agregarRegistro()                DatoInvalidoException
-  vista/VentanaReservas.java       confirmar(), cancelar()          IllegalStateException
-  vista/VentanaReservas.java       buscarDisponibles(), reservar(), registrarSena()
-                                                                    DatoInvalidoException
-  vista/Ventana(Clientes|Mascotas|Empleados|Alojamientos).java   guardar(), eliminar()
-                                                                    DatoInvalidoException
-  vista/DialogoVacunas.java        agregar()                        DatoInvalidoException
-  app/Main.java                    main()                           Exception (estilo Nimbus)
-
-3.7 Las 6 pantallas (Swing con layout null y setBounds)
-  ABM 1  VentanaClientes       id, nombre, apellido, DNI, teléfono, email, dirección; tabla con la
-                               cantidad de mascotas.
-  ABM 2  VentanaMascotas       campos propios según la especie (los demás se deshabilitan); tabla con la
-                               edad en meses y "Puede ingresar hoy"; botón "Vacunas...".
-  ABM 3  VentanaEmpleados      sucursal y checkbox "Encargado de la sucursal"; tabla con el rol.
-  ABM 4  VentanaAlojamientos   sucursal, especie, categoría, precio base y activo; tabla con precio final.
-  Negocio 1  VentanaReservas   buscar disponibles (precio por noche y total estimado), reservar
-                               (queda PENDIENTE), confirmar, registrar seña y cancelar.
-  Negocio 2  VentanaEstadias   check-in con control sanitario, bitácora de la estadía, agregar registro
-                               y check-out con cobro del saldo y comprobante.
-  Además: MenuPrincipal con el botón "Ver ocupación" (ocupados/capacidad por especie y sucursal).
-
-3.8 Dialogs
-  - DialogoVacunas: JDialog modal propio (agregar y quitar vacunas; muestra las obligatorias).
-  - showConfirmDialog: en todas las bajas, en cancelar una reserva, en el check-out sin saldo y al salir.
-  - showInputDialog: monto de la seña, descripción del registro, y con lista de opciones para el medio de
-    pago y el TipoRegistro.
-  - showMessageDialog: errores, ocupación, aviso de incidente, ingreso rechazado y comprobante.
-
-3.9 Archivos .txt (carpeta datos/, un archivo por tabla, campos separados por ";")
-  sucursales.txt    id;nombre;direccion;telefono;legajoEncargado
-  empleados.txt     id;nombre;apellido;dni;telefono;email;legajo;fechaIngreso;idSucursal
-  clientes.txt      id;nombre;apellido;dni;telefono;email;direccion
-  alojamientos.txt  id;codigo;especie;categoria;precioBaseNoche;activo;idSucursal
-  mascotas.txt      especie;id;nombre;fechaNacimiento;pesoKg;observaciones;fechaUltimoControl;idCliente;
-                    dato1;dato2   (raza y castrado / raza / tipo de ave, según la especie)
-  vacunas.txt       idMascota;nombre;fechaAplicacion;fechaVencimiento
-  reservas.txt      id;idMascota;idAlojamiento;fechaDesde;fechaHasta;estado
-  pagos.txt         idReserva;fecha;monto;medio
-  registros.txt     idReserva;fechaHora;tipo;legajoEmpleado;descripcion
-  Si el usuario escribe un ";" se guarda como "," para no romper el formato.
+4. LO QUE SE AGREGÓ PARA LA ENTREGA FINAL (pedido del profesor)
+---------------------------------------------------------------
+  Collar identificador
+    Cada mascota tiene codigoCollar (COL-00001), generado desde el id (único en la base).
+    Se busca por collar en ABM Mascotas, en Check-in/Estadías y en Menú > Operación > Buscar por collar.
+  Servicios (baño, corte de pelo, corte de uñas, paseo extra)
+    Enum TipoServicio (precio y a qué especies se aplica) y clase ServicioContratado.
+    Se contratan en la reserva (suman a la cuenta) y un empleado de la sucursal los marca como realizados:
+    queda quién y cuándo, y además un registro SERVICIO en la bitácora. No se puede hacer el check-out con
+    servicios sin hacer. Se ve cuántos se contrataron, cuántos se hicieron, lo pagado y el saldo.
+  Seguimiento de la estadía
+    TipoRegistro ahora tiene COMIDA, MEDICACION, PASEO, SERVICIO, OBSERVACION e INCIDENTE.
+    Cada registro guarda quién lo hizo (empleado de la sucursal) y, si corresponde, qué indicación del
+    dueño cumple. La pantalla de Estadías muestra indicaciones, servicios y bitácora juntos.
+  Indicaciones del dueño (comida puntual, medicación, cuidados especiales)
+    Enum TipoIndicacion y clase Indicacion (descripción y horario), cargadas en la reserva.
+    Para cada una se ve cuántas veces se cumplió, cuándo fue la última y quién la cumplió.
+  Logs de todo
+    Cada acción (ingreso, altas, bajas, modificaciones, reservas, pagos, check-in/out, servicios,
+    indicaciones, registros y rechazos) queda en la tabla log_sistema con fecha, usuario y detalle.
+    Pantalla "Log del sistema" (Ctrl+L): filtra por acción y texto y ordena (Comparator con lambdas);
+    la consulta se hace con SwingWorker.
+  Base de datos SQL Server
+    Reemplaza los .txt. JDBC: DriverManager, Statement, executeQuery/executeUpdate y ResultSet.
+  Correcciones
+    No se puede pagar más que el saldo, ni hacer el check-in antes de la fecha de entrada o después de la
+    de salida, ni cargar registros con un empleado de otra sucursal. Main usa invokeLater (regla del EDT).
 
 
-4. CASOS PARA MOSTRAR EN LA DEFENSA (con los datos de ejemplo)
---------------------------------------------------------------
-  Los datos están pensados para el 16/10/2026, pero funcionan cualquier otro día (el check-in usa la
-  fecha de hoy y las vacunas vigentes vencen en 2027). Conviene seguir este orden.
+5. CASOS PARA MOSTRAR EN LA DEFENSA (después de ejecutar bd/2_datos_de_ejemplo.sql ese día)
+-------------------------------------------------------------------------------------------
+  Ingresar con el legajo 101 (Carla, encargada de Belgrano).
 
   1. Polimorfismo en la tabla de mascotas (ABM Mascotas)
-     "Puede ingresar hoy" dice No para Toby (perro, Antirrábica vencida) y para Copito (conejo, último
-     control de hace más de 180 días). Botón "Vacunas..." con Toby: muestra las obligatorias. Con Copito:
-     avisa que los conejos usan control veterinario.
-
+     "Puede ingresar hoy" dice No para Toby (perro, Antirrábica vencida) y para Copito (conejo, control
+     de hace más de 180 días). Buscar por collar "3" selecciona a Toby.
   2. Búsqueda de disponibles y recargo PREMIUM (Reservas)
-     Sucursal Belgrano, mascota Luna, del 16/10/2026 al 19/10/2026: no hay lugar (B-P01 lo ocupa Rocco,
-     B-P02 lo tiene reservado Toby y B-P03 está inactivo).
-     Del 20/10/2026 al 23/10/2026: aparecen B-P01 ($20000 por noche) y B-P02 PREMIUM ($26000, +30%).
-     Reservar B-P01: queda PENDIENTE. "Registrar seña" y después "Confirmar".
-
-  3. Transición inválida (Reservas)
-     Elegir la reserva 2 (Pepe, FINALIZADA) y apretar "Confirmar" o "Cancelar": muestra el error de
-     IllegalStateException.
-
+     Belgrano, Luna, de hoy a 3 días: no hay lugar. Desde dentro de 4 días: aparecen B-P01 y B-P02 PREMIUM
+     (+30%). Reservar: queda PENDIENTE. "Registrar seña" y "Confirmar".
+  3. Transición inválida: reserva 2 (Pepe, FINALIZADA) > "Confirmar": IllegalStateException.
   4. Check-in con control sanitario (Check-in / Estadías)
-     - Reserva 3 (Toby): rechazado, "Falta o venció la vacuna Antirrábica" (IngresoRechazadoException).
-     - Reserva 4 (Copito): rechazado, "Necesita un control veterinario de los últimos 180 días".
-     - Reserva 5 (Mishi, gato en regla): aceptado, pasa a "Estadías en curso".
-     Para que Toby entre: ABM Mascotas > Toby > "Vacunas..." > agregar Antirrábica con fecha de hoy.
-     Para que Copito entre: ABM Mascotas > Copito > poner hoy en "Último control" > Guardar.
-
-  5. Bitácora y avisos (Check-in / Estadías)
-     Elegir la estadía de Rocco: la bitácora muestra 3 registros (uno es un INCIDENTE).
-     "Agregar registro" > INCIDENTE: aparece el cartel "Se avisó al cliente y al encargado de la sucursal"
-     y en la consola se ven "[SMS a Lucía Fernández ...]" y "[Aviso interno a Carla López ...]".
-     Con COMIDA no se avisa a nadie.
-
-  6. Check-out y cobro (Check-in / Estadías)
-     Rocco: total $100000, pagado $30000 (seña), saldo $70000. Se elige el medio de pago, se cobra el saldo
-     y sale el comprobante con los dos pagos.
-
-  7. Control de ocupación (Menú > "Ver ocupación")
-     Muestra "ocupados/capacidad" por especie en cada sucursal. La capacidad solo cuenta los alojamientos
-     activos (en Belgrano hay 3 de perro, pero uno está inactivo: capacidad 2).
-
-  8. Bajas protegidas (DatoInvalidoException)
-     - Eliminar a Lucía Fernández (ABM Clientes): tiene mascotas.
-     - Eliminar a Carla López (ABM Empleados): es la encargada de Belgrano.
-     - Eliminar a Diego Pérez: cargó registros en la bitácora.
-     - Eliminar el alojamiento B-P01: tiene reservas.
-     - Dar de alta un cliente con el DNI 30111222: ya existe.
-
-  9. Rol polimórfico (ABM Empleados)
-     La columna "Rol" muestra "Encargado" para Carla y Marcos y "Empleado" para el resto (getRol()).
+     Reserva 3 (Toby): rechazado (IngresoRechazadoException; queda en el log como "Operación rechazada").
+     Reserva 4 (Copito): rechazado. Reserva 5 (Mishi): aceptado.
+  5. Seguimiento de Rocco (Estadías, elegir la reserva 1)
+     Se ven 3 indicaciones del dueño (la comida y el antiparasitario ya cumplidos, con quién y cuándo),
+     2 servicios (baño hecho por Diego, corte de uñas pendiente) y la bitácora.
+     "Agregar registro" > Comida > elegir la indicación "Balanceado..." > quién lo hizo: queda cumplida
+     2 veces. "Agregar registro" > Incidente: avisa al cliente y al encargado (ver consola).
+  6. Servicios y check-out (Rocco)
+     "Check-out y cobro": no deja, falta el corte de uñas. "Servicios e indic." > Corte de uñas >
+     "Marcar realizado". Ahora sí: total $114.000 (alojamiento $100.000 + servicios $14.000), pagado
+     $30.000, se cobra el saldo y sale el comprobante con el detalle.
+  7. Log del sistema (Ctrl+L): se ve todo lo anterior con usuario y hora. Filtrar por "Check-in".
+     Cambiar de usuario (Archivo > Cambiar de usuario) a 102: no puede ver el log (no es encargado).
+  8. Bajas protegidas (DatoInvalidoException): eliminar a Lucía (tiene mascotas), a Carla (es encargada),
+     a Diego (cargó registros), el alojamiento B-P01 (tiene reservas); alta con DNI 30111222 (repetido).
+  9. Ocupación (Ver ocupación) y rol polimórfico (ABM Empleados, columna Rol).

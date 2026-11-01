@@ -3,11 +3,11 @@ package vista;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,15 +19,21 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import javax.swing.JTextField;
+
 import controlador.SistemaGuarderia;
 import excepciones.DatoInvalidoException;
 import excepciones.IngresoRechazadoException;
 import modelo.enums.EstadoReserva;
 import modelo.enums.TipoRegistro;
+import modelo.mascota.Mascota;
 import modelo.persona.Empleado;
+import modelo.reserva.Indicacion;
 import modelo.reserva.Reserva;
+import modelo.reserva.ServicioContratado;
 
-// Pantalla de negocio 2: check-in, registros del día a día (bitácora) y check-out con cobro
+// Pantalla de negocio 2: check-in, seguimiento de la estadía (bitácora, indicaciones del dueño y servicios)
+// y check-out con cobro
 public class VentanaEstadias extends JFrame {
     private static final long serialVersionUID = 1L; // Eclipse avisa si falta en una ventana
     // Medios de pago que se ofrecen en la lista del showInputDialog
@@ -37,7 +43,7 @@ public class VentanaEstadias extends JFrame {
     private List<Reserva> confirmadas; // filas de la tabla de check-in, en el mismo orden
     private List<Reserva> enCurso;     // filas de la tabla de estadías, en el mismo orden
 
-    private JComboBox<Empleado> cmbEmpleado;
+    private JTextField txtCollar;
     private JTable tablaConfirmadas;
     private DefaultTableModel modeloConfirmadas;
     private JTable tablaEnCurso;
@@ -55,15 +61,20 @@ public class VentanaEstadias extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        JLabel lblEmpleado = new JLabel("Empleado que opera:");
-        lblEmpleado.setBounds(20, 10, 150, 25);
-        getContentPane().add(lblEmpleado);
-        cmbEmpleado = new JComboBox<Empleado>();
-        for (Empleado e : sistema.getEmpleados()) {
-            cmbEmpleado.addItem(e);
-        }
-        cmbEmpleado.setBounds(170, 10, 300, 25);
-        getContentPane().add(cmbEmpleado);
+        JLabel lblOperador = new JLabel("Operando: " + sistema.getOperador().getNombreCompleto());
+        lblOperador.setBounds(20, 10, 300, 25);
+        getContentPane().add(lblOperador);
+
+        // Búsqueda por collar: elige la reserva de esa mascota en la tabla que corresponda
+        JLabel lblCollar = new JLabel("Collar:");
+        lblCollar.setBounds(560, 10, 50, 25);
+        getContentPane().add(lblCollar);
+        txtCollar = new JTextField();
+        txtCollar.setBounds(610, 10, 140, 25);
+        getContentPane().add(txtCollar);
+        JButton btnCollar = new JButton("Buscar");
+        btnCollar.setBounds(760, 10, 100, 25);
+        getContentPane().add(btnCollar);
 
         JButton btnActualizar = new JButton("Actualizar");
         btnActualizar.setBounds(930, 10, 140, 25);
@@ -107,13 +118,17 @@ public class VentanaEstadias extends JFrame {
         btnRegistro.setBounds(910, 270, 160, 30);
         getContentPane().add(btnRegistro);
 
+        JButton btnDetalle = new JButton("Servicios e indic.");
+        btnDetalle.setBounds(910, 310, 160, 30);
+        getContentPane().add(btnDetalle);
+
         JButton btnCheckOut = new JButton("Check-out y cobro");
-        btnCheckOut.setBounds(910, 310, 160, 30);
+        btnCheckOut.setBounds(910, 350, 160, 30);
         getContentPane().add(btnCheckOut);
 
-        JLabel lblBitacora = new JLabel("Bitácora de la estadía elegida");
+        JLabel lblBitacora = new JLabel("Seguimiento de la estadía elegida (indicaciones, servicios y bitácora)");
         lblBitacora.setFont(new Font("SansSerif", Font.BOLD, 14));
-        lblBitacora.setBounds(20, 465, 500, 25);
+        lblBitacora.setBounds(20, 465, 700, 25);
         getContentPane().add(lblBitacora);
 
         txtBitacora = new JTextArea();
@@ -138,6 +153,14 @@ public class VentanaEstadias extends JFrame {
                 agregarRegistro();
             }
         });
+        btnDetalle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirDetalle();
+            }
+        });
+        // Lambdas: el campo de texto también busca al apretar Enter
+        btnCollar.addActionListener(e -> buscarPorCollar());
+        txtCollar.addActionListener(e -> buscarPorCollar());
         btnCheckOut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 hacerCheckOut();
@@ -202,14 +225,43 @@ public class VentanaEstadias extends JFrame {
             return;
         }
         Reserva r = enCurso.get(fila);
-        String texto = "";
-        for (Reserva.RegistroDiario reg : r.getRegistros()) {
-            texto = texto + reg.getResumen() + "\n";
+        String texto = r.getMascota().getNombre() + " (" + r.getMascota().getCodigoCollar() + ") - Observaciones: "
+                + r.getMascota().getObservaciones() + "\n\n";
+
+        texto = texto + "INDICACIONES DEL DUEÑO\n";
+        if (r.getIndicaciones().isEmpty()) {
+            texto = texto + "   (ninguna)\n";
         }
-        if (texto.isEmpty()) {
-            texto = "Todavía no hay registros para " + r.getMascota().getNombre() + ".";
+        for (Indicacion i : r.getIndicaciones()) {
+            Reserva.RegistroDiario ultimo = r.getUltimoCumplimiento(i);
+            String ultimaVez = "todavía no se cumplió";
+            if (ultimo != null) {
+                ultimaVez = "última vez: " + ultimo.getFechaHora().format(DateTimeFormatter.ofPattern("dd/MM HH:mm"))
+                        + " por " + ultimo.getEmpleado().getNombreCompleto();
+            }
+            texto = texto + "   - " + i + "  ->  " + r.getCantidadCumplimientos(i) + " vez/veces, " + ultimaVez
+                    + "\n";
+        }
+
+        texto = texto + "\nSERVICIOS (" + r.getCantidadServiciosRealizados() + " de " + r.getServicios().size()
+                + " realizados, " + Validaciones.plata(r.getTotalServicios()) + ")\n";
+        if (r.getServicios().isEmpty()) {
+            texto = texto + "   (ninguno)\n";
+        }
+        for (ServicioContratado s : r.getServicios()) {
+            texto = texto + "   - " + s.getTipo() + " (" + Validaciones.plata(s.getPrecio()) + "): "
+                    + s.getEstadoTexto() + "\n";
+        }
+
+        texto = texto + "\nBITÁCORA\n";
+        if (r.getRegistros().isEmpty()) {
+            texto = texto + "   Todavía no hay registros.\n";
+        }
+        for (Reserva.RegistroDiario reg : r.getRegistros()) {
+            texto = texto + "   " + reg.getResumen() + "\n";
         }
         txtBitacora.setText(texto);
+        txtBitacora.setCaretPosition(0);
     }
 
     private void hacerCheckIn() {
@@ -241,8 +293,6 @@ public class VentanaEstadias extends JFrame {
         if (r == null) {
             return;
         }
-        Empleado empleado = (Empleado) cmbEmpleado.getSelectedItem();
-
         // showInputDialog con una lista: muestra los valores del enum TipoRegistro
         TipoRegistro[] tipos = TipoRegistro.values();
         Object elegido = JOptionPane.showInputDialog(this, "Tipo de registro:", "Nuevo registro",
@@ -251,13 +301,46 @@ public class VentanaEstadias extends JFrame {
             return; // el usuario apretó "Cancelar"
         }
         TipoRegistro tipo = (TipoRegistro) elegido;
+        if (tipo == TipoRegistro.SERVICIO) {
+            JOptionPane.showMessageDialog(this, "Los servicios se marcan como realizados en \"Servicios e indic.\"",
+                    "Atención", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
-        String descripcion = JOptionPane.showInputDialog(this, "Descripción:");
+        // Si hay indicaciones del dueño que se cumplen con este tipo, se pregunta cuál se cumplió
+        Indicacion indicacion = null;
+        String descripcionSugerida = "";
+        List<Indicacion> posibles = r.getIndicacionesPara(tipo);
+        if (!posibles.isEmpty()) {
+            Object[] opciones = new Object[posibles.size() + 1];
+            opciones[0] = "(no cumple ninguna indicación)";
+            for (int i = 0; i < posibles.size(); i++) {
+                opciones[i + 1] = posibles.get(i);
+            }
+            Object opcion = JOptionPane.showInputDialog(this, "¿Cumple alguna indicación del dueño?",
+                    "Nuevo registro", JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[1]);
+            if (opcion == null) {
+                return;
+            }
+            if (opcion instanceof Indicacion) {
+                indicacion = (Indicacion) opcion;
+                descripcionSugerida = indicacion.getDescripcion();
+            }
+        }
+
+        String descripcion = (String) JOptionPane.showInputDialog(this, "Descripción (qué se hizo, qué comió...):",
+                "Nuevo registro", JOptionPane.QUESTION_MESSAGE, null, null, descripcionSugerida);
         if (descripcion == null) {
             return;
         }
+
+        // Quién lo hizo: solo los empleados de la sucursal donde está la mascota
+        Empleado empleado = elegirEmpleado(r, "¿Quién lo hizo?");
+        if (empleado == null) {
+            return;
+        }
         try {
-            sistema.agregarRegistro(r, tipo, descripcion, empleado);
+            sistema.agregarRegistro(r, tipo, descripcion, empleado, indicacion);
             if (tipo.requiereAviso()) {
                 JOptionPane.showMessageDialog(this, "Se avisó al cliente y al encargado de la sucursal.", "Aviso",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -268,13 +351,70 @@ public class VentanaEstadias extends JFrame {
         }
     }
 
+    // Pide el empleado de la sucursal de la reserva; por defecto aparece el que está operando
+    private Empleado elegirEmpleado(Reserva r, String pregunta) {
+        List<Empleado> lista = r.getAlojamiento().getSucursal().getEmpleados();
+        Object[] opciones = lista.toArray();
+        Object porDefecto = opciones[0];
+        if (lista.contains(sistema.getOperador())) {
+            porDefecto = sistema.getOperador();
+        }
+        Object elegido = JOptionPane.showInputDialog(this, pregunta, "Empleado", JOptionPane.QUESTION_MESSAGE, null,
+                opciones, porDefecto);
+        return (Empleado) elegido;
+    }
+
+    private void abrirDetalle() {
+        Reserva r = getEstadiaElegida();
+        if (r == null) {
+            return;
+        }
+        int fila = tablaEnCurso.getSelectedRow();
+        new DialogoDetalleReserva(this, r).setVisible(true);
+        cargarTablas();
+        tablaEnCurso.setRowSelectionInterval(fila, fila); // vuelve a elegir la misma para ver el seguimiento
+    }
+
+    // Busca la mascota por el collar y elige su reserva en la tabla de estadías o en la de check-in
+    private void buscarPorCollar() {
+        try {
+            Mascota m = sistema.buscarPorCollar(txtCollar.getText());
+            for (int i = 0; i < enCurso.size(); i++) {
+                if (enCurso.get(i).getMascota() == m) {
+                    tablaEnCurso.setRowSelectionInterval(i, i);
+                    return;
+                }
+            }
+            for (int i = 0; i < confirmadas.size(); i++) {
+                if (confirmadas.get(i).getMascota() == m) {
+                    tablaConfirmadas.setRowSelectionInterval(i, i);
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, m.getNombre() + " (" + m.getCodigoCollar()
+                    + ") no tiene una estadía en curso ni una reserva confirmada.", "Sin estadía",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (DatoInvalidoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Collar no encontrado", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     // Muestra total, pagado y saldo; si hay saldo lo cobra; después hace el check-out y muestra el comprobante
     private void hacerCheckOut() {
         Reserva r = getEstadiaElegida();
         if (r == null) {
             return;
         }
-        String resumen = "Total: " + Validaciones.plata(r.calcularTotal()) + "\nPagado: "
+        // Se revisa antes de cobrar: no se puede salir con servicios contratados sin hacer
+        if (r.tieneServiciosPendientes()) {
+            JOptionPane.showMessageDialog(this, "Hay servicios contratados sin realizar. Marcalos como realizados o "
+                    + "quitalos en \"Servicios e indic.\" antes del check-out.", "No se puede hacer el check-out",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String resumen = "Alojamiento: " + Validaciones.plata(r.getTotalAlojamiento()) + "\nServicios: "
+                + Validaciones.plata(r.getTotalServicios()) + "\nTotal: " + Validaciones.plata(r.calcularTotal())
+                + "\nPagado: "
                 + Validaciones.plata(r.getTotalPagado()) + "\nSaldo: " + Validaciones.plata(r.getSaldoPendiente());
 
         try {
@@ -309,14 +449,18 @@ public class VentanaEstadias extends JFrame {
     private String armarComprobante(Reserva r) {
         String texto = "COMPROBANTE - Reserva " + r.getId() + "\n\n";
         texto = texto + "Cliente: " + r.getMascota().getCliente().getNombreCompleto() + "\n";
-        texto = texto + "Mascota: " + r.getMascota().getNombre() + "\n";
+        texto = texto + "Mascota: " + r.getMascota().getNombre() + " (" + r.getMascota().getCodigoCollar() + ")\n";
         texto = texto + "Sucursal: " + r.getAlojamiento().getSucursal().getNombre() + "\n";
         texto = texto + "Alojamiento: " + r.getAlojamiento().getCodigo() + " (" + r.getAlojamiento().getCategoria()
                 + ")\n";
         texto = texto + "Estadía: " + Validaciones.formatearFecha(r.getFechaDesde()) + " al "
                 + Validaciones.formatearFecha(r.getFechaHasta()) + "\n";
         texto = texto + r.getCantidadNoches() + " noches x " + Validaciones.plata(r.getAlojamiento().getPrecioNoche())
-                + "\n\n";
+                + " = " + Validaciones.plata(r.getTotalAlojamiento()) + "\n";
+        for (ServicioContratado s : r.getServicios()) {
+            texto = texto + s.getTipo() + ": " + Validaciones.plata(s.getPrecio()) + "\n";
+        }
+        texto = texto + "\n";
         texto = texto + "Pagos:\n";
         for (Reserva.Pago p : r.getPagos()) {
             texto = texto + "   " + Validaciones.formatearFecha(p.getFecha()) + "  " + Validaciones.plata(p.getMonto())
