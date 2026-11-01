@@ -1,0 +1,12 @@
+# Datos de conexión a SQL Server (los lee persistencia/ConexionBD.java).
+# Cada integrante puede cambiarlos según su instalación. Las líneas con # son comentarios.
+#
+# SQL Server Express con TCP/IP habilitado en el puerto 1433 (ver LEEME, sección 1):
+url=jdbc:sqlserver://localhost:1433;databaseName=GuarderiaMascotas;encrypt=true;trustServerCertificate=true
+#
+# Alternativa si no se fija el puerto 1433 (requiere el servicio "SQL Server Browser" iniciado):
+# url=jdbc:sqlserver://localhost\SQLEXPRESS;databaseName=GuarderiaMascotas;encrypt=true;trustServerCertificate=true
+#
+# Usuario creado por bd/1_crear_base_y_tablas.sql
+usuario=guarderia
+clave=Guarderia2026!

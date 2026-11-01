@@ -113,16 +113,31 @@ public class VentanaMascotas extends JFrame {
         btnVacunas.setBounds(20, 465, 320, 30);
         getContentPane().add(btnVacunas);
 
-        modeloTabla = new DefaultTableModel(new String[] { "Id", "Nombre", "Especie", "Cliente", "Edad (meses)",
+        // Búsqueda por el código del collar (el identificador que lleva puesto la mascota)
+        JLabel lblCollar = new JLabel("Buscar por collar:");
+        lblCollar.setBounds(360, 20, 120, 25);
+        getContentPane().add(lblCollar);
+        JTextField txtCollar = new JTextField();
+        txtCollar.setBounds(480, 20, 150, 25);
+        getContentPane().add(txtCollar);
+        JButton btnBuscarCollar = new JButton("Buscar");
+        btnBuscarCollar.setBounds(640, 20, 100, 25);
+        getContentPane().add(btnBuscarCollar);
+
+        modeloTabla = new DefaultTableModel(new String[] { "Id", "Collar", "Nombre", "Especie", "Cliente", "Edad (meses)",
                 "Peso", "Raza / tipo", "Último control", "Puede ingresar hoy" }, 0);
         tabla = new JTable(modeloTabla);
         tabla.setDefaultEditor(Object.class, null); // la tabla es solo para mirar, no se edita
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabla.getColumnModel().getColumn(0).setPreferredWidth(30);
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(95);
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBounds(360, 20, 760, 475);
+        scroll.setBounds(360, 55, 760, 440);
         getContentPane().add(scroll);
 
-        // Eventos (listeners con clases anónimas)
+        // Eventos (listeners con clases anónimas). El de buscar usa una lambda (ActionListener tiene un solo método).
+        btnBuscarCollar.addActionListener(e -> buscarPorCollar(txtCollar.getText()));
+        txtCollar.addActionListener(e -> buscarPorCollar(txtCollar.getText())); // Enter en el campo
         cmbEspecie.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 habilitarCamposDeEspecie();
@@ -229,9 +244,21 @@ public class VentanaMascotas extends JFrame {
             if (problemas.isEmpty()) {
                 puedeIngresar = "Sí";
             }
-            modeloTabla.addRow(new Object[] { m.getId(), m.getNombre(), m.getEspecie().getNombreVisible(),
+            modeloTabla.addRow(new Object[] { m.getId(), m.getCodigoCollar(), m.getNombre(), m.getEspecie().getNombreVisible(),
                     m.getCliente().getNombreCompleto(), m.getEdadEnMeses(), m.getPesoKg(), getDatoPropio(m),
                     Validaciones.formatearFecha(m.getFechaUltimoControl()), puedeIngresar });
+        }
+    }
+
+    // Busca la mascota por su collar y la deja elegida en la tabla (las filas siguen el orden de la lista)
+    private void buscarPorCollar(String codigo) {
+        try {
+            Mascota m = sistema.buscarPorCollar(codigo);
+            int fila = sistema.getMascotas().indexOf(m);
+            tabla.setRowSelectionInterval(fila, fila);
+            tabla.scrollRectToVisible(tabla.getCellRect(fila, 0, true));
+        } catch (DatoInvalidoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Collar no encontrado", JOptionPane.WARNING_MESSAGE);
         }
     }
 

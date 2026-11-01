@@ -12,6 +12,7 @@ import modelo.persona.Cliente;
 // Cada especie (Perro, Gato, Conejo, Ave) hereda de esta clase.
 public abstract class Mascota {
     private Integer id;
+    private String codigoCollar; // identificador que lleva la mascota en el collar, para no confundirla con otra
     private String nombre;
     private LocalDate fechaNacimiento;
     private double pesoKg;
@@ -23,6 +24,7 @@ public abstract class Mascota {
     public Mascota(Integer id, String nombre, LocalDate fechaNacimiento, double pesoKg, String observaciones,
             LocalDate fechaUltimoControl) {
         this.id = id;
+        this.codigoCollar = generarCodigoCollar(id);
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.pesoKg = pesoKg;
@@ -37,6 +39,12 @@ public abstract class Mascota {
     // Método abstracto (polimorfismo): cada especie revisa sus propios requisitos para entrar.
     // Devuelve la lista de problemas; si está vacía, la mascota puede entrar.
     public abstract List<String> validarIngreso(LocalDate fecha);
+
+    // El código del collar sale del id, que es único: el 7 queda "COL-00007".
+    // Es static porque no usa ningún dato del objeto, solo el número que recibe.
+    public static String generarCodigoCollar(Integer id) {
+        return "COL-" + String.format("%05d", id);
+    }
 
     public void agregarVacuna(Vacuna v) {
         vacunas.add(v);
@@ -73,6 +81,11 @@ public abstract class Mascota {
 
     public void setId(Integer id) {
         this.id = id;
+        this.codigoCollar = generarCodigoCollar(id);
+    }
+
+    public String getCodigoCollar() {
+        return codigoCollar;
     }
 
     public String getNombre() {
@@ -129,7 +142,7 @@ public abstract class Mascota {
 
     @Override
     public String toString() {
-        return nombre + " (" + getEspecie().getNombreVisible() + ")";
+        return nombre + " (" + getEspecie().getNombreVisible() + ", " + codigoCollar + ")";
     }
 
     // Clase anidada estática: una vacuna no necesita acceder a los datos de una Mascota en particular,

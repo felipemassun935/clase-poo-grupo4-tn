@@ -19,10 +19,15 @@ public class Empleado extends Persona implements Notificable {
         this.fechaIngreso = fechaIngreso;
     }
 
+    // true si es el encargado de su sucursal
+    public boolean esEncargado() {
+        return sucursal != null && sucursal.getEncargado() == this;
+    }
+
     // Polimorfismo: el rol depende de si es el encargado de su sucursal o no
     @Override
     public String getRol() {
-        if (sucursal != null && sucursal.getEncargado() == this) {
+        if (esEncargado()) {
             return "Encargado";
         }
         return "Empleado";

@@ -120,12 +120,16 @@ public class VentanaReservas extends JFrame {
         btnCancelar.setBounds(320, 290, 140, 30);
         getContentPane().add(btnCancelar);
 
+        JButton btnDetalle = new JButton("Servicios e indicaciones...");
+        btnDetalle.setBounds(470, 290, 220, 30);
+        getContentPane().add(btnDetalle);
+
         JButton btnActualizar = new JButton("Actualizar");
         btnActualizar.setBounds(930, 290, 140, 30);
         getContentPane().add(btnActualizar);
 
-        modeloReservas = new DefaultTableModel(new String[] { "Id", "Mascota", "Cliente", "Sucursal", "Alojamiento",
-                "Desde", "Hasta", "Total", "Pagado", "Saldo", "Estado" }, 0);
+        modeloReservas = new DefaultTableModel(new String[] { "Id", "Mascota", "Collar", "Cliente", "Sucursal",
+                "Alojamiento", "Desde", "Hasta", "Servicios", "Total", "Pagado", "Saldo", "Estado" }, 0);
         tablaReservas = new JTable(modeloReservas);
         tablaReservas.setDefaultEditor(Object.class, null);
         tablaReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -157,6 +161,11 @@ public class VentanaReservas extends JFrame {
         btnCancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cancelar();
+            }
+        });
+        btnDetalle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirDetalle();
             }
         });
         btnActualizar.addActionListener(new ActionListener() {
@@ -193,9 +202,11 @@ public class VentanaReservas extends JFrame {
         modeloReservas.setRowCount(0);
         for (Reserva r : sistema.getReservas()) {
             modeloReservas.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
-                    r.getMascota().getCliente().getNombreCompleto(), r.getAlojamiento().getSucursal().getNombre(),
-                    r.getAlojamiento().getCodigo(), Validaciones.formatearFecha(r.getFechaDesde()),
-                    Validaciones.formatearFecha(r.getFechaHasta()), Validaciones.plata(r.calcularTotal()),
+                    r.getMascota().getCodigoCollar(), r.getMascota().getCliente().getNombreCompleto(),
+                    r.getAlojamiento().getSucursal().getNombre(), r.getAlojamiento().getCodigo(),
+                    Validaciones.formatearFecha(r.getFechaDesde()), Validaciones.formatearFecha(r.getFechaHasta()),
+                    r.getCantidadServiciosRealizados() + "/" + r.getServicios().size(),
+                    Validaciones.plata(r.calcularTotal()),
                     Validaciones.plata(r.getTotalPagado()), Validaciones.plata(r.getSaldoPendiente()),
                     r.getEstado() });
         }
@@ -262,6 +273,16 @@ public class VentanaReservas extends JFrame {
             return null;
         }
         return sistema.getReservas().get(fila);
+    }
+
+    // Abre el diálogo modal de servicios e indicaciones; al cerrarlo se refresca la tabla (cambia el total)
+    private void abrirDetalle() {
+        Reserva r = getReservaElegida();
+        if (r == null) {
+            return;
+        }
+        new DialogoDetalleReserva(this, r).setVisible(true);
+        cargarReservas();
     }
 
     private void confirmar() {

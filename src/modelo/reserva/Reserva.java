@@ -9,7 +9,9 @@ import java.util.List;
 
 import excepciones.IngresoRechazadoException;
 import modelo.enums.EstadoReserva;
+import modelo.enums.TipoIndicacion;
 import modelo.enums.TipoRegistro;
+import modelo.enums.TipoServicio;
 import modelo.interfaces.Facturable;
 import modelo.interfaces.Notificable;
 import modelo.mascota.Mascota;
@@ -18,7 +20,8 @@ import modelo.sucursal.Alojamiento;
 
 // Reserva de un alojamiento para una mascota entre dos fechas.
 // Interfaz: es Facturable (se le puede cobrar al cliente).
-// Guarda los pagos y los registros del día a día de la estadía.
+// Guarda los pagos, los registros del día a día de la estadía (bitácora),
+// los servicios extra que contrató el cliente y las indicaciones que dejó el dueño.
 public class Reserva implements Facturable {
     private Integer id;
     private Mascota mascota;
@@ -28,6 +31,8 @@ public class Reserva implements Facturable {
     private EstadoReserva estado;
     private List<Pago> pagos;
     private List<RegistroDiario> registros;
+    private List<ServicioContratado> servicios;
+    private List<Indicacion> indicaciones;
 
     // Constructor para una reserva nueva: siempre arranca PENDIENTE
     public Reserva(Integer id, Mascota mascota, Alojamiento alojamiento, LocalDate fechaDesde, LocalDate fechaHasta) {
@@ -45,6 +50,8 @@ public class Reserva implements Facturable {
         this.estado = estado;
         this.pagos = new ArrayList<Pago>();
         this.registros = new ArrayList<RegistroDiario>();
+        this.servicios = new ArrayList<ServicioContratado>();
+        this.indicaciones = new ArrayList<Indicacion>();
     }
 
     // Cantidad de noches entre las dos fechas. Como mínimo se cobra 1 noche.
@@ -56,10 +63,40 @@ public class Reserva implements Facturable {
         return noches;
     }
 
-    // Interfaz Facturable: total = noches x precio por noche del alojamiento
+    // Lo que cuesta solo el alojamiento: noches x precio por noche
+    public double getTotalAlojamiento() {
+        return getCantidadNoches() * alojamiento.getPrecioNoche();
+    }
+
+    // Suma de los servicios contratados (estén hechos o no: se cobran al contratarlos)
+    public double getTotalServicios() {
+        double total = 0;
+        for (ServicioContratado s : servicios) {
+            total = total + s.getPrecio();
+        }
+        return total;
+    }
+
+    // Cuántos servicios contratados ya se hicieron
+    public int getCantidadServiciosRealizados() {
+        int cantidad = 0;
+        for (ServicioContratado s : servicios) {
+            if (s.isRealizado()) {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
+
+    // true si hay algún servicio contratado que todavía no se hizo
+    public boolean tieneServiciosPendientes() {
+        return getCantidadServiciosRealizados() < servicios.size();
+    }
+
+    // Interfaz Facturable: total = alojamiento + servicios contratados
     @Override
     public double calcularTotal() {
-        return getCantidadNoches() * alojamiento.getPrecioNoche();
+        return getTotalAlojamiento() + getTotalServicios();
     }
 
     // Interfaz Facturable: suma todos los pagos hechos
@@ -82,9 +119,15 @@ public class Reserva implements Facturable {
         cambiarEstado(EstadoReserva.CONFIRMADA);
     }
 
-    // Check-in: primero se revisa que la mascota pueda entrar (vacunas o control veterinario).
+    // Check-in: primero se revisa la fecha y después que la mascota pueda entrar (vacunas o control veterinario).
     // Si hay problemas se tira una excepción propia con la lista.
     public void realizarCheckIn(LocalDate fecha) throws IngresoRechazadoException {
+        if (fecha.isBefore(fechaDesde)) {
+            throw new IllegalStateException("La reserva empieza el " + fechaDesde.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ": todavía no se puede hacer el check-in.");
+        }
+        if (!fecha.isBefore(fechaHasta)) {
+            throw new IllegalStateException("La reserva terminaba el " + fechaHasta.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ": ya no se puede hacer el check-in.");
+        }
         List<String> problemas = mascota.validarIngreso(fecha);
         if (!problemas.isEmpty()) {
             throw new IngresoRechazadoException(problemas);
@@ -92,8 +135,13 @@ public class Reserva implements Facturable {
         cambiarEstado(EstadoReserva.EN_CURSO);
     }
 
-    // Check-out: solo se puede si la reserva está totalmente pagada
+    // Check-out: no puede quedar ningún servicio sin hacer y la reserva tiene que estar totalmente pagada
     public void realizarCheckOut() {
+        if (tieneServiciosPendientes()) {
+            int pendientes = servicios.size() - getCantidadServiciosRealizados();
+            throw new IllegalStateException("No se puede hacer el check-out: hay " + pendientes
+                    + " servicio(s) contratado(s) sin realizar. Realizalos o quitalos.");
+        }
         if (getSaldoPendiente() > 0) {
             throw new IllegalStateException("No se puede hacer el check-out: falta pagar $"
                     + String.format("%.2f", getSaldoPendiente()));
@@ -113,17 +161,125 @@ public class Reserva implements Facturable {
         estado = nuevo;
     }
 
-    // Patrón Creador: la Reserva crea sus propios pagos porque es la que los guarda
-    public void registrarPago(double monto, String medio) {
-        Pago pago = new Pago(LocalDate.now(), monto, medio);
-        pagos.add(pago);
+    // true mientras la reserva no terminó ni se canceló: se le pueden sumar servicios e indicaciones
+    private boolean admiteCambios() {
+        return estado == EstadoReserva.PENDIENTE || estado == EstadoReserva.CONFIRMADA
+                || estado == EstadoReserva.EN_CURSO;
     }
 
-    // Crea un registro del día (comida, medicación o incidente), lo guarda y avisa si hace falta
-    public void agregarRegistro(TipoRegistro tipo, String descripcion, Empleado empleado) {
-        RegistroDiario registro = new RegistroDiario(LocalDateTime.now(), tipo, descripcion, empleado);
+    // Patrón Creador: la Reserva crea sus propios pagos porque es la que los guarda
+    public Pago registrarPago(double monto, String medio) {
+        Pago pago = new Pago(LocalDate.now(), monto, medio);
+        pagos.add(pago);
+        return pago;
+    }
+
+    // Crea un registro del día (comida, medicación, paseo, incidente...), lo guarda y avisa si hace falta
+    public RegistroDiario agregarRegistro(TipoRegistro tipo, String descripcion, Empleado empleado) {
+        return agregarRegistro(tipo, descripcion, empleado, null);
+    }
+
+    // Sobrecarga: igual que el anterior, pero dejando anotado qué indicación del dueño se cumplió
+    public RegistroDiario agregarRegistro(TipoRegistro tipo, String descripcion, Empleado empleado,
+            Indicacion indicacion) {
+        if (estado != EstadoReserva.EN_CURSO) {
+            throw new IllegalStateException("Solo se cargan registros en estadías en curso.");
+        }
+        RegistroDiario registro = new RegistroDiario(LocalDateTime.now(), tipo, descripcion, empleado, indicacion);
         registros.add(registro);
         registro.notificarSiCorresponde();
+        return registro;
+    }
+
+    // ----- Servicios extra -----
+
+    // Patrón Creador: la Reserva crea los servicios contratados porque es la que los guarda
+    public ServicioContratado contratarServicio(Integer idServicio, TipoServicio tipo) {
+        if (!admiteCambios()) {
+            throw new IllegalStateException("No se pueden contratar servicios en una reserva " + estado + ".");
+        }
+        if (!tipo.seAplicaA(mascota.getEspecie())) {
+            throw new IllegalStateException("El servicio " + tipo + " no se le puede hacer a un/a "
+                    + mascota.getEspecie().getNombreVisible() + ".");
+        }
+        ServicioContratado servicio = new ServicioContratado(idServicio, tipo, LocalDate.now());
+        servicios.add(servicio);
+        return servicio;
+    }
+
+    // Marca el servicio como hecho y lo deja asentado en la bitácora con el empleado que lo hizo
+    public RegistroDiario realizarServicio(ServicioContratado servicio, Empleado empleado) {
+        if (estado != EstadoReserva.EN_CURSO) {
+            throw new IllegalStateException("Los servicios se realizan durante la estadía (después del check-in).");
+        }
+        servicio.marcarRealizado(empleado, LocalDateTime.now());
+        return agregarRegistro(TipoRegistro.SERVICIO, "Se realizó: " + servicio.getTipo(), empleado);
+    }
+
+    // Un servicio se puede quitar si no se hizo y si al quitarlo no queda pagado de más
+    public void quitarServicio(ServicioContratado servicio) {
+        if (servicio.isRealizado()) {
+            throw new IllegalStateException("El servicio ya se realizó: no se puede quitar.");
+        }
+        if (calcularTotal() - servicio.getPrecio() < getTotalPagado()) {
+            throw new IllegalStateException("El servicio ya está pago: no se puede quitar.");
+        }
+        servicios.remove(servicio);
+    }
+
+    // ----- Indicaciones del dueño -----
+
+    // Patrón Creador: la Reserva crea las indicaciones porque es la que las guarda
+    public Indicacion agregarIndicacion(Integer idIndicacion, TipoIndicacion tipo, String descripcion, String horario) {
+        if (!admiteCambios()) {
+            throw new IllegalStateException("No se pueden agregar indicaciones en una reserva " + estado + ".");
+        }
+        Indicacion indicacion = new Indicacion(idIndicacion, tipo, descripcion, horario);
+        indicaciones.add(indicacion);
+        return indicacion;
+    }
+
+    // No se puede quitar una indicación que ya figura cumplida en la bitácora (se perdería el seguimiento)
+    public void quitarIndicacion(Indicacion indicacion) {
+        if (getCantidadCumplimientos(indicacion) > 0) {
+            throw new IllegalStateException("La indicación ya tiene registros en la bitácora: no se puede quitar.");
+        }
+        indicaciones.remove(indicacion);
+    }
+
+    // Cuántas veces se cumplió la indicación (por ejemplo, cuántas dosis se dieron)
+    public int getCantidadCumplimientos(Indicacion indicacion) {
+        int cantidad = 0;
+        for (RegistroDiario r : registros) {
+            if (r.getIndicacion() == indicacion) {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
+
+    // El último registro que cumplió la indicación, o null si todavía no se cumplió nunca
+    public RegistroDiario getUltimoCumplimiento(Indicacion indicacion) {
+        RegistroDiario ultimo = null;
+        for (RegistroDiario r : registros) {
+            if (r.getIndicacion() == indicacion) {
+                if (ultimo == null || r.getFechaHora().isAfter(ultimo.getFechaHora())) {
+                    ultimo = r;
+                }
+            }
+        }
+        return ultimo;
+    }
+
+    // Las indicaciones que se cumplen con ese tipo de registro (para ofrecerlas al cargar uno)
+    public List<Indicacion> getIndicacionesPara(TipoRegistro tipo) {
+        List<Indicacion> resultado = new ArrayList<Indicacion>();
+        for (Indicacion i : indicaciones) {
+            if (i.getTipo().getTipoRegistro() == tipo) {
+                resultado.add(i);
+            }
+        }
+        return resultado;
     }
 
     // true si esta reserva se pisa con el período [desde, hasta).
@@ -184,6 +340,14 @@ public class Reserva implements Facturable {
         return registros;
     }
 
+    public List<ServicioContratado> getServicios() {
+        return servicios;
+    }
+
+    public List<Indicacion> getIndicaciones() {
+        return indicaciones;
+    }
+
     @Override
     public String toString() {
         return "Reserva " + id + " - " + mascota.getNombre() + " en " + alojamiento.getCodigo() + " (" + estado + ")";
@@ -239,20 +403,32 @@ public class Reserva implements Facturable {
         private LocalDateTime fechaHora;
         private TipoRegistro tipo;
         private String descripcion;
-        private Empleado empleado;
+        private Empleado empleado;       // quién lo hizo
+        private Indicacion indicacion;   // indicación del dueño que se cumplió (puede ser null)
 
         public RegistroDiario(LocalDateTime fechaHora, TipoRegistro tipo, String descripcion, Empleado empleado) {
+            this(fechaHora, tipo, descripcion, empleado, null);
+        }
+
+        // Sobrecarga del constructor: con la indicación que cumple. El de arriba la llama con this(...)
+        public RegistroDiario(LocalDateTime fechaHora, TipoRegistro tipo, String descripcion, Empleado empleado,
+                Indicacion indicacion) {
             this.fechaHora = fechaHora;
             this.tipo = tipo;
             this.descripcion = descripcion;
             this.empleado = empleado;
+            this.indicacion = indicacion;
         }
 
-        // Arma una línea del tipo "dd/MM/yyyy HH:mm | TIPO: descripción | cargó: nombre"
+        // Arma una línea del tipo "dd/MM/yyyy HH:mm | Tipo: descripción | hizo: nombre [cumple: indicación]"
         public String getResumen() {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            return fechaHora.format(formato) + " | " + tipo + ": " + descripcion + " | cargó: "
+            String texto = fechaHora.format(formato) + " | " + tipo + ": " + descripcion + " | hizo: "
                     + empleado.getNombreCompleto();
+            if (indicacion != null) {
+                texto = texto + " [cumple: " + indicacion + "]";
+            }
+            return texto;
         }
 
         // Si el tipo de registro lo pide (por ejemplo un incidente), avisa al cliente y al encargado.
@@ -307,6 +483,10 @@ public class Reserva implements Facturable {
 
         public void setEmpleado(Empleado empleado) {
             this.empleado = empleado;
+        }
+
+        public Indicacion getIndicacion() {
+            return indicacion;
         }
 
         @Override

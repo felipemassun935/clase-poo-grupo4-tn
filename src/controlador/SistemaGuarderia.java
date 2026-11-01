@@ -1,6 +1,7 @@
 package controlador;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +9,14 @@ import java.util.Map;
 
 import excepciones.DatoInvalidoException;
 import excepciones.IngresoRechazadoException;
+import modelo.enums.AccionLog;
 import modelo.enums.Categoria;
 import modelo.enums.Especie;
 import modelo.enums.EstadoReserva;
+import modelo.enums.TipoIndicacion;
 import modelo.enums.TipoRegistro;
+import modelo.enums.TipoServicio;
+import modelo.log.EntradaLog;
 import modelo.mascota.Ave;
 import modelo.mascota.Conejo;
 import modelo.mascota.Gato;
@@ -19,15 +24,19 @@ import modelo.mascota.Mascota;
 import modelo.mascota.Perro;
 import modelo.persona.Cliente;
 import modelo.persona.Empleado;
+import modelo.reserva.Indicacion;
 import modelo.reserva.Reserva;
+import modelo.reserva.ServicioContratado;
 import modelo.sucursal.Alojamiento;
 import modelo.sucursal.Sucursal;
-import persistencia.ArchivoDatos;
+import persistencia.ConexionBD;
+import persistencia.Repositorio;
 
 /*
  * Controlador del sistema (patrón GRASP Controlador).
  * Las pantallas no tocan las listas ni los archivos directamente: le piden todo a esta clase.
- * Acá se hacen las validaciones de los formularios y, después de cada cambio, se guardan los archivos.
+ * Acá se hacen las validaciones de los formularios y, después de cada cambio, se guarda en la base de datos
+ * (a través del Repositorio) y se deja una línea en el log con el empleado que está operando.
  *
  * Singleton: hay un solo objeto SistemaGuarderia en todo el programa
  * y todas las pantallas lo obtienen con SistemaGuarderia.getInstancia().
@@ -42,17 +51,20 @@ public class SistemaGuarderia {
     private List<Reserva> reservas;
     // Los alojamientos no tienen lista propia: se acceden por cada sucursal
 
-    private ArchivoDatos archivo;
+    private Repositorio repositorio;
+    private Empleado operador; // el empleado que ingresó al sistema: queda en el log de cada acción
 
-    // Singleton: el constructor es privado, desde afuera no se puede hacer "new SistemaGuarderia()"
+    // Singleton: el constructor es privado, desde afuera no se puede hacer "new SistemaGuarderia()".
+    // Si la base de datos no responde, sale una ErrorBaseDeDatosException (la atrapa Main).
     private SistemaGuarderia() {
         sucursales = new ArrayList<Sucursal>();
         empleados = new ArrayList<Empleado>();
         clientes = new ArrayList<Cliente>();
         mascotas = new ArrayList<Mascota>();
         reservas = new ArrayList<Reserva>();
-        archivo = new ArchivoDatos();
-        archivo.cargar(sucursales, empleados, clientes, mascotas, reservas);
+        repositorio = new Repositorio(new ConexionBD());
+        repositorio.probarConexion();
+        repositorio.cargar(sucursales, empleados, clientes, mascotas, reservas);
     }
 
     // Singleton: la primera vez crea el objeto, las siguientes devuelve siempre el mismo
@@ -63,9 +75,45 @@ public class SistemaGuarderia {
         return instancia;
     }
 
-    // Guarda todos los datos en los archivos. Se llama después de cada cambio.
-    private void guardar() {
-        archivo.guardar(sucursales, empleados, clientes, mascotas, reservas);
+    // ===================== Ingreso y log =====================
+
+    // El empleado ingresa con su legajo. Desde ahí, todo lo que hace queda a su nombre en el log.
+    public Empleado iniciarSesion(String legajo) throws DatoInvalidoException {
+        validarTexto(legajo, "el legajo");
+        for (Empleado e : empleados) {
+            if (e.getLegajo().equals(legajo.trim())) {
+                operador = e;
+                registrarLog(AccionLog.INGRESO, e.getNombreCompleto() + " ingresó como " + e.getRol() + " de "
+                        + e.getSucursal().getNombre());
+                return e;
+            }
+        }
+        throw new DatoInvalidoException("No existe un empleado con el legajo " + legajo + ".");
+    }
+
+    public Empleado getOperador() {
+        return operador;
+    }
+
+    // Deja una línea en el log con la fecha, el operador y lo que pasó
+    private void registrarLog(AccionLog accion, String detalle) {
+        String usuario = "Sin usuario";
+        if (operador != null) {
+            usuario = operador.getNombreCompleto() + " (legajo " + operador.getLegajo() + ")";
+        }
+        EntradaLog entrada = new EntradaLog(LocalDateTime.now().withNano(0), usuario, accion, detalle);
+        repositorio.insertarLog(entrada);
+        System.out.println("[LOG] " + entrada); // también se ve en la consola
+    }
+
+    // Todo el log, del más nuevo al más viejo (lo lee de la base cada vez)
+    public List<EntradaLog> getLogs() {
+        return repositorio.listarLogs();
+    }
+
+    // Solo los encargados de sucursal pueden ver el log completo
+    public boolean puedeVerLog() {
+        return operador != null && operador.esEncargado();
     }
 
     // ===================== Consultas =====================
@@ -110,8 +158,9 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("Ya existe un cliente con el DNI " + dni + ".");
         }
         Cliente c = new Cliente(siguienteIdCliente(), nombre, apellido, dni, telefono, email, direccion);
+        repositorio.insertarCliente(c);
         clientes.add(c);
-        guardar();
+        registrarLog(AccionLog.ALTA, "Cliente " + c.getNombreCompleto() + " (DNI " + dni + ")");
         return c;
     }
 
@@ -128,7 +177,8 @@ public class SistemaGuarderia {
         c.setTelefono(telefono);
         c.setEmail(email);
         c.setDireccion(direccion);
-        guardar();
+        repositorio.actualizarCliente(c);
+        registrarLog(AccionLog.MODIFICACION, "Cliente " + c.getNombreCompleto() + " (id " + c.getId() + ")");
     }
 
     // No se puede borrar un cliente que todavía tiene mascotas
@@ -137,8 +187,9 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("No se puede borrar a " + c.getNombreCompleto()
                     + " porque tiene mascotas cargadas. Primero borrá sus mascotas.");
         }
+        repositorio.borrarCliente(c);
         clientes.remove(c);
-        guardar();
+        registrarLog(AccionLog.BAJA, "Cliente " + c.getNombreCompleto() + " (DNI " + c.getDni() + ")");
     }
 
     private Cliente buscarClientePorDni(String dni) {
@@ -183,8 +234,10 @@ public class SistemaGuarderia {
         }
         // agregarMascota también le deja anotado a la mascota quién es su cliente
         cliente.agregarMascota(m);
+        repositorio.insertarMascota(m);
         mascotas.add(m);
-        guardar();
+        registrarLog(AccionLog.ALTA, "Mascota " + m.getNombre() + " (" + m.getCodigoCollar() + ") de "
+                + cliente.getNombreCompleto());
         return m;
     }
 
@@ -215,7 +268,8 @@ public class SistemaGuarderia {
             Ave a = (Ave) m;
             a.setTipoAve(raza);
         }
-        guardar();
+        repositorio.actualizarMascota(m);
+        registrarLog(AccionLog.MODIFICACION, "Mascota " + m.getNombre() + " (" + m.getCodigoCollar() + ")");
     }
 
     // No se puede borrar una mascota que tiene reservas (aunque sean viejas)
@@ -225,9 +279,10 @@ public class SistemaGuarderia {
                 throw new DatoInvalidoException("No se puede borrar a " + m.getNombre() + " porque tiene reservas.");
             }
         }
+        repositorio.borrarMascota(m);
         m.getCliente().quitarMascota(m);
         mascotas.remove(m);
-        guardar();
+        registrarLog(AccionLog.BAJA, "Mascota " + m.getNombre() + " (" + m.getCodigoCollar() + ")");
     }
 
     public void agregarVacuna(Mascota m, String nombre, LocalDate fechaAplicacion, LocalDate fechaVencimiento)
@@ -240,12 +295,38 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("El vencimiento tiene que ser posterior a la aplicación.");
         }
         m.agregarVacuna(new Mascota.Vacuna(nombre, fechaAplicacion, fechaVencimiento));
-        guardar();
+        repositorio.guardarVacunas(m);
+        registrarLog(AccionLog.ALTA, "Vacuna " + nombre + " a " + m.getNombre() + " (" + m.getCodigoCollar()
+                + "), vence " + fechaVencimiento);
     }
 
     public void quitarVacuna(Mascota m, Mascota.Vacuna v) {
         m.getVacunas().remove(v);
-        guardar();
+        repositorio.guardarVacunas(m);
+        registrarLog(AccionLog.BAJA, "Vacuna " + v.getNombre() + " de " + m.getNombre() + " (" + m.getCodigoCollar()
+                + ")");
+    }
+
+    // Busca una mascota por el código de su collar (no importan mayúsculas ni espacios).
+    // También acepta solo el número: "7" encuentra a "COL-00007".
+    public Mascota buscarPorCollar(String codigo) throws DatoInvalidoException {
+        validarTexto(codigo, "el código del collar");
+        String buscado = codigo.trim().toUpperCase();
+        boolean soloNumeros = true;
+        for (int i = 0; i < buscado.length(); i++) {
+            if (!Character.isDigit(buscado.charAt(i))) {
+                soloNumeros = false;
+            }
+        }
+        if (soloNumeros) {
+            buscado = Mascota.generarCodigoCollar(Integer.parseInt(buscado));
+        }
+        for (Mascota m : mascotas) {
+            if (m.getCodigoCollar().equals(buscado)) {
+                return m;
+            }
+        }
+        throw new DatoInvalidoException("No hay ninguna mascota con el collar " + codigo + ".");
     }
 
     // ===================== Empleados =====================
@@ -260,8 +341,10 @@ public class SistemaGuarderia {
                 fechaIngreso);
         // agregarEmpleado también le deja anotada la sucursal al empleado
         sucursal.agregarEmpleado(e);
+        repositorio.insertarEmpleado(e);
         empleados.add(e);
-        guardar();
+        registrarLog(AccionLog.ALTA, "Empleado " + e.getNombreCompleto() + " (legajo " + legajo + ") en "
+                + sucursal.getNombre());
         return e;
     }
 
@@ -276,7 +359,8 @@ public class SistemaGuarderia {
         e.setEmail(email);
         e.setLegajo(legajo);
         e.setFechaIngreso(fechaIngreso);
-        guardar();
+        repositorio.actualizarEmpleado(e);
+        registrarLog(AccionLog.MODIFICACION, "Empleado " + e.getNombreCompleto() + " (legajo " + legajo + ")");
     }
 
     // No se puede borrar al encargado de una sucursal ni a alguien que cargó registros
@@ -294,10 +378,20 @@ public class SistemaGuarderia {
                             + " porque cargó registros de estadías.");
                 }
             }
+            for (ServicioContratado s : r.getServicios()) {
+                if (s.getRealizadoPor() == e) {
+                    throw new DatoInvalidoException("No se puede borrar a " + e.getNombreCompleto()
+                            + " porque realizó servicios.");
+                }
+            }
         }
+        if (e == operador) {
+            throw new DatoInvalidoException("No te podés borrar a vos mismo mientras estás operando.");
+        }
+        repositorio.borrarEmpleado(e);
         e.getSucursal().getEmpleados().remove(e);
         empleados.remove(e);
-        guardar();
+        registrarLog(AccionLog.BAJA, "Empleado " + e.getNombreCompleto() + " (legajo " + e.getLegajo() + ")");
     }
 
     // El encargado tiene que trabajar en esa sucursal
@@ -306,7 +400,8 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException(e.getNombreCompleto() + " no trabaja en " + s.getNombre() + ".");
         }
         s.setEncargado(e);
-        guardar();
+        repositorio.actualizarEncargado(s);
+        registrarLog(AccionLog.MODIFICACION, e.getNombreCompleto() + " es el nuevo encargado de " + s.getNombre());
     }
 
     // "actual" es el empleado que se está modificando (null si es un alta), para no compararlo consigo mismo
@@ -340,7 +435,8 @@ public class SistemaGuarderia {
         Alojamiento a = new Alojamiento(siguienteIdAlojamiento(), codigo, especie, categoria, precioBaseNoche, activo);
         // agregarAlojamiento también le deja anotada la sucursal al alojamiento
         sucursal.agregarAlojamiento(a);
-        guardar();
+        repositorio.insertarAlojamiento(a);
+        registrarLog(AccionLog.ALTA, "Alojamiento " + codigo + " en " + sucursal.getNombre());
         return a;
     }
 
@@ -355,7 +451,8 @@ public class SistemaGuarderia {
         a.setCategoria(categoria);
         a.setPrecioBaseNoche(precioBaseNoche);
         a.setActivo(activo);
-        guardar();
+        repositorio.actualizarAlojamiento(a);
+        registrarLog(AccionLog.MODIFICACION, "Alojamiento " + codigo + " de " + a.getSucursal().getNombre());
     }
 
     // No se puede borrar un alojamiento que tiene reservas (aunque sean viejas)
@@ -364,8 +461,9 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("No se puede borrar el alojamiento " + a.getCodigo()
                     + " porque tiene reservas. Si no se usa más, marcalo como inactivo.");
         }
+        repositorio.borrarAlojamiento(a);
         a.getSucursal().getAlojamientos().remove(a);
-        guardar();
+        registrarLog(AccionLog.BAJA, "Alojamiento " + a.getCodigo() + " de " + a.getSucursal().getNombre());
     }
 
     // El código no se puede repetir dentro de la misma sucursal.
@@ -427,49 +525,141 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " ya está reservado en esas fechas.");
         }
         Reserva r = new Reserva(siguienteIdReserva(), m, a, desde, hasta);
+        repositorio.insertarReserva(r);
         reservas.add(r);
-        guardar();
+        registrarLog(AccionLog.RESERVA, "Reserva " + r.getId() + " creada: " + m.getNombre() + " ("
+                + m.getCodigoCollar() + ") en " + a.getCodigo() + " del " + desde + " al " + hasta);
         return r;
     }
 
     public void confirmar(Reserva r) {
         r.confirmar();
-        guardar();
+        repositorio.actualizarEstado(r);
+        registrarLog(AccionLog.RESERVA, "Reserva " + r.getId() + " confirmada");
     }
 
     public void cancelar(Reserva r) {
         r.cancelar();
-        guardar();
+        repositorio.actualizarEstado(r);
+        registrarLog(AccionLog.RESERVA, "Reserva " + r.getId() + " cancelada");
     }
 
-    // Si la mascota no cumple los requisitos, la excepción sube hasta la pantalla
+    // Si la mascota no cumple los requisitos, se deja en el log y la excepción sube hasta la pantalla
     public void checkIn(Reserva r) throws IngresoRechazadoException {
-        r.realizarCheckIn(LocalDate.now());
-        guardar();
+        try {
+            r.realizarCheckIn(LocalDate.now());
+        } catch (IngresoRechazadoException e) {
+            registrarLog(AccionLog.RECHAZO, "Check-in rechazado de " + r.getMascota().getNombre() + " ("
+                    + r.getMascota().getCodigoCollar() + "): " + e.getMessage().replace("\n", " ").trim());
+            throw e; // se vuelve a lanzar para que la pantalla muestre el problema
+        }
+        repositorio.actualizarEstado(r);
+        registrarLog(AccionLog.CHECK_IN, "Check-in de la reserva " + r.getId() + " (" + r.getMascota().getNombre()
+                + ", " + r.getMascota().getCodigoCollar() + ") en " + r.getAlojamiento().getCodigo());
     }
 
-    public void agregarRegistro(Reserva r, TipoRegistro tipo, String descripcion, Empleado empleado)
-            throws DatoInvalidoException {
+    // "empleado" es quien lo hizo; "indicacion" es la indicación del dueño que cumple (puede ser null)
+    public void agregarRegistro(Reserva r, TipoRegistro tipo, String descripcion, Empleado empleado,
+            Indicacion indicacion) throws DatoInvalidoException {
         if (tipo == null || empleado == null) {
             throw new DatoInvalidoException("Elegí el tipo de registro y el empleado.");
         }
         validarTexto(descripcion, "la descripción");
-        r.agregarRegistro(tipo, descripcion, empleado);
-        guardar();
+        validarEmpleadoDeLaSucursal(r, empleado);
+        Reserva.RegistroDiario reg = r.agregarRegistro(tipo, descripcion, empleado, indicacion);
+        repositorio.insertarRegistro(r, reg);
+        registrarLog(AccionLog.REGISTRO, "Reserva " + r.getId() + ": " + tipo + " - " + descripcion + " (hizo: "
+                + empleado.getNombreCompleto() + ")");
     }
 
+    // No se puede pagar más de lo que se debe
     public void registrarPago(Reserva r, double monto, String medio) throws DatoInvalidoException {
         if (monto <= 0) {
             throw new DatoInvalidoException("El monto tiene que ser mayor a 0.");
         }
+        if (monto > r.getSaldoPendiente() + 0.001) {
+            throw new DatoInvalidoException("El monto supera el saldo pendiente (" + r.getSaldoPendiente() + ").");
+        }
         validarTexto(medio, "el medio de pago");
-        r.registrarPago(monto, medio);
-        guardar();
+        Reserva.Pago pago = r.registrarPago(monto, medio);
+        repositorio.insertarPago(r, pago);
+        registrarLog(AccionLog.PAGO, "Reserva " + r.getId() + ": pago de $" + String.format("%.2f", monto) + " ("
+                + medio + "). Saldo: $" + String.format("%.2f", r.getSaldoPendiente()));
     }
 
     public void checkOut(Reserva r) {
         r.realizarCheckOut();
-        guardar();
+        repositorio.actualizarEstado(r);
+        registrarLog(AccionLog.CHECK_OUT, "Check-out de la reserva " + r.getId() + " (" + r.getMascota().getNombre()
+                + ", " + r.getMascota().getCodigoCollar() + "). Total cobrado: $"
+                + String.format("%.2f", r.getTotalPagado()));
+    }
+
+    // ===================== Servicios extra =====================
+
+    public ServicioContratado contratarServicio(Reserva r, TipoServicio tipo) throws DatoInvalidoException {
+        if (tipo == null) {
+            throw new DatoInvalidoException("Elegí el servicio.");
+        }
+        ServicioContratado s = r.contratarServicio(siguienteIdServicio(), tipo);
+        repositorio.insertarServicio(r, s);
+        registrarLog(AccionLog.SERVICIO, "Reserva " + r.getId() + ": se contrató " + tipo + " ($"
+                + String.format("%.2f", s.getPrecio()) + ")");
+        return s;
+    }
+
+    // El empleado que lo hizo tiene que trabajar en la sucursal de la reserva
+    public void realizarServicio(Reserva r, ServicioContratado s, Empleado empleado) throws DatoInvalidoException {
+        if (empleado == null) {
+            throw new DatoInvalidoException("Elegí el empleado que hizo el servicio.");
+        }
+        validarEmpleadoDeLaSucursal(r, empleado);
+        Reserva.RegistroDiario reg = r.realizarServicio(s, empleado);
+        repositorio.actualizarServicio(s);
+        repositorio.insertarRegistro(r, reg);
+        registrarLog(AccionLog.SERVICIO, "Reserva " + r.getId() + ": " + s.getTipo() + " realizado por "
+                + empleado.getNombreCompleto());
+    }
+
+    public void quitarServicio(Reserva r, ServicioContratado s) {
+        r.quitarServicio(s);
+        repositorio.borrarServicio(s);
+        registrarLog(AccionLog.SERVICIO, "Reserva " + r.getId() + ": se quitó " + s.getTipo());
+    }
+
+    // ===================== Indicaciones del dueño =====================
+
+    public Indicacion agregarIndicacion(Reserva r, TipoIndicacion tipo, String descripcion, String horario)
+            throws DatoInvalidoException {
+        if (tipo == null) {
+            throw new DatoInvalidoException("Elegí el tipo de indicación.");
+        }
+        validarTexto(descripcion, "la descripción de la indicación");
+        if (horario == null) {
+            horario = "";
+        }
+        Indicacion i = r.agregarIndicacion(siguienteIdIndicacion(), tipo, descripcion.trim(), horario.trim());
+        repositorio.insertarIndicacion(r, i);
+        registrarLog(AccionLog.INDICACION, "Reserva " + r.getId() + ": nueva indicación " + i);
+        return i;
+    }
+
+    public void quitarIndicacion(Reserva r, Indicacion i) {
+        r.quitarIndicacion(i);
+        repositorio.borrarIndicacion(i);
+        registrarLog(AccionLog.INDICACION, "Reserva " + r.getId() + ": se quitó la indicación " + i);
+    }
+
+    // Los empleados de la sucursal donde está la mascota (para elegir quién hizo algo)
+    public List<Empleado> getEmpleadosDe(Sucursal s) {
+        return s.getEmpleados();
+    }
+
+    private void validarEmpleadoDeLaSucursal(Reserva r, Empleado empleado) throws DatoInvalidoException {
+        Sucursal s = r.getAlojamiento().getSucursal();
+        if (empleado.getSucursal() != s) {
+            throw new DatoInvalidoException(empleado.getNombreCompleto() + " no trabaja en " + s.getNombre() + ".");
+        }
     }
 
     // Una reserva "ocupa" el alojamiento si está PENDIENTE, CONFIRMADA o EN_CURSO
@@ -553,6 +743,31 @@ public class SistemaGuarderia {
             for (Alojamiento a : s.getAlojamientos()) {
                 if (a.getId() > maximo) {
                     maximo = a.getId();
+                }
+            }
+        }
+        return maximo + 1;
+    }
+
+    // Los servicios y las indicaciones están repartidos en las reservas, por eso se recorren todas
+    private Integer siguienteIdServicio() {
+        int maximo = 0;
+        for (Reserva r : reservas) {
+            for (ServicioContratado s : r.getServicios()) {
+                if (s.getId() > maximo) {
+                    maximo = s.getId();
+                }
+            }
+        }
+        return maximo + 1;
+    }
+
+    private Integer siguienteIdIndicacion() {
+        int maximo = 0;
+        for (Reserva r : reservas) {
+            for (Indicacion i : r.getIndicaciones()) {
+                if (i.getId() > maximo) {
+                    maximo = i.getId();
                 }
             }
         }
