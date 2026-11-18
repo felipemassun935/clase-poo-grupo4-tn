@@ -59,6 +59,7 @@ public class VentanaEstadias extends JFrame {
         lblEmpleado.setBounds(20, 10, 150, 25);
         getContentPane().add(lblEmpleado);
         cmbEmpleado = new JComboBox<Empleado>();
+
         for (Empleado e : sistema.getEmpleados()) {
             cmbEmpleado.addItem(e);
         }
@@ -156,6 +157,7 @@ public class VentanaEstadias extends JFrame {
     private void cargarTablas() {
         confirmadas = new ArrayList<Reserva>();
         enCurso = new ArrayList<Reserva>();
+
         for (Reserva r : sistema.getReservas()) {
             if (r.getEstado() == EstadoReserva.CONFIRMADA) {
                 confirmadas.add(r);
@@ -165,6 +167,7 @@ public class VentanaEstadias extends JFrame {
         }
 
         modeloConfirmadas.setRowCount(0);
+
         for (Reserva r : confirmadas) {
             modeloConfirmadas.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
                     r.getMascota().getEspecie().getNombreVisible(), r.getMascota().getCliente().getNombreCompleto(),
@@ -173,6 +176,7 @@ public class VentanaEstadias extends JFrame {
         }
 
         modeloEnCurso.setRowCount(0);
+
         for (Reserva r : enCurso) {
             modeloEnCurso.addRow(new Object[] { r.getId(), r.getMascota().getNombre(),
                     r.getMascota().getCliente().getNombreCompleto(), r.getAlojamiento().getSucursal().getNombre(),
@@ -186,26 +190,32 @@ public class VentanaEstadias extends JFrame {
     // Devuelve la estadía elegida en la tabla de abajo, o null si no hay ninguna (y avisa)
     private Reserva getEstadiaElegida() {
         int fila = tablaEnCurso.getSelectedRow();
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(this, "Primero elegí una estadía en curso.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
+
             return null;
         }
+
         return enCurso.get(fila);
     }
 
     // Muestra todos los registros de la estadía elegida, uno por línea
     private void mostrarBitacora() {
         int fila = tablaEnCurso.getSelectedRow();
+
         if (fila == -1) {
             txtBitacora.setText("");
             return;
         }
         Reserva r = enCurso.get(fila);
         String texto = "";
+
         for (Reserva.RegistroDiario reg : r.getRegistros()) {
             texto = texto + reg.getResumen() + "\n";
         }
+
         if (texto.isEmpty()) {
             texto = "Todavía no hay registros para " + r.getMascota().getNombre() + ".";
         }
@@ -214,6 +224,7 @@ public class VentanaEstadias extends JFrame {
 
     private void hacerCheckIn() {
         int fila = tablaConfirmadas.getSelectedRow();
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(this, "Primero elegí una reserva confirmada.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
@@ -238,6 +249,7 @@ public class VentanaEstadias extends JFrame {
 
     private void agregarRegistro() {
         Reserva r = getEstadiaElegida();
+
         if (r == null) {
             return;
         }
@@ -247,17 +259,21 @@ public class VentanaEstadias extends JFrame {
         TipoRegistro[] tipos = TipoRegistro.values();
         Object elegido = JOptionPane.showInputDialog(this, "Tipo de registro:", "Nuevo registro",
                 JOptionPane.QUESTION_MESSAGE, null, tipos, tipos[0]);
+
         if (elegido == null) {
             return; // el usuario apretó "Cancelar"
         }
         TipoRegistro tipo = (TipoRegistro) elegido;
 
         String descripcion = JOptionPane.showInputDialog(this, "Descripción:");
+
         if (descripcion == null) {
             return;
         }
+
         try {
             sistema.agregarRegistro(r, tipo, descripcion, empleado);
+
             if (tipo.requiereAviso()) {
                 JOptionPane.showMessageDialog(this, "Se avisó al cliente y al encargado de la sucursal.", "Aviso",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -271,6 +287,7 @@ public class VentanaEstadias extends JFrame {
     // Muestra total, pagado y saldo; si hay saldo lo cobra; después hace el check-out y muestra el comprobante
     private void hacerCheckOut() {
         Reserva r = getEstadiaElegida();
+
         if (r == null) {
             return;
         }
@@ -281,6 +298,7 @@ public class VentanaEstadias extends JFrame {
             if (r.getSaldoPendiente() > 0) {
                 Object medio = JOptionPane.showInputDialog(this, resumen + "\n\nMedio de pago para cobrar el saldo:",
                         "Check-out y cobro", JOptionPane.QUESTION_MESSAGE, null, MEDIOS_DE_PAGO, MEDIOS_DE_PAGO[0]);
+
                 if (medio == null) {
                     return; // el usuario apretó "Cancelar"
                 }
@@ -288,6 +306,7 @@ public class VentanaEstadias extends JFrame {
             } else {
                 int respuesta = JOptionPane.showConfirmDialog(this, resumen + "\n\n¿Hacer el check-out?",
                         "Check-out", JOptionPane.YES_NO_OPTION);
+
                 if (respuesta != JOptionPane.YES_OPTION) {
                     return;
                 }
@@ -318,6 +337,7 @@ public class VentanaEstadias extends JFrame {
         texto = texto + r.getCantidadNoches() + " noches x " + Validaciones.plata(r.getAlojamiento().getPrecioNoche())
                 + "\n\n";
         texto = texto + "Pagos:\n";
+
         for (Reserva.Pago p : r.getPagos()) {
             texto = texto + "   " + Validaciones.formatearFecha(p.getFecha()) + "  " + Validaciones.plata(p.getMonto())
                     + "  (" + p.getMedio() + ")\n";
@@ -325,6 +345,7 @@ public class VentanaEstadias extends JFrame {
         texto = texto + "\nTotal: " + Validaciones.plata(r.calcularTotal());
         texto = texto + "\nPagado: " + Validaciones.plata(r.getTotalPagado());
         texto = texto + "\nEstado: " + r.getEstado();
+
         return texto;
     }
 }

@@ -25,6 +25,7 @@ public class Empleado extends Persona implements Notificable {
         if (sucursal != null && sucursal.getEncargado() == this) {
             return "Encargado";
         }
+
         return "Empleado";
     }
 

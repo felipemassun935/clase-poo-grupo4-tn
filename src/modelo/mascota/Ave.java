@@ -28,9 +28,11 @@ public class Ave extends Mascota {
     @Override
     public List<String> validarIngreso(LocalDate fecha) {
         List<String> problemas = new ArrayList<String>();
+
         if (!tieneControlVigente(fecha, DIAS_CONTROL)) {
             problemas.add("Necesita un control veterinario de los últimos " + DIAS_CONTROL + " días");
         }
+
         return problemas;
     }
 

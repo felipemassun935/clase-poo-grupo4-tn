@@ -50,10 +50,12 @@ public class DialogoVacunas extends JDialog {
 
         // Interfaz: si la mascota es Vacunable se muestran sus vacunas obligatorias (instanceof + cast)
         String textoObligatorias;
+
         if (mascota instanceof Vacunable) {
             Vacunable vacunable = (Vacunable) mascota;
             List<String> obligatorias = vacunable.getVacunasObligatorias();
             textoObligatorias = "Obligatorias para " + mascota.getEspecie().getNombreVisible() + ": ";
+
             for (int i = 0; i < obligatorias.size(); i++) {
                 if (i > 0) {
                     textoObligatorias = textoObligatorias + ", ";
@@ -131,8 +133,10 @@ public class DialogoVacunas extends JDialog {
 
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
+
         for (Mascota.Vacuna v : mascota.getVacunas()) {
             String vigente = "No";
+
             if (v.estaVigente(LocalDate.now())) {
                 vigente = "Sí";
             }
@@ -145,6 +149,7 @@ public class DialogoVacunas extends JDialog {
         try {
             Object elegido = cmbNombre.getSelectedItem();
             String nombre = "";
+
             if (elegido != null) {
                 nombre = elegido.toString();
             }
@@ -161,6 +166,7 @@ public class DialogoVacunas extends JDialog {
 
     private void quitar() {
         int fila = tabla.getSelectedRow();
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(this, "Elegí una vacuna de la tabla.", "Atención",
                     JOptionPane.WARNING_MESSAGE);
@@ -169,6 +175,7 @@ public class DialogoVacunas extends JDialog {
         Mascota.Vacuna v = mascota.getVacunas().get(fila);
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Quitar la vacuna " + v.getNombre() + "?",
                 "Confirmar baja", JOptionPane.YES_NO_OPTION);
+
         if (respuesta == JOptionPane.YES_OPTION) {
             sistema.quitarVacuna(mascota, v);
             cargarTabla();

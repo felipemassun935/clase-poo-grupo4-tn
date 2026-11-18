@@ -65,6 +65,7 @@ public class VentanaMascotas extends JFrame {
 
         agregarEtiqueta("Especie:", 55);
         cmbEspecie = new JComboBox<String>();
+
         for (Especie e : Especie.values()) {
             cmbEspecie.addItem(e.getNombreVisible());
         }
@@ -77,6 +78,7 @@ public class VentanaMascotas extends JFrame {
 
         agregarEtiqueta("Cliente:", 195);
         cmbCliente = new JComboBox<Cliente>();
+
         for (Cliente c : sistema.getClientes()) {
             cmbCliente.addItem(c);
         }
@@ -169,6 +171,7 @@ public class VentanaMascotas extends JFrame {
         JTextField campo = new JTextField();
         campo.setBounds(140, y, 200, 25);
         getContentPane().add(campo);
+
         return campo;
     }
 
@@ -203,6 +206,7 @@ public class VentanaMascotas extends JFrame {
     // Devuelve la raza o el tipo de ave según la subclase (instanceof + cast)
     private String getDatoPropio(Mascota m) {
         String dato = "";
+
         if (m instanceof Perro) {
             Perro p = (Perro) m;
             dato = p.getRaza();
@@ -216,16 +220,19 @@ public class VentanaMascotas extends JFrame {
             Ave a = (Ave) m;
             dato = a.getTipoAve();
         }
+
         return dato;
     }
 
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
         LocalDate hoy = LocalDate.now();
+
         for (Mascota m : sistema.getMascotas()) {
             // Polimorfismo: cada especie valida su ingreso a su manera
             List<String> problemas = m.validarIngreso(hoy);
             String puedeIngresar = "No";
+
             if (problemas.isEmpty()) {
                 puedeIngresar = "Sí";
             }
@@ -237,6 +244,7 @@ public class VentanaMascotas extends JFrame {
 
     private void seleccionarFila() {
         int fila = tabla.getSelectedRow();
+
         if (fila == -1) {
             return;
         }
@@ -253,11 +261,13 @@ public class VentanaMascotas extends JFrame {
         txtRaza.setText("");
         txtTipoAve.setText("");
         chkCastrado.setSelected(false);
+
         if (seleccionada instanceof Ave) {
             txtTipoAve.setText(getDatoPropio(seleccionada));
         } else {
             txtRaza.setText(getDatoPropio(seleccionada));
         }
+
         if (seleccionada instanceof Perro) {
             Perro p = (Perro) seleccionada;
             chkCastrado.setSelected(p.isCastrado());
@@ -298,12 +308,14 @@ public class VentanaMascotas extends JFrame {
 
             // El último control es opcional: si está vacío queda sin fecha
             LocalDate ultimoControl = null;
+
             if (!txtUltimoControl.getText().trim().isEmpty()) {
                 ultimoControl = Validaciones.parsearFecha(txtUltimoControl.getText(), "Último control");
             }
 
             // Para el ave el dato propio es el tipo de ave; para las demás, la raza
             String datoPropio;
+
             if (especie == Especie.AVE) {
                 datoPropio = Validaciones.texto(txtTipoAve.getText(), "Tipo de ave");
             } else {
@@ -335,9 +347,11 @@ public class VentanaMascotas extends JFrame {
         }
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Eliminar a " + seleccionada.getNombre() + "?",
                 "Confirmar baja", JOptionPane.YES_NO_OPTION);
+
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
+
         try {
             sistema.bajaMascota(seleccionada);
             cargarTabla();

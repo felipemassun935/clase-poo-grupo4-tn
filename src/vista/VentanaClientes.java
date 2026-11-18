@@ -111,6 +111,7 @@ public class VentanaClientes extends JFrame {
         JTextField campo = new JTextField();
         campo.setBounds(100, y, 200, 25);
         getContentPane().add(campo);
+
         return campo;
     }
 
@@ -126,6 +127,7 @@ public class VentanaClientes extends JFrame {
     // Pasa los datos de la fila elegida a los campos para poder modificarlos
     private void seleccionarFila() {
         int fila = tabla.getSelectedRow();
+
         if (fila == -1) {
             return;
         }
@@ -183,9 +185,11 @@ public class VentanaClientes extends JFrame {
         }
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Eliminar a " + seleccionado.getNombreCompleto() + "?",
                 "Confirmar baja", JOptionPane.YES_NO_OPTION);
+
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
+
         try {
             sistema.bajaCliente(seleccionado);
             cargarTabla();

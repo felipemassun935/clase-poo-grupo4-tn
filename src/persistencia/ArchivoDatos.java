@@ -86,6 +86,7 @@ public class ArchivoDatos {
         // 3. El encargado de cada sucursal (se buscó por el legajo guardado en sucursales.txt)
         for (Sucursal s : sucursales) {
             String legajo = legajoEncargadoPorSucursal.get(s.getId());
+
             if (!legajo.isEmpty()) {
                 s.setEncargado(empleadosPorLegajo.get(legajo));
             }
@@ -201,8 +202,10 @@ public class ArchivoDatos {
         // Sucursales y sus alojamientos
         List<String> lineasSucursales = new ArrayList<String>();
         List<String> lineasAlojamientos = new ArrayList<String>();
+
         for (Sucursal s : sucursales) {
             String legajoEncargado = "";
+
             if (s.getEncargado() != null) {
                 legajoEncargado = s.getEncargado().getLegajo();
             }
@@ -217,6 +220,7 @@ public class ArchivoDatos {
 
         // Empleados
         List<String> lineasEmpleados = new ArrayList<String>();
+
         for (Empleado e : empleados) {
             lineasEmpleados.add(e.getId() + ";" + limpiar(e.getNombre()) + ";" + limpiar(e.getApellido()) + ";"
                     + limpiar(e.getDni()) + ";" + limpiar(e.getTelefono()) + ";" + limpiar(e.getEmail()) + ";"
@@ -226,6 +230,7 @@ public class ArchivoDatos {
 
         // Clientes
         List<String> lineasClientes = new ArrayList<String>();
+
         for (Cliente c : clientes) {
             lineasClientes.add(c.getId() + ";" + limpiar(c.getNombre()) + ";" + limpiar(c.getApellido()) + ";"
                     + limpiar(c.getDni()) + ";" + limpiar(c.getTelefono()) + ";" + limpiar(c.getEmail()) + ";"
@@ -235,11 +240,13 @@ public class ArchivoDatos {
         // Mascotas y sus vacunas
         List<String> lineasMascotas = new ArrayList<String>();
         List<String> lineasVacunas = new ArrayList<String>();
+
         for (Mascota m : mascotas) {
             // dato1 y dato2 dependen de la especie. Se usa instanceof + cast para leer
             // los atributos que solo tiene cada subclase.
             String dato1 = "";
             String dato2 = "";
+
             if (m instanceof Perro) {
                 Perro p = (Perro) m;
                 dato1 = p.getRaza();
@@ -271,6 +278,7 @@ public class ArchivoDatos {
         List<String> lineasReservas = new ArrayList<String>();
         List<String> lineasPagos = new ArrayList<String>();
         List<String> lineasRegistros = new ArrayList<String>();
+
         for (Reserva r : reservas) {
             lineasReservas.add(r.getId() + ";" + r.getMascota().getId() + ";" + r.getAlojamiento().getId() + ";"
                     + escribirFecha(r.getFechaDesde()) + ";" + escribirFecha(r.getFechaHasta()) + ";"
@@ -306,12 +314,14 @@ public class ArchivoDatos {
         crearCarpetaSiNoExiste();
         List<String> lineas = new ArrayList<String>();
         File archivo = new File(ruta);
+
         if (!archivo.exists()) {
             return lineas;
         }
         // try-with-resources: el archivo se cierra solo al terminar, aunque haya un error
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
             String linea = lector.readLine();
+
             while (linea != null) {
                 if (!linea.trim().isEmpty()) {
                     lineas.add(linea);
@@ -321,6 +331,7 @@ public class ArchivoDatos {
         } catch (IOException e) {
             System.out.println("Error al leer " + ruta + ": " + e.getMessage());
         }
+
         return lineas;
     }
 
@@ -340,6 +351,7 @@ public class ArchivoDatos {
 
     private void crearCarpetaSiNoExiste() {
         File carpeta = new File(CARPETA);
+
         if (!carpeta.exists()) {
             carpeta.mkdirs();
         }
@@ -354,6 +366,7 @@ public class ArchivoDatos {
         String limpio = texto.replace(";", ",");
         limpio = limpio.replace("\r", " ");
         limpio = limpio.replace("\n", " ");
+
         return limpio;
     }
 
@@ -362,6 +375,7 @@ public class ArchivoDatos {
         if (texto.isEmpty()) {
             return null;
         }
+
         return LocalDate.parse(texto);
     }
 
@@ -369,6 +383,7 @@ public class ArchivoDatos {
         if (fecha == null) {
             return "";
         }
+
         return fecha.toString();
     }
 }

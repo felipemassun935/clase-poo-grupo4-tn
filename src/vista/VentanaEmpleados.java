@@ -65,6 +65,7 @@ public class VentanaEmpleados extends JFrame {
         lblSucursal.setBounds(20, 300, 100, 25);
         getContentPane().add(lblSucursal);
         cmbSucursal = new JComboBox<Sucursal>();
+
         for (Sucursal s : sistema.getSucursales()) {
             cmbSucursal.addItem(s);
         }
@@ -132,11 +133,13 @@ public class VentanaEmpleados extends JFrame {
         JTextField campo = new JTextField();
         campo.setBounds(120, y, 220, 25);
         getContentPane().add(campo);
+
         return campo;
     }
 
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
+
         for (Empleado e : sistema.getEmpleados()) {
             // Polimorfismo: getRol() dice "Encargado" o "Empleado" según el caso
             modeloTabla.addRow(new Object[] { e.getId(), e.getNombre(), e.getApellido(), e.getDni(),
@@ -147,6 +150,7 @@ public class VentanaEmpleados extends JFrame {
 
     private void seleccionarFila() {
         int fila = tabla.getSelectedRow();
+
         if (fila == -1) {
             return;
         }
@@ -191,11 +195,13 @@ public class VentanaEmpleados extends JFrame {
             Sucursal sucursal = (Sucursal) cmbSucursal.getSelectedItem();
 
             Empleado empleado;
+
             if (seleccionado == null) {
                 empleado = sistema.altaEmpleado(nombre, apellido, dni, telefono, email, legajo, ingreso, sucursal);
             } else {
                 // Una sucursal siempre tiene que tener un encargado: no se puede "desmarcar"
                 boolean eraEncargado = seleccionado.getSucursal().getEncargado() == seleccionado;
+
                 if (eraEncargado && !chkEncargado.isSelected()) {
                     throw new DatoInvalidoException(
                             "Para cambiar el encargado, marcá a otro empleado de la sucursal como encargado.");
@@ -223,9 +229,11 @@ public class VentanaEmpleados extends JFrame {
         }
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Eliminar a " + seleccionado.getNombreCompleto() + "?",
                 "Confirmar baja", JOptionPane.YES_NO_OPTION);
+
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
+
         try {
             sistema.bajaEmpleado(seleccionado);
             cargarTabla();

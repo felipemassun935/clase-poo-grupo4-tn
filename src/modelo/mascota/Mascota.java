@@ -49,6 +49,7 @@ public abstract class Mascota {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -59,6 +60,7 @@ public abstract class Mascota {
             return false;
         }
         long diasPasados = ChronoUnit.DAYS.between(fechaUltimoControl, fecha);
+
         return diasPasados <= dias;
     }
 
@@ -151,9 +153,11 @@ public abstract class Mascota {
             if (fecha.isBefore(fechaAplicacion)) {
                 return false;
             }
+
             if (fecha.isAfter(fechaVencimiento)) {
                 return false;
             }
+
             return true;
         }
 

@@ -60,6 +60,7 @@ public class SistemaGuarderia {
         if (instancia == null) {
             instancia = new SistemaGuarderia();
         }
+
         return instancia;
     }
 
@@ -93,11 +94,13 @@ public class SistemaGuarderia {
     // Junta los alojamientos de todas las sucursales en una sola lista
     public List<Alojamiento> getAlojamientos() {
         List<Alojamiento> todos = new ArrayList<Alojamiento>();
+
         for (Sucursal s : sucursales) {
             for (Alojamiento a : s.getAlojamientos()) {
                 todos.add(a);
             }
         }
+
         return todos;
     }
 
@@ -106,12 +109,14 @@ public class SistemaGuarderia {
     public Cliente altaCliente(String nombre, String apellido, String dni, String telefono, String email,
             String direccion) throws DatoInvalidoException {
         validarPersona(nombre, apellido, dni);
+
         if (buscarClientePorDni(dni) != null) {
             throw new DatoInvalidoException("Ya existe un cliente con el DNI " + dni + ".");
         }
         Cliente c = new Cliente(siguienteIdCliente(), nombre, apellido, dni, telefono, email, direccion);
         clientes.add(c);
         guardar();
+
         return c;
     }
 
@@ -119,6 +124,7 @@ public class SistemaGuarderia {
             String email, String direccion) throws DatoInvalidoException {
         validarPersona(nombre, apellido, dni);
         Cliente otro = buscarClientePorDni(dni);
+
         if (otro != null && otro != c) {
             throw new DatoInvalidoException("Ya existe otro cliente con el DNI " + dni + ".");
         }
@@ -147,6 +153,7 @@ public class SistemaGuarderia {
                 return c;
             }
         }
+
         return null;
     }
 
@@ -160,6 +167,7 @@ public class SistemaGuarderia {
         if (especie == null) {
             throw new DatoInvalidoException("Elegí la especie.");
         }
+
         if (cliente == null) {
             throw new DatoInvalidoException("Elegí el cliente dueño de la mascota.");
         }
@@ -185,6 +193,7 @@ public class SistemaGuarderia {
         cliente.agregarMascota(m);
         mascotas.add(m);
         guardar();
+
         return m;
     }
 
@@ -233,9 +242,11 @@ public class SistemaGuarderia {
     public void agregarVacuna(Mascota m, String nombre, LocalDate fechaAplicacion, LocalDate fechaVencimiento)
             throws DatoInvalidoException {
         validarTexto(nombre, "el nombre de la vacuna");
+
         if (fechaAplicacion == null || fechaVencimiento == null) {
             throw new DatoInvalidoException("Completá la fecha de aplicación y la de vencimiento.");
         }
+
         if (!fechaVencimiento.isAfter(fechaAplicacion)) {
             throw new DatoInvalidoException("El vencimiento tiene que ser posterior a la aplicación.");
         }
@@ -253,6 +264,7 @@ public class SistemaGuarderia {
     public Empleado altaEmpleado(String nombre, String apellido, String dni, String telefono, String email,
             String legajo, LocalDate fechaIngreso, Sucursal sucursal) throws DatoInvalidoException {
         validarEmpleado(nombre, apellido, dni, legajo, fechaIngreso, null);
+
         if (sucursal == null) {
             throw new DatoInvalidoException("Elegí la sucursal del empleado.");
         }
@@ -262,6 +274,7 @@ public class SistemaGuarderia {
         sucursal.agregarEmpleado(e);
         empleados.add(e);
         guardar();
+
         return e;
     }
 
@@ -287,6 +300,7 @@ public class SistemaGuarderia {
                         + ". Primero asigná otro encargado.");
             }
         }
+
         for (Reserva r : reservas) {
             for (Reserva.RegistroDiario reg : r.getRegistros()) {
                 if (reg.getEmpleado() == e) {
@@ -314,14 +328,17 @@ public class SistemaGuarderia {
             Empleado actual) throws DatoInvalidoException {
         validarPersona(nombre, apellido, dni);
         validarTexto(legajo, "el legajo");
+
         if (fechaIngreso == null) {
             throw new DatoInvalidoException("Completá la fecha de ingreso.");
         }
+
         for (Empleado otro : empleados) {
             if (otro != actual) {
                 if (otro.getDni().equals(dni)) {
                     throw new DatoInvalidoException("Ya existe un empleado con el DNI " + dni + ".");
                 }
+
                 if (otro.getLegajo().equals(legajo)) {
                     throw new DatoInvalidoException("Ya existe un empleado con el legajo " + legajo + ".");
                 }
@@ -341,12 +358,14 @@ public class SistemaGuarderia {
         // agregarAlojamiento también le deja anotada la sucursal al alojamiento
         sucursal.agregarAlojamiento(a);
         guardar();
+
         return a;
     }
 
     public void modificarAlojamiento(Alojamiento a, String codigo, Especie especie, Categoria categoria,
             double precioBaseNoche, boolean activo) throws DatoInvalidoException {
         validarAlojamiento(a.getSucursal(), codigo, especie, categoria, precioBaseNoche, a);
+
         if (especie != a.getEspecie() && tieneReservas(a)) {
             throw new DatoInvalidoException("No se puede cambiar la especie de un alojamiento que tiene reservas.");
         }
@@ -373,12 +392,15 @@ public class SistemaGuarderia {
     private void validarAlojamiento(Sucursal sucursal, String codigo, Especie especie, Categoria categoria,
             double precioBaseNoche, Alojamiento actual) throws DatoInvalidoException {
         validarTexto(codigo, "el código");
+
         if (especie == null || categoria == null) {
             throw new DatoInvalidoException("Elegí la especie y la categoría.");
         }
+
         if (precioBaseNoche <= 0) {
             throw new DatoInvalidoException("El precio por noche tiene que ser mayor a 0.");
         }
+
         for (Alojamiento otro : sucursal.getAlojamientos()) {
             if (otro != actual && otro.getCodigo().equalsIgnoreCase(codigo)) {
                 throw new DatoInvalidoException("Ya existe el código " + codigo + " en " + sucursal.getNombre() + ".");
@@ -392,6 +414,7 @@ public class SistemaGuarderia {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -400,11 +423,13 @@ public class SistemaGuarderia {
     // Alojamientos de la sucursal que sirven para la mascota y están libres entre esas fechas
     public List<Alojamiento> buscarDisponibles(Sucursal s, Mascota m, LocalDate desde, LocalDate hasta) {
         List<Alojamiento> disponibles = new ArrayList<Alojamiento>();
+
         for (Alojamiento a : s.getAlojamientos()) {
             if (a.admite(m) && estaLibre(a, desde, hasta)) {
                 disponibles.add(a);
             }
         }
+
         return disponibles;
     }
 
@@ -413,22 +438,27 @@ public class SistemaGuarderia {
         if (m == null || a == null) {
             throw new DatoInvalidoException("Elegí la mascota y el alojamiento.");
         }
+
         if (desde == null || hasta == null) {
             throw new DatoInvalidoException("Completá las dos fechas.");
         }
+
         if (!hasta.isAfter(desde)) {
             throw new DatoInvalidoException("La fecha de salida tiene que ser posterior a la de entrada.");
         }
+
         if (!a.admite(m)) {
             throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " no admite a " + m.getNombre()
                     + " (está inactivo o es para otra especie).");
         }
+
         if (!estaLibre(a, desde, hasta)) {
             throw new DatoInvalidoException("El alojamiento " + a.getCodigo() + " ya está reservado en esas fechas.");
         }
         Reserva r = new Reserva(siguienteIdReserva(), m, a, desde, hasta);
         reservas.add(r);
         guardar();
+
         return r;
     }
 
@@ -475,6 +505,7 @@ public class SistemaGuarderia {
     // Una reserva "ocupa" el alojamiento si está PENDIENTE, CONFIRMADA o EN_CURSO
     private boolean ocupaAlojamiento(Reserva r) {
         EstadoReserva e = r.getEstado();
+
         return e == EstadoReserva.PENDIENTE || e == EstadoReserva.CONFIRMADA || e == EstadoReserva.EN_CURSO;
     }
 
@@ -485,6 +516,7 @@ public class SistemaGuarderia {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -496,9 +528,11 @@ public class SistemaGuarderia {
         Map<Especie, Integer> capacidad = s.getCapacidadPorEspecie();
 
         Map<Especie, Integer> ocupados = new HashMap<Especie, Integer>();
+
         for (Especie e : Especie.values()) {
             ocupados.put(e, 0);
         }
+
         for (Reserva r : reservas) {
             if (r.getEstado() == EstadoReserva.EN_CURSO && r.getAlojamiento().getSucursal() == s) {
                 Especie e = r.getAlojamiento().getEspecie();
@@ -507,10 +541,46 @@ public class SistemaGuarderia {
         }
 
         Map<Especie, String> resultado = new HashMap<Especie, String>();
+
         for (Especie e : Especie.values()) {
             resultado.put(e, ocupados.get(e) + "/" + capacidad.get(e));
         }
+
         return resultado;
+    }
+
+    // ===================== Histórico de registros =====================
+
+    // Todos los registros que se cargaron para una mascota, en todas sus estadías.
+    // Cada línea también dice para qué mascota era (así sirve para las dos consultas).
+    public List<String> historicoDeMascota(Mascota m) {
+        List<String> lineas = new ArrayList<String>();
+
+        for (Reserva r : reservas) {
+            if (r.getMascota() == m) {
+                for (Reserva.RegistroDiario reg : r.getRegistros()) {
+                    lineas.add(reg.getResumen() + " | mascota: " + m.getNombre());
+                }
+            }
+        }
+
+        return lineas;
+    }
+
+    // Todos los registros que cargó un empleado, sea para la mascota que sea.
+    // Sirve para responder "¿a qué perros lavó este empleado?".
+    public List<String> historicoDeEmpleado(Empleado e) {
+        List<String> lineas = new ArrayList<String>();
+
+        for (Reserva r : reservas) {
+            for (Reserva.RegistroDiario reg : r.getRegistros()) {
+                if (reg.getEmpleado() == e) {
+                    lineas.add(reg.getResumen() + " | mascota: " + r.getMascota().getNombre());
+                }
+            }
+        }
+
+        return lineas;
     }
 
     // ===================== Ids nuevos =====================
@@ -518,37 +588,44 @@ public class SistemaGuarderia {
 
     private Integer siguienteIdCliente() {
         int maximo = 0;
+
         for (Cliente c : clientes) {
             if (c.getId() > maximo) {
                 maximo = c.getId();
             }
         }
+
         return maximo + 1;
     }
 
     private Integer siguienteIdMascota() {
         int maximo = 0;
+
         for (Mascota m : mascotas) {
             if (m.getId() > maximo) {
                 maximo = m.getId();
             }
         }
+
         return maximo + 1;
     }
 
     private Integer siguienteIdEmpleado() {
         int maximo = 0;
+
         for (Empleado e : empleados) {
             if (e.getId() > maximo) {
                 maximo = e.getId();
             }
         }
+
         return maximo + 1;
     }
 
     // Los alojamientos están repartidos en las sucursales, por eso se recorren todas
     private Integer siguienteIdAlojamiento() {
         int maximo = 0;
+
         for (Sucursal s : sucursales) {
             for (Alojamiento a : s.getAlojamientos()) {
                 if (a.getId() > maximo) {
@@ -556,16 +633,19 @@ public class SistemaGuarderia {
                 }
             }
         }
+
         return maximo + 1;
     }
 
     private Integer siguienteIdReserva() {
         int maximo = 0;
+
         for (Reserva r : reservas) {
             if (r.getId() > maximo) {
                 maximo = r.getId();
             }
         }
+
         return maximo + 1;
     }
 
@@ -582,6 +662,7 @@ public class SistemaGuarderia {
         validarTexto(nombre, "el nombre");
         validarTexto(apellido, "el apellido");
         validarTexto(dni, "el DNI");
+
         for (int i = 0; i < dni.length(); i++) {
             if (!Character.isDigit(dni.charAt(i))) {
                 throw new DatoInvalidoException("El DNI tiene que tener solo números.");
@@ -592,15 +673,19 @@ public class SistemaGuarderia {
     private void validarMascota(String nombre, LocalDate fechaNacimiento, double pesoKg, LocalDate fechaUltimoControl)
             throws DatoInvalidoException {
         validarTexto(nombre, "el nombre de la mascota");
+
         if (fechaNacimiento == null) {
             throw new DatoInvalidoException("Completá la fecha de nacimiento.");
         }
+
         if (fechaNacimiento.isAfter(LocalDate.now())) {
             throw new DatoInvalidoException("La fecha de nacimiento no puede ser futura.");
         }
+
         if (fechaUltimoControl != null && fechaUltimoControl.isAfter(LocalDate.now())) {
             throw new DatoInvalidoException("La fecha del último control no puede ser futura.");
         }
+
         if (pesoKg <= 0) {
             throw new DatoInvalidoException("El peso tiene que ser mayor a 0.");
         }

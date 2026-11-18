@@ -17,6 +17,7 @@ public class Validaciones {
         if (valor == null || valor.trim().isEmpty()) {
             throw new DatoInvalidoException("El campo \"" + nombreCampo + "\" es obligatorio.");
         }
+
         return valor.trim();
     }
 
@@ -58,6 +59,7 @@ public class Validaciones {
         if (fecha == null) {
             return "";
         }
+
         return fecha.format(FORMATO_FECHA);
     }
 

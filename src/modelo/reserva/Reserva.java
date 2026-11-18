@@ -50,9 +50,11 @@ public class Reserva implements Facturable {
     // Cantidad de noches entre las dos fechas. Como mínimo se cobra 1 noche.
     public long getCantidadNoches() {
         long noches = ChronoUnit.DAYS.between(fechaDesde, fechaHasta);
+
         if (noches < 1) {
             noches = 1;
         }
+
         return noches;
     }
 
@@ -66,9 +68,11 @@ public class Reserva implements Facturable {
     @Override
     public double getTotalPagado() {
         double total = 0;
+
         for (Pago p : pagos) {
             total = total + p.getMonto();
         }
+
         return total;
     }
 
@@ -86,6 +90,7 @@ public class Reserva implements Facturable {
     // Si hay problemas se tira una excepción propia con la lista.
     public void realizarCheckIn(LocalDate fecha) throws IngresoRechazadoException {
         List<String> problemas = mascota.validarIngreso(fecha);
+
         if (!problemas.isEmpty()) {
             throw new IngresoRechazadoException(problemas);
         }
@@ -251,6 +256,7 @@ public class Reserva implements Facturable {
         // Arma una línea del tipo "dd/MM/yyyy HH:mm | TIPO: descripción | cargó: nombre"
         public String getResumen() {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
             return fechaHora.format(formato) + " | " + tipo + ": " + descripcion + " | cargó: "
                     + empleado.getNombreCompleto();
         }
@@ -264,9 +270,11 @@ public class Reserva implements Facturable {
             String mensaje = tipo + " con " + mascota.getNombre() + ": " + descripcion;
 
             List<Notificable> destinatarios = new ArrayList<Notificable>();
+
             if (mascota.getCliente() != null) {
                 destinatarios.add(mascota.getCliente());
             }
+
             if (alojamiento.getSucursal() != null && alojamiento.getSucursal().getEncargado() != null) {
                 destinatarios.add(alojamiento.getSucursal().getEncargado());
             }

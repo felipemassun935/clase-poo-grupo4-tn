@@ -34,6 +34,7 @@ public enum EstadoReserva {
                 puede = false;
                 break;
         }
+
         return puede;
     }
 }

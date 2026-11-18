@@ -23,7 +23,7 @@ public class MenuPrincipal extends JFrame {
         sistema = SistemaGuarderia.getInstancia();
 
         setTitle("Guardería y Hotel de Mascotas");
-        setSize(520, 470);
+        setSize(520, 500);
         setLocationRelativeTo(null); // centrada en la pantalla
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -59,9 +59,10 @@ public class MenuPrincipal extends JFrame {
         JButton btnEstadias = crearBoton("Check-in / Estadías", 260, 260);
         JButton btnOcupacion = crearBoton("Ver ocupación", 30, 310);
         JButton btnSalir = crearBoton("Salir", 260, 310);
+        JButton btnHistorico = crearBoton("Histórico de registros", 30, 360);
 
         JLabel lblPie = new JLabel("TPO Paradigma Orientado a Objetos - UADE 2026");
-        lblPie.setBounds(30, 380, 460, 20);
+        lblPie.setBounds(30, 430, 460, 20);
         getContentPane().add(lblPie);
 
         // Eventos: cada botón abre su ventana (listeners con clases anónimas)
@@ -95,6 +96,11 @@ public class MenuPrincipal extends JFrame {
                 new VentanaEstadias().setVisible(true);
             }
         });
+        btnHistorico.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new VentanaHistorico().setVisible(true);
+            }
+        });
         btnOcupacion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mostrarOcupacion();
@@ -111,15 +117,18 @@ public class MenuPrincipal extends JFrame {
         JButton boton = new JButton(texto);
         boton.setBounds(x, y, 210, 38);
         getContentPane().add(boton);
+
         return boton;
     }
 
     // Control de ocupación: para cada sucursal, "ocupados/capacidad" de cada especie
     private void mostrarOcupacion() {
         String texto = "";
+
         for (Sucursal s : sistema.getSucursales()) {
             texto = texto + s.getNombre() + "\n";
             Map<Especie, String> ocupacion = sistema.getOcupacion(s);
+
             for (Especie e : Especie.values()) {
                 texto = texto + "   " + e.getNombreVisible() + ": " + ocupacion.get(e) + "\n";
             }
@@ -133,6 +142,7 @@ public class MenuPrincipal extends JFrame {
     private void salir() {
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que querés salir?", "Salir",
                 JOptionPane.YES_NO_OPTION);
+
         if (respuesta == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
