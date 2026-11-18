@@ -22,7 +22,7 @@ El diseño está en docs/Entrega_Parcial_1.pdf. El paquete modelo del código co
 2. ESTRUCTURA DE PAQUETES
 -------------------------
   app                 Main: aplica el estilo Nimbus y abre el menú principal.
-  vista               Las 6 pantallas Swing, el menú, DialogoVacunas y Validaciones.
+  vista               Las 8 pantallas Swing, el menú, DialogoVacunas y Validaciones.
   controlador         SistemaGuarderia (Controlador GRASP + Singleton): las pantallas le piden todo a esta
                       clase. Valida los formularios, asigna los id y guarda después de cada cambio.
   persistencia        ArchivoDatos: lee y escribe los .txt y reconstruye las referencias entre objetos.
@@ -129,7 +129,7 @@ El diseño está en docs/Entrega_Parcial_1.pdf. El paquete modelo del código co
   vista/DialogoVacunas.java        agregar()                        DatoInvalidoException
   app/Main.java                    main()                           Exception (estilo Nimbus)
 
-3.7 Las 6 pantallas (Swing con layout null y setBounds)
+3.7 Las 8 pantallas (Swing con layout null y setBounds)
   ABM 1  VentanaClientes       id, nombre, apellido, DNI, teléfono, email, dirección; tabla con la
                                cantidad de mascotas.
   ABM 2  VentanaMascotas       campos propios según la especie (los demás se deshabilitan); tabla con la
@@ -140,7 +140,9 @@ El diseño está en docs/Entrega_Parcial_1.pdf. El paquete modelo del código co
                                (queda PENDIENTE), confirmar, registrar seña y cancelar.
   Negocio 2  VentanaEstadias   check-in con control sanitario, bitácora de la estadía, agregar registro
                                y check-out con cobro del saldo y comprobante.
-  Además: MenuPrincipal con el botón "Ver ocupación" (ocupados/capacidad por especie y sucursal).
+  Consulta VentanaHistorico    buscar los registros de la bitácora por mascota o por empleado (quién cargó qué).
+  Además: MenuPrincipal con el botón "Ver ocupación" (ocupados/capacidad por especie y sucursal) y el
+                               botón "Histórico de registros".
 
 3.8 Dialogs
   - DialogoVacunas: JDialog modal propio (agregar y quitar vacunas; muestra las obligatorias).

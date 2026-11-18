@@ -59,9 +59,12 @@ public class Reserva implements Facturable {
     }
 
     // Interfaz Facturable: total = noches x precio por noche del alojamiento
+    // Los montos se redondean a centavos con Math.round(x * 100) / 100.0.
+    // Motivo: un double no guarda los decimales con exactitud (0.1 + 0.2 no da 0.3), y sin redondear
+    // el saldo podía quedar en un residuo de centavos que bloqueaba el check-out.
     @Override
     public double calcularTotal() {
-        return getCantidadNoches() * alojamiento.getPrecioNoche();
+        return Math.round(getCantidadNoches() * alojamiento.getPrecioNoche() * 100) / 100.0;
     }
 
     // Interfaz Facturable: suma todos los pagos hechos
@@ -70,7 +73,8 @@ public class Reserva implements Facturable {
         double total = 0;
 
         for (Pago p : pagos) {
-            total = total + p.getMonto();
+            // Se redondea en cada suma (ver calcularTotal)
+            total = Math.round((total + p.getMonto()) * 100) / 100.0;
         }
 
         return total;
@@ -79,7 +83,7 @@ public class Reserva implements Facturable {
     // Interfaz Facturable: lo que todavía falta pagar
     @Override
     public double getSaldoPendiente() {
-        return calcularTotal() - getTotalPagado();
+        return Math.round((calcularTotal() - getTotalPagado()) * 100) / 100.0;
     }
 
     public void confirmar() {
@@ -120,7 +124,8 @@ public class Reserva implements Facturable {
 
     // Patrón Creador: la Reserva crea sus propios pagos porque es la que los guarda
     public void registrarPago(double monto, String medio) {
-        Pago pago = new Pago(LocalDate.now(), monto, medio);
+        // El monto también se redondea a centavos (ver calcularTotal)
+        Pago pago = new Pago(LocalDate.now(), Math.round(monto * 100) / 100.0, medio);
         pagos.add(pago);
     }
 

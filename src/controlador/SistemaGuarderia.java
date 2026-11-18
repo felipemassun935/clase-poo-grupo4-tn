@@ -397,7 +397,8 @@ public class SistemaGuarderia {
             throw new DatoInvalidoException("Elegí la especie y la categoría.");
         }
 
-        if (precioBaseNoche <= 0) {
+        // NaN no es mayor a 0, así que se chequea aparte junto con el infinito
+        if (precioBaseNoche <= 0 || Double.isNaN(precioBaseNoche) || Double.isInfinite(precioBaseNoche)) {
             throw new DatoInvalidoException("El precio por noche tiene que ser mayor a 0.");
         }
 
@@ -489,7 +490,8 @@ public class SistemaGuarderia {
     }
 
     public void registrarPago(Reserva r, double monto, String medio) throws DatoInvalidoException {
-        if (monto <= 0) {
+        // NaN no es mayor a 0, así que se chequea aparte junto con el infinito
+        if (monto <= 0 || Double.isNaN(monto) || Double.isInfinite(monto)) {
             throw new DatoInvalidoException("El monto tiene que ser mayor a 0.");
         }
         validarTexto(medio, "el medio de pago");
