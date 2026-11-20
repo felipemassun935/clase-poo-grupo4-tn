@@ -1,4 +1,0 @@
-1;2026-10-14T20:00;COMIDA;102;Comió toda la ración de balanceado
-1;2026-10-15T09:30;MEDICACION;103;Antiparasitario, 1 comprimido
-1;2026-10-15T17:45;INCIDENTE;102;Se raspó una pata jugando en el patio
-8;2026-10-15T21:00;MEDICACION;202;Medicación para la artrosis con la cena

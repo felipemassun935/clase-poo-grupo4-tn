@@ -20,6 +20,8 @@ package "vista" {
   class "VentanaClientes\nVentanaMascotas\nVentanaEmpleados\nVentanaAlojamientos" as ABM <<4 ABM>>
   class "VentanaReservas\nVentanaEstadias" as Negocio <<2 pantallas de negocio>>
   class DialogoVacunas <<JDialog modal>>
+  class DialogoDetalleReserva <<JDialog modal>>
+  class VentanaLog <<SwingWorker>>
   class Validaciones {
     + {static} texto(valor: String, campo: String): String
     + {static} numero(valor: String, campo: String): double
@@ -43,19 +45,35 @@ package "controlador" {
     + buscarDisponibles(s, m, desde, hasta): List<Alojamiento>
     + reservar(m, a, desde, hasta): Reserva
     + confirmar(r) / cancelar(r) / checkIn(r) / checkOut(r)
-    + agregarRegistro(r, tipo, descripcion, empleado): void
+    - repositorio: Repositorio
+    - operador: Empleado
+    + iniciarSesion(legajo: String): Empleado
+    + buscarPorCollar(codigo: String): Mascota
+    + agregarRegistro(r, tipo, descripcion, empleado, indicacion): void
     + registrarPago(r, monto, medio): void
+    + contratarServicio(r, tipo) / realizarServicio(r, s, empleado) / quitarServicio(r, s)
+    + agregarIndicacion(r, tipo, descripcion, horario) / quitarIndicacion(r, i)
+    + getLogs(): List<EntradaLog>
+    - registrarLog(accion: AccionLog, detalle: String): void
     + getOcupacion(s: Sucursal): Map<Especie, String>
   }
 }
 
 package "persistencia" {
-  class ArchivoDatos {
-    + cargar(sucursales, empleados, clientes, mascotas, reservas): void
-    + guardar(sucursales, empleados, clientes, mascotas, reservas): void
-    - leerLineas(ruta: String): List<String>
-    - escribirLineas(ruta: String, lineas: List<String>): void
+  class ConexionBD {
+    - url: String
+    - usuario: String
+    - clave: String
+    + conectar(): Connection
   }
+  class Repositorio <<Fabricación pura>> {
+    + cargar(sucursales, empleados, clientes, mascotas, reservas): void
+    + insertarX(...) / actualizarX(...) / borrarX(...)
+    + insertarLog(log: EntradaLog): void
+    + listarLogs(): List<EntradaLog>
+    - ejecutar(sql: String): void
+  }
+  Repositorio --> ConexionBD
 }
 
 package "excepciones" {
@@ -63,19 +81,23 @@ package "excepciones" {
     - problemas: List<String>
   }
   class DatoInvalidoException
+  class ErrorBaseDeDatosException <<unchecked>>
   IngresoRechazadoException -[hidden]- DatoInvalidoException
 }
 
 package "modelo" <<Rectangle>> {
-  class "persona · mascota · sucursal\nreserva · interfaces · enums" as Modelo <<21 clases, ver Diagrama_de_Clases>>
+  class "persona · mascota · sucursal\nreserva · log · interfaces · enums" as Modelo <<ver Diagrama_de_Clases>>
 }
 
-note "datos/*.txt\n(un archivo por tabla, campos separados por ;)" as Archivos
+class "SQL Server\nGuarderiaMascotas\n(bd/*.sql)" as BD <<base de datos>>
+note "conexion.txt\n(url, usuario, clave)" as Archivo
 
 Main ..> MenuPrincipal : abre
 MenuPrincipal ..> ABM : abre
 MenuPrincipal ..> Negocio : abre
 ABM ..> DialogoVacunas : abre
+Negocio ..> DialogoDetalleReserva : abre
+MenuPrincipal ..> VentanaLog : abre
 ABM ..> Validaciones
 Negocio ..> Validaciones
 
@@ -85,9 +107,12 @@ ABM ..> Modelo : muestra
 Negocio ..> Modelo : muestra
 
 SistemaGuarderia --> Modelo : guarda las listas\ny delega
-SistemaGuarderia --> ArchivoDatos : guarda después\nde cada cambio
-ArchivoDatos ..> Modelo : arma los objetos\ny sus referencias
-ArchivoDatos .. Archivos
+SistemaGuarderia --> Repositorio : guarda cada cambio\ny el log
+Repositorio ..> Modelo : arma los objetos\ny sus referencias
+ConexionBD .. Archivo
+Repositorio --> BD : JDBC (Statement,\nResultSet)
+Repositorio ..> ErrorBaseDeDatosException : lanza
+Main ..> ErrorBaseDeDatosException : atrapa
 
 Modelo ..> IngresoRechazadoException : Reserva.realizarCheckIn()\nla lanza
 SistemaGuarderia ..> DatoInvalidoException : lanza

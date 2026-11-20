@@ -53,7 +53,6 @@ public class VentanaAlojamientos extends JFrame {
 
         agregarEtiqueta("Sucursal:", 20);
         cmbSucursal = new JComboBox<Sucursal>();
-
         for (Sucursal s : sistema.getSucursales()) {
             cmbSucursal.addItem(s);
         }
@@ -67,7 +66,6 @@ public class VentanaAlojamientos extends JFrame {
 
         agregarEtiqueta("Especie:", 90);
         cmbEspecie = new JComboBox<String>();
-
         for (Especie e : Especie.values()) {
             cmbEspecie.addItem(e.getNombreVisible());
         }
@@ -76,7 +74,6 @@ public class VentanaAlojamientos extends JFrame {
 
         agregarEtiqueta("Categoría:", 125);
         cmbCategoria = new JComboBox<Categoria>();
-
         for (Categoria c : Categoria.values()) {
             cmbCategoria.addItem(c);
         }
@@ -153,10 +150,8 @@ public class VentanaAlojamientos extends JFrame {
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
         filas = sistema.getAlojamientos();
-
         for (Alojamiento a : filas) {
             String activo = "No";
-
             if (a.isActivo()) {
                 activo = "Sí";
             }
@@ -168,7 +163,6 @@ public class VentanaAlojamientos extends JFrame {
 
     private void seleccionarFila() {
         int fila = tabla.getSelectedRow();
-
         if (fila == -1) {
             return;
         }
@@ -223,11 +217,9 @@ public class VentanaAlojamientos extends JFrame {
         }
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Eliminar el alojamiento " + seleccionado.getCodigo()
                 + "?", "Confirmar baja", JOptionPane.YES_NO_OPTION);
-
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
-
         try {
             sistema.bajaAlojamiento(seleccionado);
             cargarTabla();

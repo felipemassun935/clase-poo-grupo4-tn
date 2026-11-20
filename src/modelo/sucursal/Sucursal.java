@@ -42,13 +42,11 @@ public class Sucursal {
     // Devuelve solo los alojamientos pensados para la especie indicada
     public List<Alojamiento> getAlojamientosDe(Especie especie) {
         List<Alojamiento> resultado = new ArrayList<Alojamiento>();
-
         for (Alojamiento a : alojamientos) {
             if (a.getEspecie() == especie) {
                 resultado.add(a);
             }
         }
-
         return resultado;
     }
 
@@ -56,18 +54,15 @@ public class Sucursal {
     // Todas las especies arrancan en 0 para que aparezcan aunque no tengan alojamientos.
     public Map<Especie, Integer> getCapacidadPorEspecie() {
         Map<Especie, Integer> capacidad = new HashMap<Especie, Integer>();
-
         for (Especie e : Especie.values()) {
             capacidad.put(e, 0);
         }
-
         for (Alojamiento a : alojamientos) {
             if (a.isActivo()) {
                 int cantidadActual = capacidad.get(a.getEspecie());
                 capacidad.put(a.getEspecie(), cantidadActual + 1);
             }
         }
-
         return capacidad;
     }
 

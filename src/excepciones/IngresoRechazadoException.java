@@ -18,11 +18,9 @@ public class IngresoRechazadoException extends Exception {
     // Es static porque se usa dentro de super(...), antes de que exista el objeto.
     private static String armarMensaje(List<String> problemas) {
         String mensaje = "";
-
         for (String problema : problemas) {
             mensaje = mensaje + problema + "\n";
         }
-
         return mensaje;
     }
 

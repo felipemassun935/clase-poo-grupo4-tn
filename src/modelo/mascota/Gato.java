@@ -30,7 +30,6 @@ public class Gato extends Mascota implements Vacunable {
         List<String> obligatorias = new ArrayList<String>();
         obligatorias.add("Antirrábica");
         obligatorias.add("Triple felina");
-
         return obligatorias;
     }
 
@@ -38,13 +37,11 @@ public class Gato extends Mascota implements Vacunable {
     @Override
     public List<String> validarIngreso(LocalDate fecha) {
         List<String> problemas = new ArrayList<String>();
-
         for (String vacuna : getVacunasObligatorias()) {
             if (!tieneVacunaVigente(vacuna, fecha)) {
                 problemas.add("Falta o venció la vacuna " + vacuna);
             }
         }
-
         return problemas;
     }
 

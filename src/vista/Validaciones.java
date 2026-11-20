@@ -17,7 +17,6 @@ public class Validaciones {
         if (valor == null || valor.trim().isEmpty()) {
             throw new DatoInvalidoException("El campo \"" + nombreCampo + "\" es obligatorio.");
         }
-
         return valor.trim();
     }
 
@@ -25,17 +24,11 @@ public class Validaciones {
     public static double numero(String valor, String nombreCampo) throws DatoInvalidoException {
         String limpio = texto(valor, nombreCampo).replace(",", ".");
         // try/catch: si el texto no es un número, parseDouble tira NumberFormatException
-        double resultado;
         try {
-            resultado = Double.parseDouble(limpio);
+            return Double.parseDouble(limpio);
         } catch (NumberFormatException e) {
             throw new DatoInvalidoException("El campo \"" + nombreCampo + "\" tiene que ser un número.");
         }
-        // Java acepta "NaN" e "Infinity" como número, pero no son valores válidos para la guardería
-        if (Double.isNaN(resultado) || Double.isInfinite(resultado)) {
-            throw new DatoInvalidoException("El campo \"" + nombreCampo + "\" tiene que ser un número.");
-        }
-        return resultado;
     }
 
     // Convierte el texto a número entero
@@ -65,7 +58,6 @@ public class Validaciones {
         if (fecha == null) {
             return "";
         }
-
         return fecha.format(FORMATO_FECHA);
     }
 
